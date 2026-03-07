@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "ms-azuretools.vscode-azurefunctions",
+    "ms-python.python",
+    "ms-vscode.powershell",
+    "ms-azure-devops.azure-pipelines",
+    "esbenp.prettier-vscode",
+    "eamodio.gitlens",
+    "DavidAnson.vscode-markdownlint",
+    "bierner.markdown-mermaid",
+    "ms-azuretools.vscode-bicep",
+    "bewhite.psrule-vscode",
+    "github.copilot-chat",
+    "github.vscode-github-actions"
+  ]
+}

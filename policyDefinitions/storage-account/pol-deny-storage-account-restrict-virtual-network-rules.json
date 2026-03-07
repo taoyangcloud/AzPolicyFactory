@@ -1,0 +1,69 @@
+{
+  "name": "pol-deny-storage-account-restrict-virtual-network-rules",
+  "properties": {
+    "displayName": "Storage accounts should restrict network access using virtual network rules",
+    "description": "Protect your storage accounts from potential threats using virtual network rules as a preferred method instead of IP-based filtering. Disabling IP-based filtering prevents public IPs from accessing your storage accounts.",
+    "metadata": {
+      "category": "Network Security",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false,
+      "source_builtIn_name": "2a1a9cdf-e04d-429a-8416-3bfb72a1b26f"
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the audit policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "not": {
+              "field": "tags[application]",
+              "equals": "databricks"
+            }
+          },
+          {
+            "not": {
+              "field": "tags[application]",
+              "equals": "purview"
+            }
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.Storage/storageAccounts/networkAcls.defaultAction",
+                "notEquals": "Deny"
+              },
+              {
+                "count": {
+                  "field": "Microsoft.Storage/storageAccounts/networkAcls.ipRules[*]"
+                },
+                "greaterOrEquals": 1
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

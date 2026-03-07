@@ -1,0 +1,42 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-p-azure-sql",
+    "displayName": "Azure SQL Policies Prod",
+    "description": "Policy Assignment for Azure SQL - Prod",
+    "metadata": {
+      "category": "Azure SQL"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-azure-sql",
+    "identity": "SystemAssigned",
+    "parameters": {
+      "SQL-001_Effect": {
+        "value": "AuditIfNotExists"
+      },
+      "SQL-002_Effect": {
+        "value": "Audit"
+      },
+      "SQL-003_Effect": {
+        "value": "Audit"
+      },
+      "SQL-004_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "SQL-005_Effect": {
+        "value": "AuditIfNotExists"
+      },
+      "SQL-006_Effect": {
+        "value": "Deny"
+      },
+      "SQL-007_Effect": {
+        "value": "Audit"
+      }
+    },
+    "roleDefinitionIds": [
+      "/providers/microsoft.authorization/roleDefinitions/9b7fa17d-e63e-47b0-bb0a-15c516ac86ec"
+    ],
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO"
+}

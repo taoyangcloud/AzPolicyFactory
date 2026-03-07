@@ -1,0 +1,171 @@
+parameters:
+  - name: poolName
+    displayName: "Self Hosted Agent Pool Name"
+    type: string
+    default: ""
+
+  - name: vmImage
+    displayName: "MS Hosted Agent VM Image Name"
+    type: string
+    default: ""
+
+  - name: condition
+    displayName: "Custom Stage Conditions"
+    type: string
+    default: "succeeded()"
+
+  - name: azureServiceConnection
+    displayName: "Name of the Azure Service Connection"
+    type: string
+
+  - name: preferredAzurePowerShellVersion
+    displayName: "Az Powershell module version."
+    type: string
+    default: ""
+
+  - name: environment
+    displayName: "Environment"
+    type: string
+
+  - name: resourceType
+    displayName: "Resource Type"
+    type: string
+    values:
+      - "exemption"
+      - "assignment"
+
+  - name: configFilesPath
+    displayName: "Configuration Files Path"
+    type: string
+
+  - name: configFileExcludePath
+    displayName: "Configuration File Excluded Paths"
+    type: string
+    default: ""
+
+  - name: templateFileDirectory
+    displayName: "Bicep Template Directory Path"
+    type: string
+
+  - name: bicepFilePath
+    displayName: "Bicep File Path"
+    type: string
+
+  - name: bicepVariableName
+    displayName: "Bicep Variable Name"
+    type: string
+
+  - name: outputDir
+    displayName: "Output Directory"
+    type: string
+
+  - name: policyLocationResourceId
+    displayName: "Policy Definition Location Resource Id"
+    type: string
+
+  - name: configBuildArtifactName
+    displayName: "Configuration Build Artifact Name"
+    type: string
+    default: 'policy_resource_config'
+
+  - name: bicepTemplateBuildArtifactName
+    displayName: "Bicep Template Build Artifact Name"
+    type: string
+
+  - name: dependsOn
+    displayName: "Depends on"
+    type: object
+    default: []
+
+stages:
+  - stage: "build_${{ parameters.environment }}"
+    displayName: "Build ${{ parameters.environment }}"
+    dependsOn: ${{ parameters.dependsOn }}
+    condition: ${{ parameters.condition }}
+    jobs:
+    - job: updateFiles
+      displayName: "Update Files"
+      workspace:
+        clean: all
+      pool:
+        ${{ if ne(parameters.vmImage, '') }}:
+          vmImage: ${{ parameters.vmImage }}
+        ${{ if ne(parameters.poolName, '') }}:
+          name: ${{ parameters.poolName }}
+      variables:
+        - name: updateConfigurationFileScriptPath
+          value: "scripts/pipelines/pipeline-set-policy-non-compliance-messages.ps1"
+        - name: bicepBuildScriptPath
+          value: "scripts/pipelines/pipeline-set-policy-resource-bicep-template-file.ps1"
+        - name: isPolicyExemption
+          ${{ if eq(parameters.resourceType, 'exemption') }}:
+            value: true
+          ${{ else }}:
+            value: false
+      steps:
+        - checkout: self
+          fetchDepth: 0
+        - task: PowerShell@2
+          name: buildBicep
+          displayName: "Build Bicep Template"
+          inputs:
+            targetType: "filePath"
+            pwsh: true
+            filePath: $(bicepBuildScriptPath)
+            arguments:
+              -bicepFilePath '${{ parameters.bicepFilePath }}' `
+              -bicepVariableName '${{ parameters.bicepVariableName }}' `
+              -resourceFileFolder '${{ parameters.configFilesPath }}' `
+              -isPolicyExemption '$(isPolicyExemption)' `
+              -excludePath '${{ parameters.configFileExcludePath }}' `
+              -outputDir '${{ parameters.templateFileDirectory }}' `
+              -artifactName '${{ parameters.bicepTemplateBuildArtifactName }}' `
+              -updateBicepFileName 'main.bicep'
+        - task: CopyFiles@2
+          displayName: "Copy Updated Bicep Template File to Build Artifact Staging Directory"
+          inputs:
+            SourceFolder: "${{ parameters.templateFileDirectory }}/${{ parameters.bicepTemplateBuildArtifactName }}"
+            TargetFolder: "$(Build.ArtifactStagingDirectory)/${{ parameters.bicepTemplateBuildArtifactName }}"
+            CleanTargetFolder: true
+            OverWrite: true
+        - task: PublishBuildArtifacts@1
+          displayName: "Publish Bicep Template File Artifact"
+          inputs:
+            artifactName: "${{ parameters.bicepTemplateBuildArtifactName }}"
+            PathtoPublish: "$(Build.ArtifactStagingDirectory)/${{ parameters.bicepTemplateBuildArtifactName }}"
+        - task: AzurePowerShell@5
+          name: updateNonComplianceMessages
+          displayName: Update NonCompliance Messages'
+          condition: and(succeeded(), eq(variables.isPolicyExemption, false))
+          inputs:
+            azureSubscription: "${{parameters.azureServiceConnection}}"
+            pwsh: true
+            #If preferredAzurePowerShellVersion is not provided, or it's running on Self-hosted agents, then use the latest version of Az module
+            ${{ if or(eq(parameters.preferredAzurePowerShellVersion, ''), ne(parameters.poolName, '')) }}:
+              azurePowerShellVersion: 'LatestVersion'
+            #if preferredAzurePowerShellVersion is provided, and it's running on MS-hosted agents, then use the provided version of Az module
+            ${{ else }}:
+              azurePowerShellVersion: 'OtherVersion'
+              preferredAzurePowerShellVersion: '${{parameters.preferredAzurePowerShellVersion}}'
+            ScriptType: 'FilePath'
+            ScriptPath: $(updateConfigurationFileScriptPath)
+            ScriptArguments:
+              -configFilePath '${{ parameters.configFilesPath }}' `
+              -outputDir '${{ parameters.outputDir }}' `
+              -policyLocationResourceId '${{ parameters.policyLocationResourceId }}' `
+              -updatedConfigurationFileArtifactName '${{ parameters.configBuildArtifactName }}'
+            errorActionPreference: 'stop'
+        - task: CopyFiles@2
+          displayName: "Copy Updated Configuration File to Build Artifact Staging Directory"
+          condition: and(succeeded(), eq(variables.isPolicyExemption, false))
+          inputs:
+            SourceFolder: "${{ parameters.outputDir }}/${{ parameters.configBuildArtifactName }}"
+            TargetFolder: "$(Build.ArtifactStagingDirectory)/${{ parameters.configBuildArtifactName }}"
+            CleanTargetFolder: true
+            OverWrite: true
+        - task: PublishBuildArtifacts@1
+          displayName: "Publish Config File Artifact"
+          condition: and(succeeded(), eq(variables.isPolicyExemption, false))
+          inputs:
+            artifactName: "${{ parameters.configBuildArtifactName }}"
+            PathtoPublish: "$(Build.ArtifactStagingDirectory)/${{ parameters.configBuildArtifactName }}"

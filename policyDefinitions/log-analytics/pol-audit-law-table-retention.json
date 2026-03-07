@@ -1,0 +1,53 @@
+{
+  "name": "pol-audit-law-table-retention",
+  "properties": {
+    "displayName": "Audit Log Analytics workspace table retention",
+    "description": "Audit the minimum data retention for Log Analytics tables.",
+    "metadata": {
+      "category": "Data Protection",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "mode": "All",
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "minimumTotalRetentionDays": {
+        "type": "Integer",
+        "metadata": {
+          "displayName": "Minimum Total Retention Days",
+          "description": "The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.OperationalInsights/workspaces/tables"
+          },
+          {
+            "field": "Microsoft.OperationalInsights/workspaces/tables/totalRetentionInDays",
+            "less": "[parameters('minimumTotalRetentionDays')]"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "name": "polset-resource-restriction",
+  "properties": {
+    "displayName": "Azure Resource Restriction Policy Initiative",
+    "description": "This policy initiative restrict disallowed resource types from been created.",
+    "metadata": {
+      "category": "Asset Management",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "RR-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "RR-001 Effect: Redis Enterprise",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "RR-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "RR-002 Effect: Power BI",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "RR-003_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "RR-003 Effect: Azure Data Factory",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "RR-004_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "RR-004 Effect: ACR Token",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "RR-005_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "RR-005 Effect: ACR ScopeMap",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.13.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.1"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "RR-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-resource-type",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('RR-001_Effect')]"
+          },
+          "disallowedResourceType": {
+            "value": "Microsoft.Cache/redisEnterprise"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "RR-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-resource-type",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('RR-002_Effect')]"
+          },
+          "disallowedResourceType": {
+            "value": "Microsoft.PowerBI/workspaceCollections"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "RR-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-resource-type",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('RR-003_Effect')]"
+          },
+          "disallowedResourceType": {
+            "value": "Microsoft.DataFactory/factories"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "RR-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-resource-type",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('RR-004_Effect')]"
+          },
+          "disallowedResourceType": {
+            "value": "Microsoft.ContainerRegistry/registries/tokens"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "RR-005",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-resource-type",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('RR-005_Effect')]"
+          },
+          "disallowedResourceType": {
+            "value": "Microsoft.ContainerRegistry/registries/scopeMaps"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      }
+    ]
+  }
+}

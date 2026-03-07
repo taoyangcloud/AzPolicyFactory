@@ -1,0 +1,139 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-d-vm",
+    "displayName": "Virtual Machines Policies Dev",
+    "description": "Policy Assignment for Virtual Machines - Dev",
+    "metadata": {
+      "category": "Compute"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-vm",
+    "identity": "SystemAssigned",
+    "parameters": {
+      "VM-001_Effect": {
+        "value": "Audit"
+      },
+      "VM-002_Effect": {
+        "value": "Audit"
+      },
+      "VM-003_Effect": {
+        "value": "Audit"
+      },
+      "VM-004_Effect": {
+        "value": "AuditIfNotExists"
+      },
+      "VM-005_Effect": {
+        "value": "AuditIfNotExists"
+      },
+      "VM-006_Effect": {
+        "value": "AuditIfNotExists"
+      },
+      "VM-007_Effect": {
+        "value": "Audit"
+      },
+      "VM-007_ApprovedExtensions": {
+        "value": [
+          "JsonADDomainExtension",
+          "IaaSAntimalware",
+          "AzureMonitorWindowsAgent",
+          "CustomScriptExtension",
+          "CustomScript",
+          "ConfigurationforWindows",
+          "ConfigurationforLinux",
+          "NetworkWatcherAgentWindows",
+          "VMAccessAgent",
+          "AADLoginForWindows",
+          "MDE.Windows",
+          "LinuxPatchExtension",
+          "WindowsPatchExtension",
+          "Computer.AKS.Linux.Billing",
+          "GuestAttestation"
+        ]
+      },
+      "VM-008_Effect": {
+        "value": "Audit"
+      },
+      "VM-009_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "VM-009_EvaluationDelay": {
+        "value": "PT10M"
+      },
+      "VM-009_RealtimeProtectionEnabled": {
+        "value": "True"
+      },
+      "VM-009_ExclusionsPaths": {
+        "value": ""
+      },
+      "VM-009_ExclusionsExtensions": {
+        "value": ""
+      },
+      "VM-009_ExclusionsProcesses": {
+        "value": ""
+      },
+      "VM-009_ScheduledScanSettingsIsEnabled": {
+        "value": "False"
+      },
+      "VM-009_ScheduledScanSettingsScanType": {
+        "value": "Quick"
+      },
+      "VM-009_ScheduledScanSettingsDay": {
+        "value": "7"
+      },
+      "VM-009_ScheduledScanSettingsTime": {
+        "value": "120"
+      },
+      "VM-009_ListOfImageIdToInclude": {
+        "value": []
+      },
+      "VM-009_ListOfImagePublisherToInclude": {
+        "value": [
+          "center-for-internet-security-inc"
+        ]
+      },
+      "VM-009_ListOfImageOfferToInclude": {
+        "value": [
+          "cis-windows-server-2019-v1-0-0-l1",
+          "cis-windows-server-2019-v1-0-0-l2",
+          "cis-windows-server-2022-l1",
+          "cis-windows-server-2022-l2"
+        ]
+      },
+      "VM-009_ListOfImageSkuToInclude": {
+        "value": [
+          "cis-ws2019-l1",
+          "cis-ws2019-l2",
+          "cis-windows-server-2022-l2",
+          "cis-windows-server-2022-l2-gen2"
+        ]
+      },
+      "VM-010_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "VM-010_EvaluationDelay": {
+        "value": "PT10M"
+      },
+      "VM-010_Time": {
+        "value": "1700"
+      },
+      "VM-010_TimezoneId": {
+        "value": "UTC"
+      },
+      "VM-010_EnableNotification": {
+        "value": "Disabled"
+      },
+      "VM-010_NotificationEmailRecipient": {
+        "value": ""
+      },
+      "VM-010_NotificationWebhookUrl": {
+        "value": ""
+      }
+    },
+    "roleDefinitionIds": [
+      "/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c"
+    ],
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV",
+  "managementGroupId": "CONTOSO-DEV"
+}

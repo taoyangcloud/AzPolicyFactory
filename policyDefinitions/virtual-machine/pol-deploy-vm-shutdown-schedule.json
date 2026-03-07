@@ -1,0 +1,209 @@
+{
+  "name": "pol-deploy-vm-shutdown-schedule",
+  "properties": {
+    "displayName": "Deploy Virtual Machine Auto Shutdown Schedule",
+    "description": "This policy deploys a Auto shutdown schedule for a Virtual Machine.",
+    "metadata": {
+      "category": "Asset Management",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "evaluationDelay": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Evaluation Delay",
+          "description": "Specifies when the existence of the related resources should be evaluated. The delay is only used for evaluations that are a result of a create or update resource request. Allowed values are AfterProvisioning, AfterProvisioningSuccess, AfterProvisioningFailure, or an ISO 8601 duration between 0 and 360 minutes."
+        },
+        "defaultValue": "PT10M"
+      },
+      "time": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Scheduled Shutdown Time",
+          "description": "Daily Scheduled shutdown time. i.e. 2300 = 11:00 PM"
+        },
+        "defaultValue": "1700"
+      },
+      "timeZoneId": {
+        "type": "string",
+        "defaultValue": "UTC",
+        "metadata": {
+          "displayName": "Time zone",
+          "description": "The time zone ID (e.g. Pacific Standard time)."
+        }
+      },
+      "enableNotification": {
+        "type": "string",
+        "defaultValue": "Disabled",
+        "metadata": {
+          "displayName": "Send Notification before auto-shutdown",
+          "description": "If notifications are enabled for this schedule (i.e. Enabled, Disabled)."
+        },
+        "allowedValues": [
+          "Disabled",
+          "Enabled"
+        ]
+      },
+      "notificationEmailRecipient": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+          "displayName": "Email Address",
+          "description": "Email address to be used for notification"
+        }
+      },
+      "notificationWebhookUrl": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+          "displayName": "Webhook URL",
+          "description": "A notification will be posted to the specified webhook endpoint when the auto-shutdown is about to happen."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Compute/virtualMachines"
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.DevTestLab/schedules",
+          "evaluationDelay": "[parameters('evaluationDelay')]",
+          "existenceCondition": {
+            "allOf": [
+              {
+                "field": "Microsoft.DevTestLab/schedules/taskType",
+                "equals": "ComputeVmShutdownTask"
+              },
+              {
+                "field": "Microsoft.DevTestLab/schedules/targetResourceId",
+                "equals": "[concat(resourceGroup().id,'/providers/Microsoft.Compute/virtualMachines/',field('name'))]"
+              }
+            ]
+          },
+          "roleDefinitionIds": [
+            "/providers/microsoft.authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c"
+          ],
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "vmName": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "time": {
+                    "type": "string",
+                    "defaultValue": "",
+                    "metadata": {
+                      "description": "Daily Scheduled shutdown time. i.e. 2300 = 11:00 PM"
+                    }
+                  },
+                  "timeZoneId": {
+                    "type": "string",
+                    "defaultValue": "",
+                    "metadata": {
+                      "description": "The time zone ID (e.g. Pacific Standard time)."
+                    }
+                  },
+                  "enableNotification": {
+                    "type": "string",
+                    "defaultValue": "",
+                    "metadata": {
+                      "description": "If notifications are enabled for this schedule (i.e. Enabled, Disabled)."
+                    }
+                  },
+                  "notificationEmailRecipient": {
+                    "type": "string",
+                    "defaultValue": "",
+                    "metadata": {
+                      "description": "Email address to be used for notification"
+                    }
+                  },
+                  "notificationWebhookUrl": {
+                    "type": "string",
+                    "defaultValue": "",
+                    "metadata": {
+                      "description": "A notification will be posted to the specified webhook endpoint when the auto-shutdown is about to happen."
+                    }
+                  }
+                },
+                "variables": {},
+                "resources": [
+                  {
+                    "name": "[concat('shutdown-computevm-',parameters('vmName'))]",
+                    "type": "Microsoft.DevTestLab/schedules",
+                    "location": "[parameters('location')]",
+                    "apiVersion": "2018-09-15",
+                    "properties": {
+                      "status": "Enabled",
+                      "taskType": "ComputeVmShutdownTask",
+                      "dailyRecurrence": {
+                        "time": "[parameters('time')]"
+                      },
+                      "timeZoneId": "[parameters('timeZoneId')]",
+                      "notificationSettings": {
+                        "status": "[parameters('enableNotification')]",
+                        "timeInMinutes": 30,
+                        "webhookUrl": "[parameters('notificationWebhookUrl')]",
+                        "emailRecipient": "[parameters('notificationEmailRecipient')]",
+                        "notificationLocale": "en"
+                      },
+                      "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+                    }
+                  }
+                ],
+                "outputs": {}
+              },
+              "parameters": {
+                "vmName": {
+                  "value": "[field('name')]"
+                },
+                "location": {
+                  "value": "[field('location')]"
+                },
+                "time": {
+                  "value": "[parameters('time')]"
+                },
+                "timeZoneId": {
+                  "value": "[parameters('timeZoneId')]"
+                },
+                "enableNotification": {
+                  "value": "[parameters('enableNotification')]"
+                },
+                "notificationEmailRecipient": {
+                  "value": "[parameters('notificationEmailRecipient')]"
+                },
+                "notificationWebhookUrl": {
+                  "value": "[parameters('notificationWebhookUrl')]"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

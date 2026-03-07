@@ -1,0 +1,55 @@
+{
+  "name": "pol-deny-ml-public-network-access",
+  "properties": {
+    "displayName": "Azure Machine Learning workspaces should disable public network access",
+    "description": "Disabling public network access improves security by ensuring that the machine learning workspaces aren't exposed on the public internet. You can limit exposure of your workspaces by creating private endpoints instead. Learn more at: https://aka.ms/privateendpoints.",
+    "metadata": {
+      "category": "Network Security",
+      "version": "2.0.0",
+      "preview": false,
+      "deprecated": false,
+      "source_builtIn_name": "438c38d2-3772-465a-a9cc-7a6666a275ce"
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "The desired effect of the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.MachineLearningServices/workspaces"
+          },
+          {
+            "anyOf": [
+              {
+                "field": "Microsoft.MachineLearningServices/workspaces/publicNetworkAccess",
+                "exists": "false"
+              },
+              {
+                "field": "Microsoft.MachineLearningServices/workspaces/publicNetworkAccess",
+                "notEquals": "Disabled"
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "../policyExemption.schema.json",
+  "policyExemption": {
+    "name": "pex-lz-corp-sub-eh-001",
+    "displayName": "Exempt LZ-Corp-Dev Subscription from Event Hub disable local auth restriction",
+    "description": "This is a test exemption for the sub-d-lz-corp-01 subscription.",
+    "metadata": {
+      "requestedBy": "Eric Cartman",
+      "approvedBy": "Bart Simpson",
+      "approvedOn": "2025-10-16",
+      "ticketRef": "INC123124"
+    },
+    "policyAssignmentId": "/providers/Microsoft.Management/managementGroups/CONTOSO-dev/providers/microsoft.authorization/policyassignments/pa-d-eh",
+    "exemptionCategory": "Waiver",
+    "assignmentScopeValidation": "Default",
+    "policyDefinitionReferenceIds": [
+      "EH-001"
+    ],
+    "expiresOn": "2026-12-31T23:59:59Z",
+    "resourceSelectors": [
+      {
+        "name": "AustraliaEast_Region",
+        "selectors": [
+          {
+            "in": [
+              "AustraliaEast"
+            ],
+            "kind": "resourceLocation"
+          }
+        ]
+      }
+    ]
+  },
+  "subscriptionId": "dc2d72b7-a48d-45e8-91cc-81193ecc659b"
+}

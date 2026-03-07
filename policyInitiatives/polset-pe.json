@@ -1,0 +1,121 @@
+{
+  "name": "polset-pe",
+  "properties": {
+    "displayName": "Azure Private Endpoints Policy Initiative",
+    "description": "This policy initiative defines the foundation security requirements for Azure Private Endpoints",
+    "metadata": {
+      "category": "Network",
+      "version": "1.1.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "PE-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "PE-001 Effect: Restrict Private Endpoints for Azure Databricks Browser Authentication",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "PE-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "PE-002 Effect: Restrict Private Endpoints for Azure Monitor Private Link Scope",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "PE-003_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "PE-003 Effect: Restrict Cross-Subscription private endpoints only to allowed Private Link Service IDs",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "PE-003_AllowedCrossSubPrivateLinkResources": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "PE-003: Allowed Cross Subscription Private Link Resource",
+          "description": "List of allowed Private Link Resource aliases or resource IDs."
+        },
+        "defaultValue": []
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.13.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.1"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "PE-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-restrict-pe-group-id",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('PE-001_Effect')]"
+          },
+          "groupId": {
+            "value": "browser_authentication"
+          },
+          "privateLinkServiceResourceType": {
+            "value": "Microsoft.Databricks/workspaces"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "PE-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-restrict-pe-group-id",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('PE-002_Effect')]"
+          },
+          "groupId": {
+            "value": "azuremonitor"
+          },
+          "privateLinkServiceResourceType": {
+            "value": "Microsoft.Insights/privateLinkScopes"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "PE-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-restrict-cross-sub-pe",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('PE-003_Effect')]"
+          },
+          "allowedCrossSubPrivateLinkResources": {
+            "value": "[parameters('PE-003_AllowedCrossSubPrivateLinkResources')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      }
+    ]
+  }
+}

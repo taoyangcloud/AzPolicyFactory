@@ -1,0 +1,21 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-d-rsv",
+    "displayName": "Recovery Services Vault Policies Dev",
+    "description": "Policy Assignment forRecovery Services Vault - Dev",
+    "metadata": {
+      "category": "Recovery Services Vault"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-rsv",
+    "identity": "None",
+    "parameters": {
+      "RSV-001_Effect": {
+        "value": "Audit"
+      }
+    },
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV",
+  "managementGroupId": "CONTOSO-DEV"
+}

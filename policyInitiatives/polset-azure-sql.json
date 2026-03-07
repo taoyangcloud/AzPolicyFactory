@@ -1,0 +1,223 @@
+{
+  "name": "polset-azure-sql",
+  "properties": {
+    "displayName": "Azure SQL Policy Initiative",
+    "description": "This policy initiative defines the security requirements for Azure SQL Databases",
+    "metadata": {
+      "category": "SQL",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "SQL-001_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "SQL-001 Effect: Azure Defender for SQL should be enabled for unprotected Azure SQL servers",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "AuditIfNotExists"
+      },
+      "SQL-002_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "SQL-002 Effect: Azure SQL Database should be running TLS version 1.2 or newer",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Disabled",
+          "Deny"
+        ],
+        "defaultValue": "Deny"
+      },
+      "SQL-003_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "SQL-003 Effect: Private endpoint connections on Azure SQL Database should be enabled",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "SQL-004_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "SQL-004 Effect: Deploy SQL Database Transparent Data Encryption",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "SQL-005_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "SQL-005 Effect: Vulnerability assessment should be enabled on your SQL servers",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "AuditIfNotExists"
+      },
+      "SQL-006_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "SQL-006 Effect: Public network access on Azure SQL Database should be disabled",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "SQL-007_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "SQL-007 Effect: Azure SQL Database should have Azure Active Directory Only Authentication enabled",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.9.4.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.9.4.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.2"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.3"
+      },
+      {
+        "name": "ISO27001-2013_A.12.4.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.4.1"
+      },
+      {
+        "name": "ISO27001-2013_A.10.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.10.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.2.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.2.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.6.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.6.1"
+      },
+      {
+        "name": "CB-AZ-011"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "SQL-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-sql-advanced-data-security",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('SQL-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "SQL-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-deny-sql-server-tls-version",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('SQL-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "SQL-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-sql-server-private-endpoint",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('SQL-003_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.2",
+          "CB-AZ-011"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "SQL-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-sql-tde",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('SQL-004_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "SQL-005",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-sql-vuln-assessment",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('SQL-005_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.2.1",
+          "ISO27001-2013_A.12.6.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "SQL-006",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-deny-sql-server-public-endpoint",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('SQL-006_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "SQL-007",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-deny-sql-server-aad-auth",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('SQL-007_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.9.4.1"
+        ]
+      }
+    ]
+  }
+}

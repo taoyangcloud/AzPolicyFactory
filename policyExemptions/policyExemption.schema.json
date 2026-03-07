@@ -1,0 +1,195 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tyconsulting.com.au/schemas/2025-08-07/policyExemptions.json",
+  "title": "Policy Exemption configuration file schema",
+  "type": "object",
+  "required": [
+    "policyExemption"
+  ],
+  "properties": {
+    "policyExemption": {
+      "$id": "#root/policyExemption",
+      "title": "PolicyExemption",
+      "type": "object",
+      "required": [
+        "name",
+        "displayName",
+        "description",
+        "metadata",
+        "policyAssignmentId",
+        "exemptionCategory",
+        "assignmentScopeValidation"
+      ],
+      "properties": {
+        "name": {
+          "$id": "#root/policyExemption/name",
+          "title": "Name",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "pex-d-abcd"
+          ],
+          "pattern": "^[^\\s#<>%&:\\\\?\\/\\x00-\\x1F\\x7F]([^\\s#<>%&:\\?\\/\\x00-\\x1F\\x7F]*[^\\s#<>%&:\\?\\/\\x00-\\x1F\\x7F. ])?$"
+        },
+        "displayName": {
+          "$id": "#root/policyExemption/displayName",
+          "title": "Displayname",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "Azure Container Registry Policies Exemption"
+          ],
+          "pattern": "^.{1,128}$"
+        },
+        "description": {
+          "$id": "#root/policyExemption/description",
+          "title": "Description",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "Policy Exemption for Azure Container Registry Assignment - Dev"
+          ],
+          "pattern": "^.*$"
+        },
+        "metadata": {
+          "$id": "#root/policyExemption/metadata",
+          "title": "Metadata",
+          "type": "object",
+          "required": [
+            "requestedBy",
+            "approvedBy",
+            "approvedOn",
+            "ticketRef"
+          ],
+          "properties": {
+            "requestedBy": {
+              "$id": "#root/policyExemption/metadata/requestedBy",
+              "title": "Requested By",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "John Doe"
+              ],
+              "pattern": "^.*$"
+            },
+            "approvedBy": {
+              "$id": "#root/policyExemption/metadata/approvedBy",
+              "title": "Approved By",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "Jane Smith"
+              ],
+              "pattern": "^.*$"
+            },
+            "approvedOn": {
+              "$id": "#root/policyExemption/metadata/approvedOn",
+              "title": "Approved On",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "2022-01-01"
+              ],
+              "pattern": "^\\d{4}\\-\\d{2}\\-\\d{2}$"
+            },
+            "ticketRef": {
+              "$id": "#root/policyExemption/metadata/ticketRef",
+              "title": "Ticket Reference",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "INC123456"
+              ],
+              "pattern": "^.*$"
+            }
+          }
+        },
+        "policyAssignmentId": {
+          "$id": "#root/policyExemption/policyAssignmentId",
+          "title": "policyAssignmentId",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "/provider/microsoft.management/managementgroups/mg-name/providers/Microsoft.Authorization/policySetDefinitions/polset-ABC"
+          ],
+          "pattern": "^.*$"
+        },
+        "exemptionCategory": {
+          "$id": "#root/policyExemption/exemptionCategory",
+          "title": "Exemption Category",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "Mitigated",
+            "Waiver"
+          ],
+          "pattern": "^Mitigated$|^Waiver$"
+        },
+        "assignmentScopeValidation": {
+          "$id": "#root/policyExemption/assignmentScopeValidation",
+          "title": "Assignment Scope Validation",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "Default",
+            "DoNotValidate"
+          ],
+          "pattern": "^Default$|^DoNotValidate$"
+        },
+        "expiresOn": {
+          "$id": "#root/policyExemption/expiresOn",
+          "title": "Expires On",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "2026-01-01T23:59:59Z"
+          ],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        }
+      },
+      "policyDefinitionReferenceIds": {
+        "$id": "#root/policyExemption/policyDefinitionReferenceIds",
+        "title": "Policy Definition Reference IDs",
+        "type": "array",
+        "default": []
+      },
+      "resourceSelectors": {
+        "$id": "#root/policyExemption/resourceSelectors",
+        "title": "Resource Selectors",
+        "type": "array",
+        "default": []
+      }
+    },
+    "managementGroupId": {
+      "$id": "#root/managementGroupId",
+      "title": "Managementgroupid",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "MG-NAME"
+      ],
+      "pattern": "^[a-zA-Z0-9]([a-zA-Z0-9\\-_.()]{0,88}[a-zA-Z0-9\\-_()])?$"
+    },
+    "resourceGroupName": {
+      "$id": "#root/resourceGroupName",
+      "title": "Resourcegroupname",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "RG-NAME"
+      ],
+      "pattern": "^[-\\w\\._\\(\\)]+$"
+    },
+    "subscriptionId": {
+      "$id": "#root/subscriptionId",
+      "title": "Subscriptionid",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "90863086-7946-46cd-9a80-76510251fc19"
+      ],
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    }
+  }
+}

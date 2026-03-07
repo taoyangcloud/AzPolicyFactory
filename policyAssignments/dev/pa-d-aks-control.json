@@ -1,0 +1,73 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-d-aks-control",
+    "displayName": "Azure Kubernetes Service Control Plane Policies Dev",
+    "description": "Policy Assignment for Azure Kubernetes Service Control Plane - Dev",
+    "metadata": {
+      "category": "Kubernetes"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-aks-control",
+    "identity": "SystemAssigned",
+    "parameters": {
+      "AKSC-001_Effect": {
+        "value": "Deny"
+      },
+      "AKSC-002_Effect": {
+        "value": "Deny"
+      },
+      "AKSC-003_Effect": {
+        "value": "Audit"
+      },
+      "AKSC-004_Effect": {
+        "value": "AuditIfNotExists"
+      },
+      "AKSC-005_Effect": {
+        "value": "Deny"
+      },
+      "AKSC-006_Effect": {
+        "value": "Deny"
+      },
+      "AKSC-007_Effect": {
+        "value": "Deny"
+      },
+      "AKSC-008_Effect": {
+        "value": "Audit"
+      },
+      "AKSC-009_Effect": {
+        "value": "Deny"
+      },
+      "AKSC-10_Effect": {
+        "value": "Deny"
+      },
+      "AKSC-11_Effect": {
+        "value": "Deny"
+      },
+      "AKSC-12_Effect": {
+        "value": "Audit"
+      },
+      "AKSC-12_enableDiskCSI": {
+        "value": "true"
+      },
+      "AKSC-12_enableFileCSI": {
+        "value": "true"
+      },
+      "AKSC-12_enableSnapshotCSI": {
+        "value": "true"
+      },
+      "AKSC-13_Effect": {
+        "value": "Deny"
+      }
+    },
+    "roleDefinitionIds": [
+      "/providers/Microsoft.Authorization/roleDefinitions/ed7f3fbd-7b88-4dd4-9017-9adb7ce333f8",
+      "/providers/Microsoft.Authorization/roleDefinitions/18ed5180-3e48-46fd-8541-4ea054d57064"
+    ],
+    "nonComplianceMessages": [],
+    "notScopes": [
+      "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV-Sandbox"
+    ]
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV",
+  "managementGroupId": "CONTOSO-DEV"
+}

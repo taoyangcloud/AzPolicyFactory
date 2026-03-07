@@ -1,0 +1,21 @@
+variables:
+  - name: defaultAgentPoolName
+    value: "ubuntu-latest"
+  - name: ado-prodPolicyServiceConnection
+    value: "mg-prod-root-owner"
+  - name: ado-devPolicyServiceConnection
+    value: "mg-dev-root-owner"
+  - name: default-region
+    value: "australiaeast"
+  - name: prodManagementGroup
+    value: "CONTOSO"
+  - name: devManagementGroup
+    value: "CONTOSO-DEV"
+  - name: prodEnv
+    value: prod
+  - name: devEnv
+    value: dev
+  - name: preferredBicepCliVersion
+    value: 0.40.2
+  - name: whatIfValidationMaxRetry # Number of retries for what-if validation, valid values are 3-10
+    value: 4

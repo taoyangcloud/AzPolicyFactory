@@ -1,0 +1,93 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-p-tags",
+    "displayName": "Tagging Policies Prod",
+    "description": "Policy Assignment for Azure tagging policies - Prod",
+    "metadata": {
+      "category": "Tags"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-tags",
+    "identity": "SystemAssigned",
+    "parameters": {
+      "TAG-001_Effect": {
+        "value": "Deny"
+      },
+      "TAG-002_Effect": {
+        "value": "Deny"
+      },
+      "TAG-003_Effect": {
+        "value": "Deny"
+      },
+      "TAG-004_Effect": {
+        "value": "Deny"
+      },
+      "TAG-005_Effect": {
+        "value": "Modify"
+      },
+      "TAG-006_Effect": {
+        "value": "Modify"
+      },
+      "TAG-007_Effect": {
+        "value": "Modify"
+      },
+      "TAG-008_Effect": {
+        "value": "Modify"
+      },
+      "TAG-009_Effect": {
+        "value": "Modify"
+      },
+      "TAG-010_Effect": {
+        "value": "Modify"
+      },
+      "TAG-011_Effect": {
+        "value": "Modify"
+      },
+      "TAG-012_Effect": {
+        "value": "Modify"
+      },
+      "TAG-013_Effect": {
+        "value": "Deny"
+      },
+      "TAG-014_Effect": {
+        "value": "Deny"
+      },
+      "TAG-015_Effect": {
+        "value": "Deny"
+      },
+      "TAG-016_Effect": {
+        "value": "Deny"
+      },
+      "TAG-017_Effect": {
+        "value": "Deny"
+      },
+      "TAG-018_Effect": {
+        "value": "Modify"
+      },
+      "TAG-019_Effect": {
+        "value": "Modify"
+      },
+      "TAG-dataclass_allowedTagValues": {
+        "value": [
+          "official",
+          "sensitive",
+          "protected"
+        ]
+      },
+      "TAG-environment_allowedTagValues": {
+        "value": [
+          "prod",
+          "dev",
+          "test",
+          "staging"
+        ]
+      }
+    },
+    "roleDefinitionIds": [
+      "/providers/microsoft.authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f"
+    ],
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO"
+}

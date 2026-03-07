@@ -1,0 +1,55 @@
+parameters:
+- name: psRepositoryName
+  displayName: "PSRepository Name"
+  type: string
+  default: PSGallery
+
+- name: installPSModuleScriptPath
+  displayName: "PS module installation Script Path"
+  type: string
+  default: "scripts/pipelines/pipeline-install-moduleFromRepo.ps1"
+
+- name: moduleNames
+  displayName: "Module Names to Install (comma , separated)"
+  type: string
+  default: "Az.ResourceGraph"
+
+- name: allowPrerelease
+  displayName: "Whether pre-release module versions are allowed"
+  type: boolean
+  default: false
+
+- name: powershellCore
+  displayName: "Run on Powershell Core"
+  type: boolean
+  default: true
+
+- name: maxRetry
+  displayName: "Maximum retry attempt for the PowerShell module installation"
+  type: number
+  default: 3
+
+- name: shouldInstall
+  displayName: "Should Install"
+  type: boolean
+  default: true
+
+- name: displayName
+  displayName: "Display Name"
+  type: string
+  default: "Install module"
+
+steps:
+- task: PowerShell@2
+  displayName: "${{parameters.displayName}}"
+  condition: and(succeeded(), eq(${{ parameters.shouldInstall }}, true))
+  inputs:
+    targetType: "filePath"
+    pwsh: ${{parameters.powershellCore}}
+    filePath: ${{ parameters.installPSModuleScriptPath }}
+    arguments:
+      -modules ${{ parameters.moduleNames }} `
+      -repoName '${{ parameters.psRepositoryName }}' `
+      -maxRetry ${{ parameters.maxRetry }} `
+      -allowPrerelease '${{ parameters.allowPrerelease }}'
+

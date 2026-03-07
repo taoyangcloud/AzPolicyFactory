@@ -1,0 +1,30 @@
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger: none
+
+stages:
+  - stage: code_validation
+    displayName: "Code Validation"
+    jobs:
+      - job: github_super_linter
+        displayName: "GitHub Super-Linter"
+        steps:
+        - script: |
+            docker run --rm --pull=missing \
+              -w /tmp/lint \
+              -e RUN_LOCAL=true \
+              -e DEFAULT_BRANCH=main \
+              -e VALIDATE_ALL_CODEBASE=true \
+              -e FILTER_REGEX_EXCLUDE='(bin/|obj/|\.vs/|node_modules/|\.vscode/)' \
+              -e LOG_LEVEL=ERROR \
+              -e USE_FIND_ALGORITHM=true \
+              -e VALIDATE_KUBERNETES_KUBECONFORM=false \
+              -e VALIDATE_JSCPD=false \
+              -e VALIDATE_ARM=false \
+              -e VALIDATE_BIOME_LINT=false \
+              -e VALIDATE_BIOME_FORMAT=false \
+              -e IGNORE_GITIGNORED_FILES=true \
+              -v $(System.DefaultWorkingDirectory):/tmp/lint \
+              github/super-linter
+          displayName: 'GitHub Super-Linter Code Scan'
+

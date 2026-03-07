@@ -1,0 +1,35 @@
+{
+  "$schema": "../policyExemption.schema.json",
+  "policyExemption": {
+    "name": "pex-lz-corp-sub-rr-003",
+    "displayName": "Exempt LZ-Corp Subscription from Azure Data Factory Resource Restriction",
+    "description": "This is a test exemption for the sub-p-lz-online-01 subscription.",
+    "metadata": {
+      "requestedBy": "Eric Cartman",
+      "approvedBy": "Bart Simpson",
+      "approvedOn": "2025-02-01",
+      "ticketRef": "INC234567"
+    },
+    "policyAssignmentId": "/providers/Microsoft.Management/managementGroups/CONTOSO/providers/microsoft.authorization/policyassignments/pa-p-res-restriction",
+    "exemptionCategory": "Waiver",
+    "assignmentScopeValidation": "Default",
+    "policyDefinitionReferenceIds": [
+      "RR-003"
+    ],
+    "expiresOn": "2026-02-28T23:59:59Z",
+    "resourceSelectors": [
+      {
+        "name": "AustraliaEast_Region",
+        "selectors": [
+          {
+            "in": [
+              "AustraliaEast"
+            ],
+            "kind": "resourceLocation"
+          }
+        ]
+      }
+    ]
+  },
+  "subscriptionId": "0f1b7d98-c832-4d46-8a29-a0c63d54a2fa"
+}

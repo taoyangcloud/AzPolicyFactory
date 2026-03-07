@@ -1,0 +1,217 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "identity": "SystemAssigned",
+    "name": "pa-d-diag-settings",
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-diag-settings",
+    "displayName": "Diagnostics Settings Policies Dev",
+    "description": "Policy Assignment for Diagnostic Settings - Dev",
+    "metadata": {
+      "category": "Logging and Monitoring"
+    },
+    "parameters": {
+      "profileName": {
+        "value": "setByPolicyLAW"
+      },
+      "evaluationDelay": {
+        "value": "AfterProvisioning"
+      },
+      "logAnalytics": {
+        "value": "/subscriptions/f27ab1cb-9c1a-4bdb-9e18-bb11ec9205db/resourcegroups/rg-ae-d-monitor/providers/microsoft.operationalinsights/workspaces/law-ae-d-mgmt-01"
+      },
+      "DS-001_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-002_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-003_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-004_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-005_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-006_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-007_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-008_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-009_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-010_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-011_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-012_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-013_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-014_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-015_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-016_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-017_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-018_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-019_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-020_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-021_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-022_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-023_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-024_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-025_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-026_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-027_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-028_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-029_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-030_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-031_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-032_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-033_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-034_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-035_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-036_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-037_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-038_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-039_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-040_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-041_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-042_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-043_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-044_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-045_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-046_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-047_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-048_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-049_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-050_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-051_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-052_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-053_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-054_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-055_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-056_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-057_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-058_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-059_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-060_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-061_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "DS-062_Effect": {
+        "value": "DeployIfNotExists"
+      }
+    },
+    "roleDefinitionIds": [
+      "/providers/microsoft.authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa",
+      "/providers/microsoft.authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293"
+    ],
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV",
+  "managementGroupId": "CONTOSO-DEV"
+}

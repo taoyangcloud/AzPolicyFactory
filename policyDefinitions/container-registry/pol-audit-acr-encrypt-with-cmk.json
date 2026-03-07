@@ -1,0 +1,47 @@
+{
+  "name": "pol-audit-acr-encrypt-with-cmk",
+  "properties": {
+    "displayName": "Container registries should be encrypted with a customer-managed key",
+    "description": "Use customer-managed keys to manage the encryption at rest of the contents of your registries. By default, the data is encrypted at rest with service-managed keys, but customer-managed keys are commonly required to meet regulatory compliance standards. Customer-managed keys enable the data to be encrypted with an Azure Key Vault key created and owned by you. You have full control and responsibility for the key lifecycle, including rotation and management.",
+    "metadata": {
+      "category": "Network Security",
+      "version": "1.1.2",
+      "preview": false,
+      "deprecated": false,
+      "source_builtIn_name": "5b9159ae-1701-4a6f-9a7a-aa9c8ddd0580"
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "string",
+        "defaultValue": "Audit",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.ContainerRegistry/registries"
+          },
+          {
+            "field": "Microsoft.ContainerRegistry/registries/encryption.status",
+            "notEquals": "enabled"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

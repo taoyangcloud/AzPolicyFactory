@@ -1,0 +1,97 @@
+{
+  "name": "pol-restrict-pe-group-id",
+  "properties": {
+    "displayName": "Restrict Use of Specific Group Id in Private Endpoints",
+    "mode": "Indexed",
+    "description": "This policy deny's the use of specific Group Id in Private Endpoints",
+    "metadata": {
+      "category": "Network Security",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "version": "1.0.0",
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "groupId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Group Id",
+          "description": "Disallowed Group Id in Private Endpoints"
+        }
+      },
+      "privateLinkServiceResourceType": {
+        "metadata": {
+          "displayName": "Private Link Service Resource Type",
+          "description": "The resource type of the private link service"
+        },
+        "type": "String"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/privateEndpoints"
+          },
+          {
+            "anyOf": [
+              {
+                "count": {
+                  "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*]",
+                  "where": {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId",
+                        "contains": "[parameters('privateLinkServiceResourceType')]"
+                      },
+                      {
+                        "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
+                        "equals": "[parameters('groupId')]"
+                      }
+                    ]
+                  }
+                },
+                "greaterOrEquals": 1
+              },
+              {
+                "count": {
+                  "field": "Microsoft.Network/privateEndpoints/manualPrivateLinkServiceConnections[*]",
+                  "where": {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Network/privateEndpoints/manualPrivateLinkServiceConnections[*].privateLinkServiceId",
+                        "contains": "[parameters('privateLinkServiceResourceType')]"
+                      },
+                      {
+                        "field": "Microsoft.Network/privateEndpoints/manualPrivateLinkServiceConnections[*].groupIds[*]",
+                        "equals": "[parameters('groupId')]"
+                      }
+                    ]
+                  }
+                },
+                "greaterOrEquals": 1
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

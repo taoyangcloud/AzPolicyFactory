@@ -1,0 +1,273 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tyconsulting.com.au/schemas/2025-08-07/policyAssignments.json",
+  "title": "Policy Assignment configuration file schema",
+  "type": "object",
+  "required": [
+    "policyAssignment"
+  ],
+  "properties": {
+    "policyAssignment": {
+      "$id": "#root/policyAssignment",
+      "title": "Policyassignment",
+      "type": "object",
+      "required": [
+        "name",
+        "displayName",
+        "description",
+        "metadata",
+        "policyDefinitionId",
+        "parameters",
+        "nonComplianceMessages"
+      ],
+      "properties": {
+        "name": {
+          "$id": "#root/policyAssignment/name",
+          "title": "Name",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "pa-d-abcd"
+          ],
+          "pattern": "^[^\\s#<>%&:\\\\?\\/\\x00-\\x1F\\x7F]([^\\s#<>%&:\\?\\/\\x00-\\x1F\\x7F]*[^\\s#<>%&:\\?\\/\\x00-\\x1F\\x7F. ])?$"
+        },
+        "displayName": {
+          "$id": "#root/policyAssignment/displayName",
+          "title": "Displayname",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "Azure Container Registry Policies Dev"
+          ],
+          "pattern": "^.{1,128}$"
+        },
+        "description": {
+          "$id": "#root/policyAssignment/description",
+          "title": "Description",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "Policy Assignment for Azure Container Registry - Dev"
+          ],
+          "pattern": "^.*$"
+        },
+        "metadata": {
+          "$id": "#root/policyAssignment/metadata",
+          "title": "Metadata",
+          "type": "object",
+          "required": [
+            "category"
+          ],
+          "properties": {
+            "category": {
+              "$id": "#root/policyAssignment/metadata/category",
+              "title": "Category",
+              "type": "string",
+              "default": "",
+              "examples": [
+                "Azure Container Registry"
+              ],
+              "pattern": "^.*$"
+            }
+          }
+        },
+        "policyDefinitionId": {
+          "$id": "#root/policyAssignment/policyDefinitionId",
+          "title": "Policydefinitionid",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-ABC"
+          ],
+          "pattern": "^.*$"
+        },
+        "definitionVersion": {
+          "$id": "#root/policyAssignment/definitionVersion",
+          "title": "Definitionversion`",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "1.0.0"
+          ],
+          "pattern": "^.*$"
+        },
+        "identity": {
+          "$id": "#root/policyAssignment/identity",
+          "title": "Identity",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "None",
+            "SystemAssigned",
+            "UserAssigned",
+            ""
+          ],
+          "pattern": "None|SystemAssigned|UserAssigned|^$"
+        },
+        "userAssignedIdentityId": {
+          "$id": "#root/policyAssignment/userAssignedIdentityId",
+          "title": "Userassignedidentityid",
+          "type": "string",
+          "default": "",
+          "examples": [
+            "/subscriptions/90863086-7946-46cd-9a80-76510251fc19/resourceGroups/rg-name/providers/Microsoft.ManagedIdentity/userAssignedIdentities/identity-1"
+          ],
+          "pattern": "^.*$"
+        }
+      },
+      "parameters": {
+        "$id": "#root/policyAssignment/parameters",
+        "title": "Parameters",
+        "type": "object",
+        "default": {}
+      },
+      "nonComplianceMessages": {
+        "$id": "#root/policyAssignment/nonComplianceMessages",
+        "title": "Noncompliancemessages",
+        "type": "array",
+        "default": []
+      },
+      "notScopes": {
+        "$id": "#root/policyAssignment/notScopes",
+        "title": "Notscopes",
+        "type": "array",
+        "default": []
+      },
+      "overrides": {
+        "$id": "#root/policyAssignment/overrides",
+        "title": "Overrides",
+        "type": "array",
+        "default": []
+      },
+      "resourceSelectors": {
+        "$id": "#root/policyAssignment/resourceSelectors",
+        "title": "Resourceselectors",
+        "type": "array",
+        "default": []
+      },
+      "roleDefinitionIds": {
+        "$id": "#root/policyAssignment/roleDefinitionIds",
+        "title": "Roledefinitionids",
+        "type": "array",
+        "default": []
+      }
+    },
+    "definitionSourceManagementGroupId": {
+      "$id": "#root/definitionSourceManagementGroupId",
+      "title": "Definitionsourcemanagementgroupid",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "/providers/Microsoft.Management/managementGroups/MG-NAME"
+      ],
+      "pattern": "^/providers/Microsoft.Management/managementGroups/[a-zA-Z0-9]([a-zA-Z0-9\\-_.()]{0,88}[a-zA-Z0-9\\-_()])?$"
+    },
+    "managementGroupId": {
+      "$id": "#root/managementGroupId",
+      "title": "Managementgroupid",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "MG-NAME"
+      ],
+      "pattern": "^[a-zA-Z0-9]([a-zA-Z0-9\\-_.()]{0,88}[a-zA-Z0-9\\-_()])?$"
+    },
+    "resourceGroupName": {
+      "$id": "#root/resourceGroupName",
+      "title": "Resourcegroupname",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "RG-NAME"
+      ],
+      "pattern": "^[-\\w\\._\\(\\)]+$"
+    },
+    "subscriptionId": {
+      "$id": "#root/subscriptionId",
+      "title": "Subscriptionid",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "90863086-7946-46cd-9a80-76510251fc19"
+      ],
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "additionalRoleAssignments": {
+      "$id": "#root/additionalRoleAssignments",
+      "title": "Additionalroleassignments",
+      "type": "array",
+      "default": [],
+      "items": {
+        "$id": "#root/additionalRoleAssignments/items",
+        "title": "Additionalroleassignmentsitems",
+        "type": "object",
+        "required": [
+          "roleDefinitionIdOrName"
+        ],
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "$id": "#root/additionalRoleAssignments/items/roleDefinitionIdOrName",
+            "title": "Additionalroleassignmentsitemsroledefinitionidorname",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "/providers/Microsoft.Authorization/roleDefinitions/0511fda2-b017-41e2-ac99-255ffe8bbf4d"
+            ],
+            "pattern": "^.*$"
+          },
+          "description": {
+            "$id": "#root/additionalRoleAssignments/items/description",
+            "title": "Additionalroleassignmentsitemsdescription",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Role Assignment description"
+            ],
+            "pattern": "^.*$"
+          },
+          "managementGroupId": {
+            "$id": "#root/additionalRoleAssignments/items/managementGroupId",
+            "title": "Additionalroleassignmentsitemsmanagementgroupid",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "MG-NAME"
+            ],
+            "pattern": "^[a-zA-Z0-9]([a-zA-Z0-9\\-_.()]{0,88}[a-zA-Z0-9\\-_()])?$"
+          },
+          "resourceGroupName": {
+            "$id": "#root/additionalRoleAssignments/items/resourceGroupName",
+            "title": "Additionalroleassignmentsitemsresourcegroupname",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "RG-NAME"
+            ],
+            "pattern": "^[-\\w\\._\\(\\)]+$"
+          },
+          "subscriptionId": {
+            "$id": "#root/additionalRoleAssignments/items/subscriptionId",
+            "title": "Additionalroleassignmentsitemssubscriptionid",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "90863086-7946-46cd-9a80-76510251fc19"
+            ],
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+          },
+          "condition": {
+            "$id": "#root/additionalRoleAssignments/items/condition",
+            "title": "Additionalroleassignmentsitemscondition",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Role Assignment condition"
+            ],
+            "pattern": "^.*$"
+          }
+        }
+      }
+    }
+  }
+}

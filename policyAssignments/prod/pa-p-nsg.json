@@ -1,0 +1,57 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-p-nsg",
+    "displayName": "Network Security Group Policies Prod",
+    "description": "Policy Assignment for Network Security Group - Prod",
+    "metadata": {
+      "category": "Network Security Group"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-nsg",
+    "identity": "None",
+    "parameters": {
+      "NSG-001_Effect": {
+        "value": "AuditIfNotExists"
+      },
+      "NSG-001_ResourceGroupName": {
+        "value": "NetworkWatcherRG"
+      },
+      "NSG-002_Effect": {
+        "value": "AuditIfNotExists"
+      },
+      "NSG-003_Effect": {
+        "value": "Deny"
+      },
+      "NSG-003_AllowedServiceTags": {
+        "value": [
+          "VirtualNetwork",
+          "AzureLoadBalancer",
+          "Internet",
+          "GatewayManager",
+          "ApplicationInsightsAvailability",
+          "*"
+        ]
+      },
+      "NSG-004_Effect": {
+        "value": "Deny"
+      },
+      "NSG-004_AllowedServiceTags": {
+        "value": [
+          "VirtualNetwork",
+          "AzureLoadBalancer",
+          "AzureCloud.australiaeast",
+          "Internet",
+          "AzureCloud",
+          "AzureDatabricks",
+          "Sql",
+          "Storage",
+          "EventHub",
+          "*"
+        ]
+      }
+    },
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO"
+}

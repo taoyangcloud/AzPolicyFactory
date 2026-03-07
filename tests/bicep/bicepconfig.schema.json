@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "moduleAliases": {
+      "type": "object",
+      "properties": {
+        "ts": {
+          "type": "object"
+        },
+        "br": {
+          "type": "object"
+        }
+      }
+    },
+    "analyzers": {
+      "type": "object",
+      "properties": {
+        "core": {
+          "type": "object",
+          "properties": {
+            "verbose": {
+              "type": "boolean"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "rules": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "verbose",
+            "enabled",
+            "rules"
+          ]
+        }
+      },
+      "required": [
+        "core"
+      ]
+    }
+  },
+  "required": [
+    "analyzers"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-p-vml",
+    "displayName": "Verified Module Library Policies Prod",
+    "description": "Policy Assignment for Verified Module Library - Prod",
+    "metadata": {
+      "category": "VML"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-vml",
+    "identity": "None",
+    "parameters": {
+      "VML-001_Effect": {
+        "value": "Deny"
+      }
+    },
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO"
+}

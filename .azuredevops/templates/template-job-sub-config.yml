@@ -1,0 +1,52 @@
+parameters:
+- name: topManagementGroup
+  displayName: "Top Management Group name"
+  type: string
+
+- name: configScriptPath
+  displayName: "Subscription Configuration Script Path"
+  type: string
+  default: "scripts/pipelines/pipeline-subs-config.ps1"
+
+- name: azureServiceConnection
+  displayName: "Name of the Azure Service Connection"
+  type: string
+
+- name: poolName
+  displayName: "Self Hosted Agent Pool Name"
+  type: string
+  default: ""
+
+- name: vmImage
+  displayName: "MS Hosted Agent VM Inage Name"
+  type: string
+  default: ""
+
+- name: environment
+  displayName: Environment
+  type: string
+
+jobs:
+- deployment: sub_config
+  displayName: "Subscription Configurations for ${{parameters.environment}}"
+  environment: "${{parameters.environment}}"
+  pool:
+    ${{ if ne(parameters.vmImage, '') }}:
+      vmImage: ${{ parameters.vmImage }}
+    ${{ if ne(parameters.poolName, '') }}:
+      name: ${{ parameters.poolName }}
+  strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+              fetchDepth: 0
+              displayName: Execute Post Deployment Script
+              inputs:
+                azureSubscription: "${{parameters.azureServiceConnection}}"
+                pwsh: true
+                azurePowerShellVersion: latestVersion
+                scriptType: filePath
+                scriptPath: ${{ parameters.configScriptPath }}
+                scriptArguments:
+                  -topManagementGroup '${{parameters.topManagementGroup}}'

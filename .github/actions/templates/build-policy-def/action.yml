@@ -1,0 +1,63 @@
+name: "Build Policy Definition Bicep Template"
+description: "Builds a Bicep template for Azure Policy Definitions by processing policy definition JSON files"
+author: "Tao Yang"
+
+inputs:
+  definition-file-path:
+    description: "Policy Definition Path"
+    required: true
+
+  definition-file-exclude-path:
+    description: "Policy Definition Excluded Paths"
+    required: false
+    default: ""
+
+  template-file-directory:
+    description: "Bicep Template Directory Path"
+    required: true
+
+  bicep-file-path:
+    description: "Bicep File Path"
+    required: true
+
+  bicep-variable-name:
+    description: "Bicep Variable Name"
+    required: false
+    default: "policyDefinitions"
+
+  build-artifact-name:
+    description: "Build Artifact Name"
+    required: true
+
+outputs:
+  artifact-name:
+    description: "The name of the published build artifact"
+    value: ${{ inputs.build-artifact-name }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build Bicep Template
+      id: buildBicep
+      shell: pwsh
+      run: |
+        #Build Bicep Template
+        Write-Output '::group::Build Bicep Template'
+        $scriptPath = "${{ github.workspace }}/scripts/pipelines/pipeline-set-policy-resource-bicep-template-file.ps1"
+        & $scriptPath `
+          -bicepFilePath '${{ inputs.bicep-file-path }}' `
+          -bicepVariableName '${{ inputs.bicep-variable-name }}' `
+          -resourceFileFolder '${{ inputs.definition-file-path }}' `
+          -excludePath '${{ inputs.definition-file-exclude-path }}' `
+          -outputDir '${{ inputs.template-file-directory }}' `
+          -artifactName '${{ inputs.build-artifact-name }}' `
+          -updateBicepFileName 'main.bicep'
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        Write-Output '::endgroup::'
+
+    - name: Upload Bicep Template Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: "${{ inputs.build-artifact-name }}"
+        path: "${{ inputs.template-file-directory }}/${{ inputs.build-artifact-name }}"
+        if-no-files-found: error

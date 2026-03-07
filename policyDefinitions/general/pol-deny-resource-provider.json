@@ -1,0 +1,45 @@
+{
+  "name": "pol-deny-resource-provider",
+  "properties": {
+    "displayName": "Deny Resource Provider",
+    "description": "This policy enables you to restrict all resources from a specific resource provider from being created.",
+    "metadata": {
+      "category": "Asset Management",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "mode": "All",
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "disallowedResourceProvider": {
+        "type": "string",
+        "metadata": {
+          "description": "The resource provider that is prohibited to be deployed.",
+          "displayName": "Disallowed Resource Provider"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "like": "[concat(parameters('disallowedResourceProvider'),'/*')]"
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

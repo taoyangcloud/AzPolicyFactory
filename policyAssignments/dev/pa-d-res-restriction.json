@@ -1,0 +1,57 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-d-res-restriction",
+    "displayName": "Disallowed Resources Types Dev",
+    "description": "Policy Assignment for restricting disallowed resource types - Dev",
+    "metadata": {
+      "category": "Asset Management"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-resource-restriction",
+    "identity": "None",
+    "parameters": {
+      "RR-001_Effect": {
+        "value": "Deny"
+      },
+      "RR-002_Effect": {
+        "value": "Deny"
+      },
+      "RR-003_Effect": {
+        "value": "Deny"
+      },
+      "RR-004_Effect": {
+        "value": "Deny"
+      },
+      "RR-005_Effect": {
+        "value": "Deny"
+      }
+    },
+    "notScopes": [
+      "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV-Platform-Management"
+    ],
+    "nonComplianceMessages": [
+      {
+        "policyDefinitionReferenceId": "RR-001",
+        "message": "The resource type 'Microsoft.Cache/RedisEnterprise' is not allowed."
+      },
+      {
+        "policyDefinitionReferenceId": "RR-002",
+        "message": "The resource type 'Microsoft.PowerBI/workspaceCollections' is not allowed."
+      },
+      {
+        "policyDefinitionReferenceId": "RR-003",
+        "message": "The resource type 'Microsoft.DataFactory/factories' is not allowed."
+      },
+      {
+        "policyDefinitionReferenceId": "RR-004",
+        "message": "The resource type 'Microsoft.ContainerRegistry/registries/tokens' is not allowed."
+      },
+      {
+        "policyDefinitionReferenceId": "RR-005",
+        "message": "The resource type 'Microsoft.ContainerRegistry/registries/scopeMaps' is not allowed."
+      }
+    ]
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV",
+  "managementGroupId": "CONTOSO-DEV"
+}

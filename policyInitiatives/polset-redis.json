@@ -1,0 +1,114 @@
+{
+  "name": "polset-redis",
+  "properties": {
+    "displayName": "Azure Cache for Redis Policy Initiative",
+    "description": "This policy initiative defines the foundation security requirements for Azure Cache for Redis",
+    "metadata": {
+      "category": "Cache for Redis",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "REDIS-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "REDIS-001 Effect: Only secure connections to your Azure Cache for Redis should be enabled",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "REDIS-002_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "REDIS-002 Effect: Azure Cache for Redis should use private link",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "AuditIfNotExists"
+      },
+      "REDIS-003_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "REDIS-003 Effect: Azure Cache for Redis should disable public network access",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.10.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.10.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.3"
+      },
+      {
+        "name": "ISO27001-2013_A.14.2.5",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.14.2.5"
+      },
+      {
+        "name": "CB-AZ-011"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "REDIS-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-deny-redis-enable-only-secure-connections",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('REDIS-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.14.2.5",
+          "ISO27001-2013_A.10.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "REDIS-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-redis-configure-private-endpoints",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('REDIS-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1",
+          "CB-AZ-011"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "REDIS-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-deny-redis-disable-public-network-access",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('REDIS-003_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3"
+        ]
+      }
+    ]
+  }
+}

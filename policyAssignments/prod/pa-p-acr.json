@@ -1,0 +1,28 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-p-acr",
+    "displayName": "Azure Container Registry Policies Prod",
+    "description": "Policy Assignment for Azure Container Registry - Prod",
+    "metadata": {
+      "category": "Azure Container Registry"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-acr",
+    "identity": "None",
+    "parameters": {
+      "ACR-001_Effect": {
+        "value": "Audit"
+      },
+      "ACR-002_Effect": {
+        "value": "Audit"
+      },
+      "ACR-003_Effect": {
+        "value": "Audit"
+      }
+    },
+    "nonComplianceMessages": [],
+    "roleDefinitionIds": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO"
+}

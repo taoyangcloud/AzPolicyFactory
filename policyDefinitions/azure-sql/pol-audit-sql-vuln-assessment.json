@@ -1,0 +1,63 @@
+{
+  "name": "pol-audit-sql-vuln-assessment",
+  "properties": {
+    "displayName": "Vulnerability assessment should be enabled on your SQL servers",
+    "description": "Audit Azure SQL servers which do not have recurring vulnerability assessment scans enabled. Vulnerability assessment can discover, track, and help you remediate potential database vulnerabilities.",
+    "metadata": {
+      "category": "Application and Database security",
+      "version": "2.0.0",
+      "preview": false,
+      "deprecated": false,
+      "source_builtIn_name": "ef2a8f2a-b3d9-49cd-a8a8-9a3aaaf647d9"
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "AuditIfNotExists"
+      },
+      "evaluationDelay": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Evaluation Delay",
+          "description": "Specifies when the existence of the related resources should be evaluated. The delay is only used for evaluations that are a result of a create or update resource request. Allowed values are AfterProvisioning, AfterProvisioningSuccess, AfterProvisioningFailure, or an ISO 8601 duration between 0 and 360 minutes."
+        },
+        "defaultValue": "AfterProvisioning"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Sql/servers"
+          },
+          {
+            "field": "kind",
+            "notContains": "analytics"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
+          "evaluationDelay": "[parameters('evaluationDelay')]",
+          "name": "default",
+          "existenceCondition": {
+            "field": "Microsoft.Sql/servers/vulnerabilityAssessments/recurringScans.isEnabled",
+            "equals": "True"
+          }
+        }
+      }
+    }
+  }
+}

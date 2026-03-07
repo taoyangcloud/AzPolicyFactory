@@ -1,0 +1,89 @@
+name: "Validate Policy Assignment and Exemption Config Syntax"
+description: "Validates the syntax of Policy Assignment and Exemption configuration files using Pester tests against a JSON schema"
+author: "Tao Yang"
+
+inputs:
+  config-artifact-name:
+    description: "Artifact Name of Configuration Files (Optional). When provided, the artifact is downloaded and copied into the config directory before validation."
+    required: false
+    default: ""
+
+  config-file-directory:
+    description: "Directory for Configuration Files (Optional). Used as the target when copying downloaded artifact files."
+    required: false
+    default: ""
+
+  config-schema-file-path:
+    description: "Path to Configuration JSON Schema File"
+    required: true
+
+  test-script-path:
+    description: "Path to Test Script"
+    required: true
+
+  output-file-prefix:
+    description: "Output File Prefix for NUnit XML test results"
+    required: true
+
+  test-run-title:
+    description: "Test Run Title"
+    required: true
+
+  exclude-tags:
+    description: "Pester test tags to exclude, use comma to separate values"
+    required: false
+    default: ""
+
+  skip-passed-tests-report:
+    description: "Show only failed tests in the job summary report"
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download Config File Artifact
+      if: inputs.config-artifact-name != ''
+      uses: actions/download-artifact@v4
+      with:
+        name: "${{ inputs.config-artifact-name }}"
+        path: "${{ github.workspace }}/_artifacts/${{ inputs.config-artifact-name }}"
+
+    - name: Copy Config Files to Repo
+      if: inputs.config-artifact-name != ''
+      shell: pwsh
+      run: |
+        #Copy Config Files to Repo
+        Write-Output '::group::Copy Config Files to Repo'
+        $source = "${{ github.workspace }}/_artifacts/${{ inputs.config-artifact-name }}"
+        $target = "${{ github.workspace }}/${{ inputs.config-file-directory }}"
+        Write-Output "Copying files from '$source' to '$target'"
+        Copy-Item -Path "$source/*" -Destination $target -Recurse -Force
+        Write-Output '::endgroup::'
+
+    - name: Test Configurations Syntax
+      id: testConfigurations
+      shell: pwsh
+      continue-on-error: true
+      run: |
+        #Test Configurations Syntax
+        Write-Output '::group::Test Configurations Syntax'
+        $scriptPath = "${{ github.workspace }}/${{ inputs.test-script-path }}"
+        & $scriptPath `
+          -configurationFilesPath "${{ github.workspace }}/${{ inputs.config-file-directory }}" `
+          -configurationSchemaFilePath "${{ github.workspace }}/${{ inputs.config-schema-file-path }}" `
+          -ExcludeTags "${{ inputs.exclude-tags }}" `
+          -OutputFileDir "${{ github.workspace }}" `
+          -OutputFilePrefix '${{ inputs.output-file-prefix }}' `
+          -OutputFormat 'NUnitXml'
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        Write-Output '::endgroup::'
+
+    - name: Parse and Publish Pester Test Results
+      uses: ./.github/actions/templates/parse-pester-results
+      with:
+        test-result-files: "${{ github.workspace }}/${{ inputs.output-file-prefix }}.XML"
+        test-title: "Configuration File Syntax Validation Test Summary"
+        check-name: "${{ inputs.test-run-title }}"
+        fail-on-test-failure: "true"
+        skip-passed-tests-report: "${{ inputs.skip-passed-tests-report }}"

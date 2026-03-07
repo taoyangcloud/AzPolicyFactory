@@ -1,0 +1,47 @@
+{
+  "name": "pol-audit-deny-cdb-key-based-metadata-write",
+  "properties": {
+    "displayName": "Azure Cosmos DB key based metadata write access should be disabled",
+    "description": "This policy restricts Azure Cosmos DB accounts disable key based metadata write access.",
+    "metadata": {
+      "category": "Data Protection",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false,
+      "source_builtIn_name": "4750c32b-89c0-46af-bfcb-2e4541a818d5"
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.DocumentDB/databaseAccounts"
+          },
+          {
+            "field": "Microsoft.DocumentDB/databaseAccounts/disableKeyBasedMetadataWriteAccess",
+            "notEquals": true
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

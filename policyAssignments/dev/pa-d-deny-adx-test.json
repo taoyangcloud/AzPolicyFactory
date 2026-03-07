@@ -1,0 +1,24 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-d-deny-adx-test",
+    "displayName": "Disallowed Azure Data Explorer - Dev",
+    "description": "Policy Assignment for restricting Azure Data Explorer - Dev",
+    "metadata": {
+      "category": "Asset Management"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-resource-type",
+    "identity": "None",
+    "parameters": {
+      "disallowedResourceType": {
+        "value": "Microsoft.Kusto/clusters"
+      },
+      "effect": {
+        "value": "Audit"
+      }
+    },
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV",
+  "managementGroupId": "CONTOSO-DEV"
+}

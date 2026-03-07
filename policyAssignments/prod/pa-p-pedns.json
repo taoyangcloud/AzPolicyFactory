@@ -1,0 +1,72 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-p-pedns",
+    "displayName": "Creates DNS records for Private Endpoints Prod",
+    "description": "Policy Assignment for Private Endpoints DNS registration - Prod",
+    "metadata": {
+      "category": "Network Security"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-pedns",
+    "identity": "SystemAssigned",
+    "parameters": {
+      "PEDNS-001_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-002_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-003_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-004_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-005_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-006_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-007_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-008_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-009_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-010_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-011_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-012_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-013_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-014_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "PEDNS-015_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "evaluationDelay": {
+        "value": "AfterProvisioning"
+      },
+      "privateDnsZoneResourceGroup": {
+        "value": "/subscriptions/b92da35a-73a9-4554-8711-f6af2342fb52/resourceGroups/rg-ae-p-net-hub"
+      }
+    },
+    "roleDefinitionIds": [
+      "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
+    ],
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO"
+}

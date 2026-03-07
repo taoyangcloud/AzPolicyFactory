@@ -1,0 +1,44 @@
+# ──────────────────────────────────────────────────────────────
+# PR Policy Assignment Environment Consistency Tests
+# Validates that policy assignment configurations are consistent
+# between dev and prod environments.
+# ──────────────────────────────────────────────────────────────
+name: "PR Policy Assignment Environment Consistency Tests"
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "policyAssignments/**"
+      - "tests/policyAssignment/environment-consistency/**"
+      - ".github/workflows/pr-policy-assignment-env-consistency.yml"
+      - ".github/actions/templates/test-policy-assignment-env-consistency/**"
+  workflow_dispatch: # allow manual trigger
+
+env:
+  devConfigurationFilesDirectory: "policyAssignments/dev"
+  prodConfigurationFilesDirectory: "policyAssignments/prod"
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: read
+
+jobs:
+  assignment_configurations_tests:
+    name: Assignment Configurations Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: "Policy Assignment Environment Consistency Tests"
+        uses: ./.github/actions/templates/test-policy-assignment-env-consistency
+        with:
+          prod-configuration-files-directory: "${{ env.prodConfigurationFilesDirectory }}"
+          dev-configuration-files-directory: "${{ env.devConfigurationFilesDirectory }}"
+          check-name: "Policy Assignments Environment Consistency Test Results"
+          skip-passed-tests-report: "true"

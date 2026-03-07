@@ -1,0 +1,180 @@
+{
+  "name": "polset-adf",
+  "properties": {
+    "displayName": "Azure Data Factory Policy Initiative",
+    "description": "This policy initiative defines the foundation security requirements for Azure Data Factories",
+    "metadata": {
+      "category": "Data Factory",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "ADF-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADF-001 Effect: Audit ADF Use Private Link",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "AuditIfNotExists"
+      },
+      "ADF-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADF-002 Effect: Audit ADF Use Git For Source Control",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "ADF-003_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADF-003 Effect: Deny ADF IR Limit Number Of Cores",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "ADF-003_MaxCores": {
+        "type": "Integer",
+        "metadata": {
+          "displayName": "ADF-003: Allowed max number of cores",
+          "description": "The max number of cores allowed for dataflow."
+        },
+        "defaultValue": 32
+      },
+      "ADF-004_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADF-004 Effect: Restrict ADF Linked Services Should Use Key Vault",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "ADF-005_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADF-005 Effect: Modify ADF Disable Public Network Access",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.8.1.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.8.1.3"
+      },
+      {
+        "name": "ISO27001-2013_A.10.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.10.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.3.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.3.1"
+      },
+      {
+        "name": "ISO27001-2013_A.14.1.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.14.1.2"
+      },
+      {
+        "name": "ISO27001-2013_A.14.2.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.14.2.1"
+      },
+      {
+        "name": "CB-AZ-011"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "ADF-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-adf-private-endpoints",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADF-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1",
+          "ISO27001-2013_A.14.1.2",
+          "CB-AZ-011"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ADF-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-adf-use-git-for-source-control",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADF-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1",
+          "ISO27001-2013_A.14.2.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ADF-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-adf-ir-limit-number-of-cores",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADF-003_Effect')]"
+          },
+          "maxCores": {
+            "value": "[parameters('ADF-003_MaxCores')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.1.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ADF-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-deny-adf-linked-services-should-use-key-vault",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADF-004_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.3.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ADF-005",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-modify-adf-disable-public-network-access",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADF-005_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1",
+          "ISO27001-2013_A.14.1.2"
+        ]
+      }
+    ]
+  }
+}

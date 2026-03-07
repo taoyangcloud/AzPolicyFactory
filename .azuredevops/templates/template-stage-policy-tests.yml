@@ -1,0 +1,123 @@
+parameters:
+- name: policyFilesDirectory
+  displayName: "Template File Directory"
+  type: string
+
+- name: poolName
+  displayName: "Self Hosted Agent Pool Name"
+  type: string
+  default: ""
+
+- name: vmImage
+  displayName: "MS Hosted Agent VM Image Name"
+  type: string
+  default: ""
+
+- name: condition
+  displayName: "Custom Stage Conditions"
+  type: string
+  default: "succeeded()"
+
+- name: dependsOn
+  displayName: "Depends On"
+  type: object
+  default: []
+
+- name: runPolicyJsonPesterTests
+  displayName: "Run Policy Json Pester Tests"
+  type: boolean
+  default: false
+
+- name: runPolicyDefinitionPesterTests
+  displayName: "Run Policy Definition Pester Tests"
+  type: boolean
+  default: false
+
+- name: definitionTestExcludeTags
+  displayName: "AzPolicyTest Pester test tags to exclude, use comma to separate values"
+  type: string
+  default: ""
+
+- name: runPolicyInitiativePesterTests
+  displayName: "Run Policy Initiative Pester Tests"
+  type: boolean
+  default: false
+
+stages:
+  - stage: policy_tests
+    displayName: "Policy Definition Tests"
+    dependsOn: ${{ parameters.dependsOn }}
+    condition: ${{ parameters.condition }}
+    jobs:
+    - job: "pester_tests"
+      displayName: "Policy Definition Pester Tests"
+      pool:
+        ${{ if ne(parameters.vmImage, '') }}:
+          vmImage: ${{ parameters.vmImage }}
+        ${{ if ne(parameters.poolName, '') }}:
+          name: ${{ parameters.poolName }}
+      steps:
+        - checkout: self
+          fetchDepth: 0
+        - template: ./template-task-install-ps-modules.yml
+          parameters:
+            displayName: "Install AzPolicyTest Module"
+            moduleNames: "AzPolicyTest`@2.8.2"
+            shouldInstall: ${{ or(eq(parameters.runPolicyJsonPesterTests, true), eq(parameters.runPolicyInitiativePesterTests, true), eq(parameters.runPolicyDefinitionPesterTests, true)) }}
+
+        - pwsh: |
+            $WarningPreference='SilentlyContinue'
+            $inputPath = "${{parameters.policyFilesDirectory}}"
+            Write-Verbose "Policy Definition Pester Tests Input Path: $inputPath" -verbose
+            Write-Verbose "$(dir $inputPath)" -verbose
+            $testParams = @{
+              Path = $inputPath
+              OutputFile = "$(System.DefaultWorkingDirectory)/TEST-POLICY-DEF.XML"
+              OutputFormat = 'NUnitXml'
+              excludePath = 'psrule-test'
+            }
+            if ('${{parameters.definitionTestExcludeTags}}'.length -gt 0)
+            {
+              $testParams.Add('ExcludeTags', '${{parameters.definitionTestExcludeTags}}')
+            }
+            Test-AzPolicyDefinition @testParams
+          displayName: "Policy Definition Pester Tests"
+          condition: and(succeeded(), eq('${{parameters.runPolicyDefinitionPesterTests}}', true))
+          continueOnError: true
+        - pwsh: |
+            $WarningPreference='SilentlyContinue'
+            $inputPath = "${{parameters.policyFilesDirectory}}"
+            Write-Verbose "Policy Initiative Pester Tests Input Path: $inputPath" -verbose
+            Write-Verbose "$(dir $inputPath)" -verbose
+            $testParams = @{
+              Path = $inputPath
+              OutputFile = "$(System.DefaultWorkingDirectory)/TEST-POLICY-INITIATIVE.XML"
+              OutputFormat = 'NUnitXml'
+              excludePath = 'psrule-test'
+            }
+            if ('${{parameters.definitionTestExcludeTags}}'.length -gt 0)
+            {
+              $testParams.Add('ExcludeTags', '${{parameters.definitionTestExcludeTags}}')
+            }
+            Test-AzPolicySetDefinition @testParams
+          displayName: "Policy Initiative Pester Tests"
+          condition: and(succeeded(), eq('${{parameters.runPolicyInitiativePesterTests}}', true))
+          continueOnError: true
+        - pwsh: |
+            $WarningPreference='SilentlyContinue'
+            $inputPath = "${{parameters.policyFilesDirectory}}"
+            Write-Verbose "Policy Json Pester Tests Input Path: $inputPath" -verbose
+            Write-Verbose "$(dir $inputPath)" -verbose
+            Test-JSONContent -Path $inputPath -OutputFile $(System.DefaultWorkingDirectory)/TEST-POLICY-JSON.XML -OutputFormat 'NUnitXml' -excludePath 'psrule-test'
+          displayName: "Policy JSON Pester Tests"
+          condition: and(succeeded(), eq('${{parameters.runPolicyJsonPesterTests}}', true))
+          continueOnError: true
+        - task: PublishTestResults@2
+          displayName: "Publish Policy Pester Test results"
+          condition: and(succeeded(), or(eq('${{parameters.runPolicyJsonPesterTests}}', true), eq('${{parameters.runPolicyInitiativePesterTests}}', true), eq('${{parameters.runPolicyDefinitionPesterTests}}', true)))
+          inputs:
+            testRunTitle: "PolicyTest"
+            testRunner: NUnit
+            testResultsFiles: "$(System.DefaultWorkingDirectory)/TEST-POLICY*.XML"
+            failTaskOnFailedTests: true
+            failTaskOnMissingResultsFile: true

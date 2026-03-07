@@ -1,0 +1,112 @@
+parameters:
+  - name: poolName
+    displayName: "Self Hosted Agent Pool Name"
+    type: string
+    default: ""
+
+  - name: vmImage
+    displayName: "MS Hosted Agent VM Image Name"
+    type: string
+    default: ""
+
+  - name: condition
+    displayName: "Custom Stage Conditions"
+    type: string
+    default: "succeeded()"
+
+  - name: azureServiceConnection
+    displayName: "Name of the Azure Service Connection"
+    type: string
+
+  - name: preferredAzurePowerShellVersion
+    displayName: "Az Powershell module version."
+    type: string
+    default: ""
+
+  - name: environment
+    displayName: "Environment"
+    type: string
+
+  - name: configFilesPath
+    displayName: "Exemption Configuration Files Path"
+    type: string
+
+  - name: configFileExcludePath
+    displayName: "Exemption Configuration File Excluded Paths"
+    type: string
+    default: ""
+
+  - name: templateFileDirectory
+    displayName: "Bicep Template Directory Path"
+    type: string
+
+  - name: bicepFilePath
+    displayName: "Bicep File Path"
+    type: string
+
+  - name: bicepVariableName
+    displayName: "Bicep Variable Name"
+    type: string
+    default: 'policyExemptions'
+
+  - name: outputDir
+    displayName: "Output Directory"
+    type: string
+
+  - name: bicepTemplateBuildArtifactName
+    displayName: "Exemption Bicep Template Build Artifact Name"
+    type: string
+
+  - name: dependsOn
+    displayName: "Depends on"
+    type: object
+    default: []
+
+stages:
+  - stage: "build_${{ parameters.environment }}"
+    displayName: "Build ${{ parameters.environment }}"
+    dependsOn: ${{ parameters.dependsOn }}
+    condition: ${{ parameters.condition }}
+    jobs:
+    - job: updateFiles
+      displayName: "Update Files"
+      workspace:
+        clean: all
+      pool:
+        ${{ if ne(parameters.vmImage, '') }}:
+          vmImage: ${{ parameters.vmImage }}
+        ${{ if ne(parameters.poolName, '') }}:
+          name: ${{ parameters.poolName }}
+      variables:
+        - name: bicepBuildScriptPath
+          value: "scripts/pipelines/pipeline-set-policy-resource-bicep-template-file.ps1"
+      steps:
+        - checkout: self
+          fetchDepth: 0
+        - task: PowerShell@2
+          name: buildBicep
+          displayName: "Build Bicep Template"
+          inputs:
+            targetType: "filePath"
+            pwsh: true
+            filePath: $(bicepBuildScriptPath)
+            arguments:
+              -bicepFilePath '${{ parameters.bicepFilePath }}' `
+              -bicepVariableName '${{ parameters.bicepVariableName }}' `
+              -resourceFileFolder '${{ parameters.configFilesPath }}' `
+              -excludePath '${{ parameters.configFileExcludePath }}' `
+              -outputDir '${{ parameters.templateFileDirectory }}' `
+              -artifactName '${{ parameters.bicepTemplateBuildArtifactName }}' `
+              -updateBicepFileName 'main.bicep'
+        - task: CopyFiles@2
+          displayName: "Copy Updated Bicep Template File to Build Artifact Staging Directory"
+          inputs:
+            SourceFolder: "${{ parameters.templateFileDirectory }}/${{ parameters.bicepTemplateBuildArtifactName }}"
+            TargetFolder: "$(Build.ArtifactStagingDirectory)/${{ parameters.bicepTemplateBuildArtifactName }}"
+            CleanTargetFolder: true
+            OverWrite: true
+        - task: PublishBuildArtifacts@1
+          displayName: "Publish Assignment Bicep Template File Artifact"
+          inputs:
+            artifactName: "${{ parameters.bicepTemplateBuildArtifactName }}"
+            PathtoPublish: "$(Build.ArtifactStagingDirectory)/${{ parameters.bicepTemplateBuildArtifactName }}"

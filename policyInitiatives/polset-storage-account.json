@@ -1,0 +1,446 @@
+{
+  "name": "polset-storage-account",
+  "properties": {
+    "displayName": "Azure Storage Accounts Policy Initiative",
+    "description": "This policy initiative defines the security requirements for Storage accounts",
+    "metadata": {
+      "category": "Storage Account",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "STG-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "STG-001 Effect: Storage accounts should use customer-managed key for encryption",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "STG-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "STG-002 Effect: Storage account encryption scopes should use double encryption for data at rest",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "STG-003_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "STG-003 Effect: Deploy Storage Account Blob Service Soft Delete",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "STG-003_EvaluationDelay": {
+        "type": "string",
+        "metadata": {
+          "displayName": "STG-003: Evaluation Delay",
+          "description": "Specifies when the existence of the related resources should be evaluated. The delay is only used for evaluations that are a result of a create or update resource request. Allowed values are AfterProvisioning, AfterProvisioningSuccess, AfterProvisioningFailure, or an ISO 8601 duration between 0 and 360 minutes."
+        },
+        "defaultValue": "AfterProvisioning"
+      },
+      "STG-003_MinimumRetentionInDays": {
+        "type": "Integer",
+        "metadata": {
+          "displayName": "STG-003: Minimum Retention in days",
+          "description": "The minimum retention in days for the soft deleted blob. Allowed Value: 1-30"
+        },
+        "defaultValue": 7
+      },
+      "STG-003_AllowPermanentDelete": {
+        "type": "Boolean",
+        "metadata": {
+          "displayName": "STG-003: Allow Permanent Delete",
+          "description": "Allows deletion of the soft deleted blob versions and snapshots"
+        },
+        "defaultValue": true
+      },
+      "STG-004_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "STG-004 Effect: Storage accounts should restrict network access",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "STG-005_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "STG-005 Effect: Storage accounts should restrict network access using virtual network rules",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "STG-006_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "STG-006 Effect: Storage accounts should prevent cross tenant object replication",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "STG-007_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "STG-007 Effect: Storage accounts should prevent shared key access",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "STG-008_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "STG-008 Effect: Secure transfer to storage accounts should be enabled",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "STG-009_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "STG-009 Effect: Restrict Storage Account with public network access",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "STG-010_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "STG-010 Effect: Storage accounts should have the specified minimum TLS version",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "STG-010_MinTlsVersion": {
+        "type": "String",
+        "metadata": {
+          "displayName": "STG-010: Storage Account Minimum TLS Version",
+          "description": "Minimum version of TLS required to access data in the storage account"
+        },
+        "allowedValues": [
+          "TLS1_0",
+          "TLS1_1",
+          "TLS1_2"
+        ],
+        "defaultValue": "TLS1_2"
+      },
+      "STG-011_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "STG-011 Effect: Deploy Advanced Threat Protection on storage accounts",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "STG-011_EvaluationDelay": {
+        "type": "string",
+        "metadata": {
+          "displayName": "STG-011: Evaluation Delay",
+          "description": "Specifies when the existence of the related resources should be evaluated. The delay is only used for evaluations that are a result of a create or update resource request. Allowed values are AfterProvisioning, AfterProvisioningSuccess, AfterProvisioningFailure, or an ISO 8601 duration between 0 and 360 minutes."
+        },
+        "defaultValue": "AfterProvisioning"
+      },
+      "STG-012_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "STG-012 Effect: Storage accounts should prevent permitted copy scopes from any storage accounts",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.8.2.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.8.2.3"
+      },
+      {
+        "name": "ISO27001-2013_A.10.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.10.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.2.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.2.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.3.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.3.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.6.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.6.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.2"
+      },
+      {
+        "name": "ISO27001-2013_A.13.2.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.2"
+      },
+      {
+        "name": "ISO27001-2013_A.14.1.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.14.1.2"
+      },
+      {
+        "name": "ISO27001-2013_A.17.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.17.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.17.1.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.17.1.2"
+      },
+      {
+        "name": "CB-AZ-011"
+      },
+      {
+        "name": "CB-AZ-015"
+      },
+      {
+        "name": "CB-AZ-016"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "STG-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-storage-account-cmk-encryption",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('STG-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1",
+          "ISO27001-2013_A.14.1.2",
+          "ISO27001-2013_A.8.2.3",
+          "CB-AZ-015"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "STG-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-storage-account-use-double-encryption",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('STG-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1",
+          "CB-AZ-015"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "STG-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-storage-account-blob-soft-delete",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('STG-003_Effect')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('STG-003_EvaluationDelay')]"
+          },
+          "minimumRetentionInDays": {
+            "value": "[parameters('STG-003_MinimumRetentionInDays')]"
+          },
+          "allowPermanentDelete": {
+            "value": "[parameters('STG-003_AllowPermanentDelete')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.3.1",
+          "ISO27001-2013_A.17.1.1",
+          "ISO27001-2013_A.17.1.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "STG-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-storage-accounts-should-restrict-network-access",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('STG-004_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.3.1",
+          "ISO27001-2013_A.17.1.1",
+          "ISO27001-2013_A.17.1.2",
+          "CB-AZ-011"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "STG-005",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-storage-account-restrict-virtual-network-rules",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('STG-005_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.3.1",
+          "ISO27001-2013_A.17.1.1",
+          "ISO27001-2013_A.17.1.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "STG-006",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-storage-account-prevent-cross-tenant-repl",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('STG-006_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.3.1",
+          "ISO27001-2013_A.17.1.1",
+          "ISO27001-2013_A.17.1.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "STG-007",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-storage-account-should-prevent-shared-key-access",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('STG-007_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.3.1",
+          "ISO27001-2013_A.17.1.1",
+          "ISO27001-2013_A.17.1.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "STG-008",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-storage-account-secure-transfer",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('STG-008_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1",
+          "ISO27001-2013_A.14.1.2",
+          "CB-AZ-016"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "STG-009",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-storage-account-public-endpoint",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('STG-009_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "STG-010",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-storage-account-minimum-tls-version",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('STG-010_Effect')]"
+          },
+          "minimumTlsVersion": {
+            "value": "[parameters('STG-010_MinTlsVersion')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.14.1.2",
+          "ISO27001-2013_A.10.1.1",
+          "ISO27001-2013_A.8.2.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "STG-011",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-storage-account-advanced-threat-protection",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('STG-011_Effect')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('STG-011_EvaluationDelay')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.2.1",
+          "ISO27001-2013_A.12.6.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "STG-012",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-storage-account-restrict-allowed-copy-scopes",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('STG-012_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.2.2"
+        ]
+      }
+    ]
+  }
+}

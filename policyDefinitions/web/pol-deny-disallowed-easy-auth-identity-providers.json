@@ -1,0 +1,142 @@
+{
+  "name": "pol-deny-disallowed-easy-auth-identity-providers",
+  "properties": {
+    "displayName": "Function apps should only use approved identity providers for authentication",
+    "description": "Only approved Easy Auth identity providers cant be used in Function Apps.",
+    "metadata": {
+      "category": "Web",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "mode": "All",
+    "parameters": {
+      "effect": {
+        "type": "string",
+        "metadata": {
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy.",
+          "displayName": "Effect"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Web/sites/config"
+          },
+          {
+            "anyOf": [
+              {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Web/sites/config/identityProviders.apple",
+                    "exists": "true"
+                  },
+                  {
+                    "value": "string(field('Microsoft.Web/sites/config/identityProviders.apple.registration'))",
+                    "notEquals": "{}"
+                  }
+                ]
+              },
+              {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Web/sites/config/identityProviders.azureActiveDirectory",
+                    "exists": "true"
+                  },
+                  {
+                    "value": "string(field('Microsoft.Web/sites/config/identityProviders.azureActiveDirectory.registration'))",
+                    "notEquals": "{}"
+                  }
+                ]
+              },
+              {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Web/sites/config/identityProviders.facebook",
+                    "exists": "true"
+                  },
+                  {
+                    "value": "string(field('Microsoft.Web/sites/config/identityProviders.facebook.registration'))",
+                    "notEquals": "{}"
+                  }
+                ]
+              },
+              {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Web/sites/config/identityProviders.gitHub",
+                    "exists": "true"
+                  },
+                  {
+                    "value": "string(field('Microsoft.Web/sites/config/identityProviders.gitHub.registration'))",
+                    "notEquals": "{}"
+                  }
+                ]
+              },
+              {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Web/sites/config/identityProviders.google",
+                    "exists": "true"
+                  },
+                  {
+                    "value": "string(field('Microsoft.Web/sites/config/identityProviders.google.registration'))",
+                    "notEquals": "{}"
+                  }
+                ]
+              },
+              {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Web/sites/config/identityProviders.legacyMicrosoftAccount",
+                    "exists": "true"
+                  },
+                  {
+                    "value": "string(field('Microsoft.Web/sites/config/identityProviders.legacyMicrosoftAccount.registration'))",
+                    "notEquals": "{}"
+                  }
+                ]
+              },
+              {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Web/sites/config/identityProviders.twitter",
+                    "exists": "true"
+                  },
+                  {
+                    "value": "string(field('Microsoft.Web/sites/config/identityProviders.twitter.registration'))",
+                    "notEquals": "{}"
+                  }
+                ]
+              },
+              {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Web/sites/config/identityProviders.customOpenIdConnectProviders",
+                    "exists": "true"
+                  },
+                  {
+                    "value": "string(field('Microsoft.Web/sites/config/identityProviders.customOpenIdConnectProviders'))",
+                    "notEquals": "{}"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

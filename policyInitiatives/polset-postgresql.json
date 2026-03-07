@@ -1,0 +1,168 @@
+{
+  "name": "polset-postgresql",
+  "properties": {
+    "displayName": "Azure PostgreSQL Policy Initiative",
+    "description": "This policy initiative defines the foundation security requirements for Azure PostgreSQL",
+    "metadata": {
+      "category": "PostgreSQL",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "PGS-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "PGS-001 Effect: Connection throttling should be enabled for PostgreSQL database servers",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "AuditIfNotExists"
+      },
+      "PGS-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "PGS-002 Effect: Private endpoint should be enabled for PostgreSQL servers",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "AuditIfNotExists"
+      },
+      "PGS-003_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "PGS-003 Effect: Public network access should be disabled for PostgreSQL flexible servers",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "PGS-004_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "PGS-004 Effect: Enforce SSL connection should be enabled for PostgreSQL database servers",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "PGS-005_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "PGS-005 Effect: Enforce SSL connection should be enabled for PostgreSQL database servers",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.10.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.10.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.3.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.3.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.2"
+      },
+      {
+        "name": "ISO27001-2013_A.13.2.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.4"
+      },
+      {
+        "name": "ISO27001-2013_A.14.1.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.14.1.2"
+      },
+      {
+        "name": "CB-AZ-011"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "PGS-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-postgresql-connection-throttling",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('PGS-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.2.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "PGS-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-postgresql-private-endpoint",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('PGS-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1",
+          "ISO27001-2013_A.14.1.2",
+          "CB-AZ-011"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "PGS-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-postgresql-geo-redundant-backup",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('PGS-003_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.3.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "PGS-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-postgresql-ssl",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('PGS-004_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1",
+          "ISO27001-2013_A.14.1.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "PGS-005",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-postgresql-flexible-servers-public-network-access",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('PGS-005_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.2"
+        ]
+      }
+    ]
+  }
+}

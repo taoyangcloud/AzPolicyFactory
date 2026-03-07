@@ -1,0 +1,47 @@
+# ──────────────────────────────────────────────────────────────
+# PR Code Scan – .NET / C# security & quality analysis
+# Runs on every pull request targeting the main/master branch.
+# ──────────────────────────────────────────────────────────────
+name: "PR Code Scan"
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # allow manual trigger
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+jobs:
+  # ───────── GitHub Super-Linter ─────────
+  super-linter:
+    name: GitHub Super-Linter
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+      statuses: write
+
+    steps:
+      - name: Checkout repository (full history)
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # Super-Linter needs full history for diff
+          persist-credentials: false
+
+      - name: Run Super-Linter
+        uses: super-linter/super-linter@v8.5.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: main
+          VALIDATE_BIOME_LINT: false
+          VALIDATE_BIOME_FORMAT: false
+          VALIDATE_JSCPD: false
+          FILTER_REGEX_EXCLUDE: '(bin/|obj/|\.vs/|node_modules/|\.vscode/)'
+          LOG_LEVEL: ERROR
+          USE_FIND_ALGORITHM: true
+          VALIDATE_ARM: false
+          IGNORE_GITIGNORED_FILES: true

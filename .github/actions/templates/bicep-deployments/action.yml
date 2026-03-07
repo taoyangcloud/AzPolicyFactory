@@ -1,0 +1,192 @@
+name: "Deploy Bicep Template"
+description: "Deploys a single Bicep template to Azure with retry logic and deployment outputs"
+author: "Tao Yang"
+
+inputs:
+  template-name:
+    description: "Template Name"
+    required: true
+
+  template-file-directory:
+    description: "Template File Directory"
+    required: true
+
+  template-file-name:
+    description: "Template File Name"
+    required: false
+    default: "main.bicep"
+
+  template-file-artifact-name:
+    description: "Artifact Name of Updated Template File"
+    required: false
+    default: ""
+
+  parameter-file-directory:
+    description: "Parameter File Directory"
+    required: false
+    default: ""
+
+  parameter-file-name:
+    description: "Parameter File Name"
+    required: false
+    default: ""
+
+  additional-resource-artifact-name:
+    description: "Artifact Name of additional resources (Optional)"
+    required: false
+    default: ""
+
+  additional-resource-directory:
+    description: "Directory for additional resources (Optional)"
+    required: false
+    default: ""
+
+  template-scope:
+    description: "Template Scope: resourceGroup, subscription, managementGroup, or tenant"
+    required: false
+    default: "resourceGroup"
+
+  azure-location:
+    description: "Azure Location"
+    required: true
+
+  target-name:
+    description: "Target name. When scope is managementGroup or resourceGroup, this is the name of the Management Group or Resource Group."
+    required: false
+    default: ""
+
+  subscription-name:
+    description: "Subscription name. When scope is subscription or resourceGroup, this is the name of the subscription."
+    required: false
+    default: ""
+
+  unique-build-id-prefix:
+    description: "Prefix to add to deployment name to avoid duplicate deployment names"
+    required: false
+    default: ""
+
+  bicep-module-subscription-id:
+    description: "Bicep module subscription Id (Optional)"
+    required: false
+    default: ""
+
+  publish-deployment-outputs:
+    description: "Publish Deployment Outputs to Artifact"
+    required: false
+    default: "true"
+
+  deployment-output-variable-prefix:
+    description: "Deployment Output Variable name prefix"
+    required: false
+    default: ""
+
+  retry-failed-deployment:
+    description: "Retry Failed Deployment"
+    required: false
+    default: "true"
+
+  max-wait-minutes:
+    description: "Maximum time in minutes to wait before retrying Failed Deployment"
+    required: false
+    default: "60"
+
+  retry-delay-in-seconds:
+    description: "Delay in Seconds Before Retry Failed Deployments"
+    required: false
+    default: "60"
+
+  http-timeout-seconds:
+    description: "ARM Deployment request HTTP Timeout Seconds (100-1000). Default to 1000 seconds to accommodate large deployments."
+    required: false
+    default: "1000"
+
+outputs:
+  deployment-name:
+    description: "The name of the deployment"
+    value: ${{ steps.deploy.outputs.deployment-name }}
+
+  deployment-outputs:
+    description: "JSON string of deployment outputs"
+    value: ${{ steps.deploy.outputs.deployment-outputs }}
+
+  deployment-state:
+    description: "Provisioning state of the deployment"
+    value: ${{ steps.deploy.outputs.deployment-state }}
+
+runs:
+  using: "composite"
+  steps:
+    # Download template file artifact if artifact name provided
+    - name: Download Template File Artifact
+      if: inputs.template-file-artifact-name != ''
+      uses: actions/download-artifact@v7
+      with:
+        name: ${{ inputs.template-file-artifact-name }}
+        path: ${{ inputs.template-file-directory }}
+
+    - name: Download Additional Resource Artifact
+      if: inputs.additional-resource-artifact-name != ''
+      uses: actions/download-artifact@v7
+      with:
+        name: ${{ inputs.additional-resource-artifact-name }}
+        path: "${{ inputs.additional-resource-directory }}"
+
+    # Download Parameter file artifact if artifact name provided
+    - name: Download Parameter File Artifact
+      if: inputs.parameter-file-artifact-name != ''
+      uses: actions/download-artifact@v7
+      with:
+        name: ${{ inputs.parameter-file-artifact-name }}
+        path: "${{ inputs.parameter-file-directory }}"
+
+    # Azure Login
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        creds: ${{ env.AZURE_CREDENTIALS }}
+        enable-AzPSSession: true
+
+    # Get Deployment Target from parameter file metadata if not provided
+
+    # Run Bicep Deployment
+    - name: Deploy Bicep Template - ${{ inputs.template-name }}
+      id: deploy
+      shell: pwsh
+      run: |
+        Write-Output "'::group::Bicep Deployment - ${{ inputs.template-name }}'"
+        $scriptPath = "${{ github.action_path }}/scripts/Invoke-BicepDeployment-Rest.ps1"
+
+        $parameterFileDir = '${{ inputs.parameter-file-directory }}'
+        if ($parameterFileDir -eq '') {
+          $parameterFileDir = '${{ inputs.template-file-directory }}'
+        }
+
+        & $scriptPath `
+          -templateFileDirectory '${{ inputs.template-file-directory }}' `
+          -templateFileName '${{ inputs.template-file-name }}' `
+          -parameterFileName '${{ inputs.parameter-file-name }}' `
+          -parameterFileDirectory $parameterFileDir `
+          -templateName '${{ inputs.template-name }}' `
+          -templateScope '${{ inputs.template-scope }}' `
+          -azureLocation '${{ inputs.azure-location }}' `
+          -targetName '${{ inputs.target-name }}' `
+          -subscriptionName '${{ inputs.subscription-name }}' `
+          -uniqueBuildIdPrefix '${{ inputs.unique-build-id-prefix }}' `
+          -bicepModuleSubscriptionId '${{ inputs.bicep-module-subscription-id }}' `
+          -publishDeploymentOutputs '${{ inputs.publish-deployment-outputs }}' `
+          -deploymentOutputVariablePrefix '${{ inputs.deployment-output-variable-prefix }}' `
+          -retryFailedDeployment '${{ inputs.retry-failed-deployment }}' `
+          -maxWaitMinutes ${{ inputs.max-wait-minutes }} `
+          -httpTimeoutSeconds ${{ inputs.http-timeout-seconds }} `
+          -retryDelayInSeconds ${{ inputs.retry-delay-in-seconds }} `
+          -workspaceDirectory '${{ github.workspace }}'
+        Write-Output "'::endgroup::'"
+
+    # Upload Deployment Outputs Artifact
+    - name: Upload Deployment Outputs Artifact
+      if: inputs.publish-deployment-outputs == 'true' && steps.deploy.outputs.deploymentOutputPublished == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: "${{ steps.deploy.outputs.deploymentName }}-Outputs"
+        path: "${{ inputs.template-file-directory }}/Outputs/"
+        if-no-files-found: ignore

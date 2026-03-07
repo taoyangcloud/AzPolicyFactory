@@ -1,0 +1,36 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "identity": "None",
+    "name": "pa-p-eh",
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-eh",
+    "displayName": "Azure Event Hub Policies Prod",
+    "description": "Policy Assignment for Azure Event Hub - Prod",
+    "metadata": {
+      "category": "Event Hub"
+    },
+    "parameters": {
+      "EH-001_Effect": {
+        "value": "Disabled"
+      },
+      "EH-002_Effect": {
+        "value": "Audit"
+      },
+      "EH-002_MinimumTlsVersion": {
+        "value": "1.2"
+      },
+      "EH-003_Effect": {
+        "value": "Deny"
+      },
+      "EH-004_Effect": {
+        "value": "Audit"
+      },
+      "EH-005_Effect": {
+        "value": "AuditIfNotExists"
+      }
+    },
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO"
+}

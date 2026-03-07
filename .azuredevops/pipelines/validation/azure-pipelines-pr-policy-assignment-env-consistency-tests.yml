@@ -1,0 +1,18 @@
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger: none
+
+variables:
+  - name: devConfigurationFilesDirectory
+    value: "policyAssignments/dev"
+  - name: prodConfigurationFilesDirectory
+    value: "policyAssignments/prod"
+  - name: system.debug
+    value: true
+
+stages:
+  - template: ../../templates/template-stage-policy-assignment-env-consistency-tests.yml
+    parameters:
+      vmImage: "${{ variables['defaultAgentPoolName'] }}"
+      prodConfigurationFilesDirectory: "${{ variables['prodConfigurationFilesDirectory'] }}"
+      devConfigurationFilesDirectory: "${{ variables['devConfigurationFilesDirectory'] }}"

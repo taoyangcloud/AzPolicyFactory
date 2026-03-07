@@ -1,0 +1,418 @@
+parameters:
+- name: templateName
+  displayName: "Template Name"
+  type: string
+
+- name: templateFileDirectory
+  displayName: "Template File Directory"
+  type: string
+
+- name: templateFileName
+  displayName: "Template File Name"
+  type: string
+  default: "main.bicep"
+
+- name: templateFileArtifactName
+  displayName: "Artifact Name of Updated Template File"
+  type: string
+  default: ""
+
+- name: parameterFileArtifactName
+  displayName: "Artifact Name of Updated Parameter File"
+  type: string
+  default: ""
+
+- name: parameterFileDirectory
+  displayName: "Parameter File Directory"
+  type: string
+  default: ""
+
+- name: parameterFileName
+  displayName: "Parameter File Name"
+  type: string
+  default: ""
+
+- name: additionalResourceArtifactName
+  displayName: "Artifact Name of additional resources (Optional)"
+  type: string
+  default: ""
+
+- name: additionalResourceDirectory
+  displayName: "Directory for additional resources (Optional)"
+  type: string
+  default: ""
+
+- name: azureServiceConnection
+  displayName: "Name of the Azure Service Connection"
+  type: string
+
+- name: poolName
+  displayName: "Self Hosted Agent Pool Name"
+  type: string
+  default: ""
+
+- name: vmImage
+  displayName: "MS Hosted Agent VM Image Name"
+  type: string
+  default: ""
+
+- name: dependsOn
+  displayName: "Depends On"
+  type: object
+  default: []
+
+- name: psRuleBaselineName
+  displayName: "PSRule Baseline Name"
+  type: string
+  default: "Azure.Default"
+
+- name: runBicepSupportFilesTests
+  displayName: "Run Bicep Support Files Tests"
+  type: boolean
+  default: true
+
+- name: runPSRuleTests
+  displayName: "Run PSRule Tests"
+  type: boolean
+  default: true
+
+- name: runTemplateValidation
+  displayName: "Run Template Validation"
+  type: boolean
+  default: true
+
+- name: runWhatIfInTemplateValidation
+  displayName: "Run What-If in Template Validation"
+  type: boolean
+  default: true
+
+- name: runBicepLinter
+  displayName: "Run Bicep Linter"
+  type: boolean
+  default: true
+
+- name: whatIfMaxRetry
+  displayName: "Number of retries for what-if validation, valid values are 3-10"
+  type: number
+  default: 3
+
+- name: whatIfResultArtifactName
+  displayName: "Template What-If Result Artifacts Name (Optional)"
+  type: string
+  default: ""
+
+- name: bicepModuleSubscriptionId
+  displayName: "Bicep module subscription Id (Optional)"
+  type: string
+  default: ""
+
+- name: templateScope
+  displayName: Template Scope
+  type: string
+  default: "resourceGroup"
+  values:
+  - "resourceGroup"
+  - "subscription"
+  - "managementGroup"
+  - "tenant"
+
+- name: azureLocation
+  displayName: "Azure Location. Not required for resource group scope"
+  type: string
+  default: ""
+
+- name: targetName
+  displayName: "Target name. When scope is 'managementGroup' or 'resourceGroup', this is the name of the Management Group or Resource Group."
+  type: string
+  default: ""
+
+- name: subscriptionName
+  displayName: "Target name. When scope is 'subscription' or 'resourceGroup', this is the name of the subscription."
+  type: string
+  default: ""
+
+- name: preferredAzurePowerShellVersion
+  displayName: "Az Powershell module version."
+  type: string
+  default: ""
+
+- name: preferredBicepCliVersion
+  displayName: "Bicep CLI version."
+  type: string
+  default: ""
+
+- name: maxParallelTasks
+  displayName: "Maximum number of parallel tasks for Online Validation. Default is 0 (unlimited)."
+  type: number
+  default: 0
+
+jobs:
+- job: "Static_Validation_${{parameters.templateName}}"
+  displayName: "Static Validation ${{parameters.templateName}}"
+  condition: succeeded()
+  workspace:
+    clean: all
+  dependsOn: ${{ parameters.dependsOn }}
+  pool:
+    ${{ if ne(parameters.vmImage, '') }}:
+      vmImage: ${{ parameters.vmImage }}
+    ${{ if ne(parameters.poolName, '') }}:
+      name: ${{ parameters.poolName }}
+  variables:
+    - name: PSRULE_CONFIGURATION_AZURE_BICEP_FILE_EXPANSION
+      value: true
+    - name: PSRULE_INPUT_PATHIGNORE
+      value: bicepconfig.json;modules/
+    - name: templateValidationScriptPath
+      value: "scripts/pipelines/pipeline-template-validation.ps1"
+    - name: parameterFileMetadataParseScriptPath
+      value: "scripts/pipelines/pipeline-parse-parameter-file-metadata.ps1"
+    - name: testResultsCollectionScriptPath
+      value: "scripts/pipelines/pipeline-collect-test-result-files.ps1"
+  steps:
+    - checkout: self
+      fetchDepth: 0
+    - template: ./template-task-install-ps-modules.yml
+      parameters:
+        displayName: "Install PSRules Modules"
+        moduleNames: "PSRule, PSRule.Rules.Azure"
+        shouldInstall: ${{ eq(parameters.runPSRuleTests, true) }}
+        allowPrerelease: false
+    - template: ./template-task-install-bicep-cli.yml
+      parameters:
+        desiredVersion: '${{ parameters.preferredBicepCliVersion }}'
+    - template: ./template-task-install-ps-modules.yml
+      parameters:
+        displayName: "Install Az Module v${{parameters.preferredAzurePowerShellVersion}}"
+        moduleNames: "Az`@${{parameters.preferredAzurePowerShellVersion}}"
+        shouldInstall: ${{ and(eq(parameters.runBicepLinter, true), ne(parameters.preferredAzurePowerShellVersion, ''), ne(parameters.bicepModuleSubscriptionId, '')) }}
+    - pwsh: |
+        $(Build.SourcesDirectory)/tests/bicep/BicepRequiredSupportFilesTests.ps1 -bicepDir ${{parameters.templateFileDirectory}} -OutputFileDir $(Build.SourcesDirectory)
+      displayName: "Bicep Support Files Tests"
+      condition: and(succeeded(), eq('${{parameters.runBicepSupportFilesTests}}', true))
+      errorActionPreference: continue
+    - task: PublishTestResults@2
+      displayName: "Publish Bicep Support Files Tests Results"
+      condition: and(succeeded(), eq('${{parameters.runBicepSupportFilesTests}}', true))
+      inputs:
+        testRunner: NUnit
+        testRunTitle: "Bicep Support Files-${{parameters.templateName}}"
+        testResultsFiles: "**/TEST-Bicep*.XML"
+        failTaskOnFailedTests: true
+        failTaskOnMissingResultsFile: true
+    - task: DownloadBuildArtifacts@0
+      displayName: "Download Parameter File Artifact"
+      condition: and(succeeded(), ne('${{parameters.parameterFileArtifactName}}', ''))
+      inputs:
+        artifactName: "${{parameters.parameterFileArtifactName}}"
+    - task: CopyFiles@2
+      displayName: "Copy Updated Parameter File to Repo"
+      condition: and(succeeded(), ne('${{parameters.parameterFileArtifactName}}', ''))
+      inputs:
+        SourceFolder: "$(System.ArtifactsDirectory)/${{parameters.parameterFileArtifactName}}"
+        TargetFolder: "$(System.DefaultWorkingDirectory)/${{parameters.templateFileDirectory}}/psrule-test/"
+        CleanTargetFolder: false
+        OverWrite: true
+    - task: DownloadBuildArtifacts@0
+      displayName: "Download Template File Artifact"
+      condition: and(succeeded(), ne('${{parameters.templateFileArtifactName}}', ''))
+      inputs:
+        artifactName: "${{parameters.templateFileArtifactName}}"
+    - task: CopyFiles@2
+      displayName: "Copy Updated Template File to Repo"
+      condition: and(succeeded(), ne('${{parameters.templateFileArtifactName}}', ''))
+      inputs:
+        SourceFolder: "$(System.ArtifactsDirectory)/${{parameters.templateFileArtifactName}}"
+        TargetFolder: "$(System.DefaultWorkingDirectory)/${{parameters.templateFileDirectory}}/"
+        CleanTargetFolder: false
+        OverWrite: true
+    - task: DownloadBuildArtifacts@0
+      displayName: "Download Additional Resource Artifact"
+      condition: and(succeeded(), ne('${{parameters.additionalResourceArtifactName}}', ''))
+      inputs:
+        artifactName: "${{parameters.additionalResourceArtifactName}}"
+    - task: CopyFiles@2
+      displayName: "Copy Additional Resource to Repo"
+      condition: and(succeeded(), ne('${{parameters.additionalResourceArtifactName}}', ''))
+      inputs:
+        SourceFolder: "$(System.ArtifactsDirectory)/${{parameters.additionalResourceArtifactName}}"
+        TargetFolder: "$(System.DefaultWorkingDirectory)/${{parameters.additionalResourceDirectory}}/"
+        CleanTargetFolder: false
+        OverWrite: true
+    - task: CopyFiles@2
+      displayName: Copy Parameter Files For PSRule Tests
+      condition: and(succeeded(), eq('${{parameters.parameterFileArtifactName}}', ''), ne('${{parameters.parameterFileName}}', ''))
+      inputs:
+        SourceFolder: "$(System.DefaultWorkingDirectory)/${{parameters.parameterFileDirectory}}/"
+        TargetFolder: "$(System.DefaultWorkingDirectory)/${{parameters.templateFileDirectory}}/psrule-test/"
+        CleanTargetFolder: false
+        OverWrite: true
+        Contents: "${{parameters.parameterFileName}}"
+    - task: AzurePowerShell@5
+      displayName: "Bicep Linter - ${{parameters.templateName}} template"
+      condition: and(succeeded(), or(eq('${{parameters.runPSRuleTests}}', true), eq('${{parameters.runBicepLinter}}', true)))
+      env:
+        bicepModuleSubscriptionId: '${{ parameters.bicepModuleSubscriptionId }}'
+      inputs:
+        azureSubscription: "${{parameters.azureServiceConnection}}"
+        pwsh: true
+        #If preferredAzurePowerShellVersion is not provided, or it's running on Self-hosted agents, then use the latest version of Az module
+        ${{ if or(eq(parameters.preferredAzurePowerShellVersion, ''), ne(parameters.poolName, '')) }}:
+          azurePowerShellVersion: 'LatestVersion'
+        #if preferredAzurePowerShellVersion is provided, and it's running on MS-hosted agents, then use the provided version of Az module
+        ${{ else }}:
+          azurePowerShellVersion: 'OtherVersion'
+          preferredAzurePowerShellVersion: '${{parameters.preferredAzurePowerShellVersion}}'
+        ScriptType: filePath
+        ScriptPath: scripts/pipelines/pipeline-run-bicep-linter.ps1
+        ScriptArguments:
+          -TemplateFileDirectory '${{parameters.templateFileDirectory}}' `
+          -TemplateFileName '${{parameters.templateFileName}}'
+    - pwsh: |
+        $WarningPreference='SilentlyContinue'
+        $inputPath = "${{parameters.templateFileDirectory}}/psrule-test"
+        $baseline = "${{parameters.psRuleBaselineName}}"
+        Write-Verbose "PSRule Input Path: $inputPath" -verbose
+        Write-Verbose "$(dir $inputPath)" -verbose
+        Write-Verbose "PSRule Baseline: $baseline" -verbose
+        Assert-PSRule -InputPath "$inputPath/*.json" -Module PSRule.Rules.Azure -Baseline $baseline -OutputFormat NUnit3 -OutputPath $(System.DefaultWorkingDirectory)/TEST-${{parameters.templateName}}-template-psrule.xml -path $(System.DefaultWorkingDirectory)/.ps-rule/ -Format File
+      displayName: "PSRule validation - ${{parameters.templateName}} Template"
+      condition: and(succeeded(), eq('${{parameters.runPSRuleTests}}', true))
+      continueOnError: true
+    - task: PublishTestResults@2
+      displayName: "Publish PSRule Test results - ${{parameters.templateName}}"
+      condition: and(succeeded(), eq('${{parameters.runPSRuleTests}}', true))
+      inputs:
+        testRunTitle: "PSRule-${{parameters.templateName}}"
+        testRunner: NUnit
+        testResultsFiles: "$(System.DefaultWorkingDirectory)/TEST-${{parameters.templateName}}-template-psrule.xml"
+        failTaskOnFailedTests: true
+        failTaskOnMissingResultsFile: true
+
+- template: template-job-get-parameter-files.yml
+  parameters:
+    parameterFileArtifactName: "${{parameters.parameterFileArtifactName}}"
+    parameterFileDirectory: "${{parameters.parameterFileDirectory}}"
+    parameterFileName: ${{parameters.parameterFileName}}
+    poolName: ${{parameters.poolName}}
+    vmImage: ${{parameters.vmImage}}
+    dependsOn: ${{ parameters.dependsOn }}
+    condition: and(succeeded(), eq('${{parameters.runTemplateValidation}}', true))
+
+- job: "Online_Validation_${{parameters.templateName}}"
+  displayName: "Online Validation ${{parameters.templateName}}"
+  condition: and(succeeded(), eq('${{parameters.runTemplateValidation}}', true))
+  strategy:
+    matrix: $[ dependencies.getParameterFiles.outputs['getAllParameterFilesTask.ParameterFiles']]
+    maxParallel: ${{parameters.maxParallelTasks}}
+  workspace:
+    clean: all
+  dependsOn: getParameterFiles
+  pool:
+    ${{ if ne(parameters.vmImage, '') }}:
+      vmImage: ${{ parameters.vmImage }}
+    ${{ if ne(parameters.poolName, '') }}:
+      name: ${{ parameters.poolName }}
+  variables:
+    - name: templateValidationScriptPath
+      value: "scripts/pipelines/pipeline-template-validation.ps1"
+    - name: parameterFileMetadataParseScriptPath
+      value: "scripts/pipelines/pipeline-parse-parameter-file-metadata.ps1"
+    - name: getDeploymentTargetScriptPath
+      value: "scripts/pipelines/pipeline-get-deployment-target-from-parameter-file.ps1"
+    - name: testResultsCollectionScriptPath
+      value: "scripts/pipelines/pipeline-collect-test-result-files.ps1"
+    - ${{ if eq(parameters.parameterFileDirectory, '') }}:
+      - name: parameterFileDirectory
+        value: ${{ parameters.templateFileDirectory}}
+
+    - ${{ if ne(parameters.parameterFileDirectory, '') }}:
+      - name: parameterFileDirectory
+        value: ${{ parameters.parameterFileDirectory}}
+  steps:
+    - checkout: self
+      fetchDepth: 0
+    - download: none
+    - task: DownloadBuildArtifacts@0
+      displayName: "Download Parameter File Artifact"
+      condition: and(succeeded(), ne('${{parameters.parameterFileArtifactName}}', ''))
+      inputs:
+        artifactName: "${{parameters.parameterFileArtifactName}}"
+        downloadPath: '$(parameterFileDirectory)'
+
+    - task: DownloadBuildArtifacts@0
+      displayName: "Download Template File Artifact"
+      condition: and(succeeded(), ne('${{parameters.templateFileArtifactName}}', ''))
+      inputs:
+        artifactName: "${{parameters.templateFileArtifactName}}"
+    - task: CopyFiles@2
+      displayName: "Copy Updated Template File to Repo"
+      condition: and(succeeded(), ne('${{parameters.templateFileArtifactName}}', ''))
+      inputs:
+        SourceFolder: "$(System.ArtifactsDirectory)/${{parameters.templateFileArtifactName}}"
+        TargetFolder: "${{parameters.templateFileDirectory}}"
+        CleanTargetFolder: false
+        OverWrite: true
+    - template: ./template-task-install-bicep-cli.yml
+      parameters:
+        desiredVersion: '${{ parameters.preferredBicepCliVersion }}'
+    - template: ./template-task-install-ps-modules.yml
+      parameters:
+        displayName: "Install Az module v${{parameters.preferredAzurePowerShellVersion}}"
+        moduleNames: "Az`@${{parameters.preferredAzurePowerShellVersion}}"
+        shouldInstall: ${{ ne(parameters.preferredAzurePowerShellVersion, '') }}
+    - task: PowerShell@2
+      name: getDeploymentTarget
+      displayName: "Get Deployment Target"
+      inputs:
+        targetType: "filePath"
+        pwsh: true
+        filePath: $(getDeploymentTargetScriptPath)
+        arguments:
+          -parameterFileName '$(matrixParameterFileName)' `
+          -parameterFileArtifactName '${{parameters.parameterFileArtifactName}}' `
+          -parameterFileDirectory '$(parameterFileDirectory)' `
+          -targetName '${{parameters.targetName}}' `
+          -subscriptionName '${{parameters.subscriptionName}}'
+    - task: AzurePowerShell@5
+      displayName: "Template Validation - ${{parameters.templateName}}"
+      inputs:
+        azureSubscription: "${{parameters.azureServiceConnection}}"
+        pwsh: true
+        #If preferredAzurePowerShellVersion is not provided, or it's running on Self-hosted agents, then use the latest version of Az module
+        ${{ if or(eq(parameters.preferredAzurePowerShellVersion, ''), ne(parameters.poolName, '')) }}:
+          azurePowerShellVersion: 'LatestVersion'
+        #if preferredAzurePowerShellVersion is provided, and it's running on MS-hosted agents, then use the provided version of Az module
+        ${{ else }}:
+          azurePowerShellVersion: 'OtherVersion'
+          preferredAzurePowerShellVersion: '${{parameters.preferredAzurePowerShellVersion}}'
+        scriptType: filePath
+        scriptPath: $(templateValidationScriptPath)
+        scriptArguments:
+          -templateFileDirectory '${{parameters.templateFileDirectory}}' `
+          -templateFileName '${{parameters.templateFileName}}' `
+          -parameterFileName '$(matrixParameterFileName)' `
+          -parameterFileArtifactName '${{parameters.parameterFileArtifactName}}' `
+          -parameterFileDirectory '$(parameterFileDirectory)' `
+          -templateScope '${{parameters.templateScope}}' `
+          -azureLocation '${{parameters.azureLocation}}' `
+          -targetName '$(targetName)' `
+          -subscriptionName '$(subscriptionName)' `
+          -runWhatIfValidation '${{parameters.runWhatIfInTemplateValidation}}' `
+          -whatIfMaxRetry ${{parameters.whatIfMaxRetry}} `
+          -whatIfResultArtifactName '${{parameters.whatIfResultArtifactName}}' `
+          -bicepModuleSubscriptionId '${{ parameters.bicepModuleSubscriptionId }}'
+    - task: CopyFiles@2
+      displayName: "Copy Template What-If Result to Build Artifact Staging Directory"
+      condition: and(succeeded(), eq('${{parameters.runTemplateValidation}}', true), eq('${{parameters.runWhatIfInTemplateValidation}}', true), ne('${{parameters.whatIfResultArtifactName}}', ''))
+      inputs:
+        SourceFolder: "$(templateFileDirectory)/${{parameters.whatIfResultArtifactName}}"
+        TargetFolder: "$(Build.ArtifactStagingDirectory)/${{parameters.whatIfResultArtifactName}}-$(matrixParameterFileBaseName)"
+        CleanTargetFolder: true
+        OverWrite: true
+    - task: PublishBuildArtifacts@1
+      displayName: "Publish What-If Results Artifact"
+      condition: and(succeeded(), eq('${{parameters.runTemplateValidation}}', true), eq('${{parameters.runWhatIfInTemplateValidation}}', true), ne('${{parameters.whatIfResultArtifactName}}', ''))
+      inputs:
+        artifactName: "${{parameters.whatIfResultArtifactName}}-$(matrixParameterFileBaseName)"
+        PathtoPublish: "$(Build.ArtifactStagingDirectory)/${{parameters.whatIfResultArtifactName}}-$(matrixParameterFileBaseName)"

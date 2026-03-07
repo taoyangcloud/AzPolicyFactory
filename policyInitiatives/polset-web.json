@@ -1,0 +1,325 @@
+{
+  "name": "polset-web",
+  "properties": {
+    "displayName": "Azure App Services and Function Apps Policy Initiative",
+    "description": "This initiative includes policies that address the security controls for Azure App Services and Function Apps.",
+    "metadata": {
+      "category": "App Services",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "WEB-001_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "WEB-001 Effect: App Service and function app slots should only be accessible over HTTPS",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Disabled",
+          "Deny"
+        ],
+        "defaultValue": "Deny"
+      },
+      "WEB-002_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "WEB-002 Effect: App Service and Function apps should only be accessible over HTTPS",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Disabled",
+          "Deny"
+        ],
+        "defaultValue": "Deny"
+      },
+      "WEB-003_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "WEB-003 Effect: Function apps should only use approved identity providers for authentication",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Disabled",
+          "Deny"
+        ],
+        "defaultValue": "Deny"
+      },
+      "WEB-004_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "WEB-004 Effect: Prevent cross-subscription Private Link for App Services and Function Apps",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "WEB-005_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "WEB-005 Effect: Function apps should route application traffic over the virtual network",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "WEB-006_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "WEB-006 Effect: App Service and Function apps should route configuration traffic over the virtual network",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "WEB-007_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "WEB-007 Effect: Function apps should route configuration traffic over the virtual network",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "WEB-008_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "WEB-008 Effect: Function app slots should route configuration traffic over the virtual network",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Disabled",
+          "Deny"
+        ],
+        "defaultValue": "Deny"
+      },
+      "WEB-009_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "WEB-009 Effect: App Service apps should use a SKU that supports private link",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "WEB-010_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "WEB-010 Effect: Public network access should be disabled for App Services and Function Apps",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "WEB-011_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "WEB-010 Effect: Public network access should be disabled for App Service and Function App slots",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.9.2.4",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.9.2.4"
+      },
+      {
+        "name": "ISO27001-2013_A.10.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.10.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.2.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.2.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.3"
+      },
+      {
+        "name": "CB-AZ-011"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "WEB-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-fa-app-slot-without-https",
+        "parameters": {
+          "Effect": {
+            "value": "[parameters('WEB-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1",
+          "ISO27001-2013_A.13.2.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "WEB-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-fa-app-without-https",
+        "parameters": {
+          "Effect": {
+            "value": "[parameters('WEB-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1",
+          "ISO27001-2013_A.13.2.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "WEB-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-disallowed-easy-auth-identity-providers",
+        "parameters": {
+          "Effect": {
+            "value": "[parameters('WEB-003_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.9.2.4"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "WEB-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-asp-func-restrict-cross-sub-pe-connection",
+        "parameters": {
+          "Effect": {
+            "value": "[parameters('WEB-004_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "WEB-005",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-app-traffic-via-public-network",
+        "parameters": {
+          "Effect": {
+            "value": "[parameters('WEB-005_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3",
+          "CB-AZ-011"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "WEB-006",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-fa-app-config-traffic-via-public-network",
+        "parameters": {
+          "Effect": {
+            "value": "[parameters('WEB-006_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3",
+          "CB-AZ-011"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "WEB-007",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-fa-slots-app-traffic-via-public-network",
+        "parameters": {
+          "Effect": {
+            "value": "[parameters('WEB-007_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3",
+          "CB-AZ-011"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "WEB-008",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-fa-slots-config-traffic-via-public-network",
+        "parameters": {
+          "Effect": {
+            "value": "[parameters('WEB-008_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3",
+          "CB-AZ-011"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "WEB-009",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-enforce-app-sku-support-private-link",
+        "parameters": {
+          "Effect": {
+            "value": "[parameters('WEB-009_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1",
+          "CB-AZ-011"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "WEB-010",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-fa-app-public-network-access",
+        "parameters": {
+          "Effect": {
+            "value": "[parameters('WEB-010_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1",
+          "CB-AZ-011"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "WEB-011",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-fa-app-slot-public-network-access",
+        "parameters": {
+          "Effect": {
+            "value": "[parameters('WEB-011_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1",
+          "CB-AZ-011"
+        ]
+      }
+    ]
+  }
+}

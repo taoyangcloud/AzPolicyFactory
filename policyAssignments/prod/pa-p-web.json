@@ -1,0 +1,54 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-p-web",
+    "displayName": "Azure App Services and Function Apps Policies Prod",
+    "description": "Policy Assignment for Azure App Services and Function Apps - Prod",
+    "metadata": {
+      "category": "App Services"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/POLSET-WEB",
+    "identity": "None",
+    "parameters": {
+      "WEB-001_Effect": {
+        "value": "Deny"
+      },
+      "WEB-002_Effect": {
+        "value": "Deny"
+      },
+      "WEB-003_Effect": {
+        "value": "Deny"
+      },
+      "WEB-004_Effect": {
+        "value": "Audit"
+      },
+      "WEB-005_Effect": {
+        "value": "Deny"
+      },
+      "WEB-006_Effect": {
+        "value": "Deny"
+      },
+      "WEB-007_Effect": {
+        "value": "Deny"
+      },
+      "WEB-008_Effect": {
+        "value": "Deny"
+      },
+      "WEB-009_Effect": {
+        "value": "Deny"
+      },
+      "WEB-010_Effect": {
+        "value": "Deny"
+      },
+      "WEB-011_Effect": {
+        "value": "Deny"
+      }
+    },
+    "nonComplianceMessages": [],
+    "notScopes": [],
+    "roleDefinitionIds": [],
+    "additionalRoleAssignments": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO"
+}

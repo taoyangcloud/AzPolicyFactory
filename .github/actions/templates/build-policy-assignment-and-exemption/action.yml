@@ -1,0 +1,112 @@
+name: "Build Policy Assignment and Exemption Bicep Template"
+description: "Builds Bicep templates for Azure Policy Assignments and Exemptions by processing configuration files, and optionally updates non-compliance messages for assignments"
+author: "Tao Yang"
+
+inputs:
+  resource-type:
+    description: "Resource Type (assignment or exemption)"
+    required: true
+
+  config-files-path:
+    description: "Configuration Files Path"
+    required: true
+
+  config-file-exclude-path:
+    description: "Configuration File Excluded Paths"
+    required: false
+    default: ""
+
+  template-file-directory:
+    description: "Bicep Template Directory Path"
+    required: true
+
+  bicep-file-path:
+    description: "Bicep File Path"
+    required: true
+
+  bicep-variable-name:
+    description: "Bicep Variable Name"
+    required: true
+
+  output-dir:
+    description: "Output Directory"
+    required: true
+
+  policy-location-resource-id:
+    description: "Policy Definition Location Resource Id"
+    required: true
+
+  config-build-artifact-name:
+    description: "Configuration Build Artifact Name"
+    required: false
+    default: "policy_resource_config"
+
+  bicep-template-build-artifact-name:
+    description: "Bicep Template Build Artifact Name"
+    required: true
+
+outputs:
+  bicep-artifact-name:
+    description: "The name of the published Bicep template build artifact"
+    value: ${{ inputs.bicep-template-build-artifact-name }}
+  config-artifact-name:
+    description: "The name of the published configuration build artifact (only for assignments)"
+    value: ${{ inputs.config-build-artifact-name }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Azure Login
+      uses: Azure/login@v2
+      with:
+        creds: ${{ env.AZURE_CREDENTIALS }}
+        enable-AzPSSession: true
+    - name: Build Bicep Template
+      id: buildBicep
+      shell: pwsh
+      run: |
+        #Build Bicep Template
+        Write-Output '::group::Build Bicep Template'
+        $isPolicyExemption = ('${{ inputs.resource-type }}' -eq 'exemption')
+        $scriptPath = "${{ github.workspace }}/scripts/pipelines/pipeline-set-policy-resource-bicep-template-file.ps1"
+        & $scriptPath `
+          -bicepFilePath '${{ inputs.bicep-file-path }}' `
+          -bicepVariableName '${{ inputs.bicep-variable-name }}' `
+          -resourceFileFolder '${{ inputs.config-files-path }}' `
+          -isPolicyExemption $isPolicyExemption `
+          -excludePath '${{ inputs.config-file-exclude-path }}' `
+          -outputDir '${{ inputs.template-file-directory }}' `
+          -artifactName '${{ inputs.bicep-template-build-artifact-name }}' `
+          -updateBicepFileName 'main.bicep'
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        Write-Output '::endgroup::'
+
+    - name: Upload Bicep Template Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: "${{ inputs.bicep-template-build-artifact-name }}"
+        path: "${{ inputs.template-file-directory }}/${{ inputs.bicep-template-build-artifact-name }}"
+        if-no-files-found: error
+
+    - name: Update Non-Compliance Messages
+      if: inputs.resource-type == 'assignment'
+      shell: pwsh
+      run: |
+        #Update Non-Compliance Messages
+        Write-Output '::group::Update Non-Compliance Messages'
+        $scriptPath = "${{ github.workspace }}/scripts/pipelines/pipeline-set-policy-non-compliance-messages.ps1"
+        & $scriptPath `
+          -configFilePath '${{ inputs.config-files-path }}' `
+          -outputDir '${{ inputs.output-dir }}' `
+          -policyLocationResourceId '${{ inputs.policy-location-resource-id }}' `
+          -updatedConfigurationFileArtifactName '${{ inputs.config-build-artifact-name }}'
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        Write-Output '::endgroup::'
+
+    - name: Upload Config File Artifact
+      if: inputs.resource-type == 'assignment'
+      uses: actions/upload-artifact@v4
+      with:
+        name: "${{ inputs.config-build-artifact-name }}"
+        path: "${{ inputs.output-dir }}/${{ inputs.config-build-artifact-name }}"
+        if-no-files-found: error

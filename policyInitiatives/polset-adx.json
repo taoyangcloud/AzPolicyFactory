@@ -1,0 +1,164 @@
+{
+  "name": "polset-adx",
+  "properties": {
+    "displayName": "Azure Data Explorer Policy Initiative",
+    "description": "This policy initiative defines the foundation security requirements for Azure Data Explorer Clusters",
+    "metadata": {
+      "category": "Data Explorer",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "ADX-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADX-001 Effect: Audit ADX Use Private Link",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "ADX-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADX-002 Effect: Enforce ADX use Disk Encryption",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "ADX-003_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADX-003 Effect: Enforce ADX use Double Encryption",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "ADX-004_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADX-004 Effect: Enforce ADX use Custom-Managed Key Encryption",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "ADX-005_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADX-005 Effect: Enforce ADX Disable Public Network Access",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.10.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.10.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.2.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.2.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.3.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.3.1"
+      },
+      {
+        "name": "ISO27001-2013_A.14.1.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.14.1.2"
+      },
+      {
+        "name": "CB-AZ-011"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "ADX-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-adx-private-endpoints",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADX-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1",
+          "ISO27001-2013_A.14.1.2",
+          "CB-AZ-011"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ADX-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-adx-disk-encryption",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADX-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.3.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ADX-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-adx-double-encryption",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADX-003_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.3.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ADX-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-adx-encrypt-with-cmk",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADX-004_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.3.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ADX-005",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-adx-public-network-access",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADX-005_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.2.1"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+name: "Parse and Publish Pester Test Results"
+description: "Parses Pester test results in NUnit XML format, publishes check annotations and GitHub job summaries"
+author: "Tao Yang"
+
+inputs:
+  test-result-files:
+    description: "Glob pattern for NUnit XML test result files (e.g. '**/TEST-*.XML')"
+    required: true
+
+  test-title:
+    description: "Title for the test results displayed in job summary and check annotations"
+    required: false
+    default: "Pester Test Results"
+
+  check-name:
+    description: "Name for the GitHub check annotation"
+    required: false
+    default: "Pester Test Results"
+
+  fail-on-test-failure:
+    description: "Fail the step if any test failures are found"
+    required: false
+    default: "true"
+
+  skip-passed-tests-report:
+    description: "Show only failed tests in the job summary report"
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Output NUnit Results to Job Summary - ${{ inputs.test-title }}"
+      shell: pwsh
+      run: |
+        Write-Output '::group::Output NUnit Results to Job Summary'
+        $scriptPath = '${{ github.action_path }}/scripts/parse-pester-results.ps1'
+        & $scriptPath `
+          -InputFilePattern '${{ inputs.test-result-files }}' `
+          -TestTitle '${{ inputs.test-title }}' `
+          -SkipPassedTestsReport:('${{ inputs.skip-passed-tests-report }}' -match '^(true|\$true|1)$')
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        Write-Output '::endgroup::'

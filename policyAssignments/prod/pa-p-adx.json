@@ -1,0 +1,36 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-p-adx",
+    "displayName": "Azure Data Explorer Policies Prod",
+    "description": "Policy Assignment for Azure Data Explorer - Prod",
+    "metadata": {
+      "category": "Data Explorer"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/POLSET-ADX",
+    "identity": "None",
+    "parameters": {
+      "ADX-001_Effect": {
+        "value": "Audit"
+      },
+      "ADX-002_Effect": {
+        "value": "Deny"
+      },
+      "ADX-003_Effect": {
+        "value": "Deny"
+      },
+      "ADX-004_Effect": {
+        "value": "Audit"
+      },
+      "ADX-005_Effect": {
+        "value": "Deny"
+      }
+    },
+    "nonComplianceMessages": [],
+    "notScopes": [],
+    "roleDefinitionIds": [],
+    "additionalRoleAssignments": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO"
+}

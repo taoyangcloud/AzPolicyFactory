@@ -1,0 +1,52 @@
+{
+  "name": "pol-all-should-have-required-tag-value",
+  "properties": {
+    "displayName": "Resource Should have required tag value",
+    "mode": "Indexed",
+    "description": "Enforces a required tag and its value on resources",
+    "metadata": {
+      "category": "Tags",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "tagName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag Name",
+          "description": "Name of the tag, such as 'environment'"
+        }
+      },
+      "allowedTagValues": {
+        "type": "array",
+        "metadata": {
+          "displayName": "Allowed Tag Values",
+          "description": "Allowed values for the tag"
+        }
+      },
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "'Audit' allows a non-compliant resource to be created or updated, but flags it as non-compliant. 'Deny' blocks the non-compliant resource creation or update. 'Disabled' turns off the policy."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "[concat('tags[', parameters('tagName'), ']')]",
+        "notIn": "[parameters('allowedTagValues')]"
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

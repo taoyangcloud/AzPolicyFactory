@@ -1,0 +1,72 @@
+parameters:
+- name: parameterFileArtifactName
+  displayName: "Artifact Name of Update Parameter File"
+  type: string
+  default: ""
+
+- name: parameterFileDirectory
+  displayName: "Parameter File Directory"
+  type: string
+  default: ""
+
+- name: parameterFileName
+  displayName: "Parameter File Name (wildcard and regex supported)"
+  type: string
+  default: ""
+
+- name: poolName
+  displayName: "Self Hosted Agent Pool Name"
+  type: string
+  default: ""
+
+- name: vmImage
+  displayName: "MS Hosted Agent VM Image Name"
+  type: string
+  default: ""
+
+- name: dependsOn
+  displayName: "Depends on"
+  type: object
+  default: []
+
+- name: condition
+  displayName: "Custom Stage Conditions"
+  type: string
+  default: "succeeded()"
+
+jobs:
+  - job: getParameterFiles
+    displayName: Get Parameter Files
+    condition: ${{ parameters.condition }}
+    dependsOn: ${{parameters.dependsOn}}
+    variables:
+      - name: getParametersFilesScriptPath
+        value: "scripts/pipelines/pipeline-get-parameter-files.ps1"
+    workspace:
+      clean: all
+    pool:
+      ${{ if ne(parameters.vmImage, '') }}:
+        vmImage: ${{ parameters.vmImage }}
+      ${{ if ne(parameters.poolName, '') }}:
+        name: ${{ parameters.poolName }}
+    steps:
+      - checkout: self
+        fetchDepth: 0
+      - download: none
+      - task: DownloadBuildArtifacts@0
+        displayName: "Download Parameter File Artifact"
+        condition: and(succeeded(), ne('${{parameters.parameterFileArtifactName}}', ''))
+        inputs:
+          artifactName: "${{parameters.parameterFileArtifactName}}"
+          downloadPath: "${{parameters.parameterFileDirectory}}"
+      - task: PowerShell@2
+        name: getAllParameterFilesTask
+        displayName: "Get All Parameter Files"
+        inputs:
+          targetType: "filePath"
+          pwsh: true
+          filePath: $(getParametersFilesScriptPath)
+          arguments: >-
+            -parameterFileDir "${{parameters.parameterFileDirectory}}"
+            -parameterFileArtifactName "${{parameters.parameterFileArtifactName}}"
+            -parameterFileNamePattern '${{parameters.parameterFileName}}'

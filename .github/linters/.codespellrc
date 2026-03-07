@@ -1,0 +1,4 @@
+[codespell]
+ignore-words-list = re-use,AKS
+skip = *.gitignore,./.git
+quiet-level = 3

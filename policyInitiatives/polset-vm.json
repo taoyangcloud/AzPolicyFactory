@@ -1,0 +1,544 @@
+{
+  "name": "polset-vm",
+  "properties": {
+    "displayName": "Azure Virtual Machines Policy Initiative",
+    "description": "This policy initiative defines the security requirements for Virtual Machines",
+    "metadata": {
+      "category": "Compute",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "VM-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "VM-001 Effect: Network interfaces should disable IP forwarding",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "VM-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "VM-002 Effect: Network interfaces should not have public IPs",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "VM-003_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "VM-003 Effect: Machines should be configured to periodically check for missing system updates",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "VM-004_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "VM-004 Effect: Adaptive application controls for defining safe applications should be enabled on your machines",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "AuditIfNotExists"
+      },
+      "VM-005_Effect": {
+        "type": "String",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "VM-005 Effect: Internet-facing virtual machines should be protected with network security groups",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "defaultValue": "AuditIfNotExists"
+      },
+      "VM-006_Effect": {
+        "type": "String",
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "VM-006 Effect: All network ports should be restricted on network security groups associated to your virtual machine",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "defaultValue": "AuditIfNotExists"
+      },
+      "VM-007_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "VM-007 Effect: Only approved VM extensions should be installed",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "VM-007_ApprovedExtensions": {
+        "type": "Array",
+        "metadata": {
+          "description": "VM-007: The list of approved extension types that can be installed. Example: AzureDiskEncryption",
+          "displayName": "Approved VM extensions"
+        }
+      },
+      "VM-008_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "VM-008 Effect: RDP and SSH access from the Internet should be blocked",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "VM-009_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "VM-009 Effect: Deploy default Microsoft IaaSAntimalware extension for Windows Server with custom configurations",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "VM-009_EvaluationDelay": {
+        "type": "string",
+        "metadata": {
+          "displayName": "VM-009: Evaluation Delay for anti-malware Extension policy",
+          "description": "Specifies when the existence of the related resources should be evaluated. The delay is only used for evaluations that are a result of a create or update resource request. Allowed values are AfterProvisioning, AfterProvisioningSuccess, AfterProvisioningFailure, or an ISO 8601 duration between 0 and 360 minutes."
+        },
+        "defaultValue": "PT10M"
+      },
+      "VM-009_RealtimeProtectionEnabled": {
+        "type": "String",
+        "metadata": {
+          "displayName": "VM-009: Antimalware VM Extension Enable Real-Time Protection",
+          "description": "Indicates whether or not real time protection is enabled (default is true)"
+        },
+        "allowedValues": [
+          "True",
+          "False"
+        ],
+        "defaultValue": "True"
+      },
+      "VM-009_ExclusionsPaths": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+          "displayName": "VM-009: Antimalware VM Extension Excluded files and locations",
+          "description": "Semicolon delimited list of file paths or locations to exclude from scanning. We recommend avoiding the use of wildcard characters. For example: c:\\excluded-path-1;c:\\excluded-path-2"
+        }
+      },
+      "VM-009_ExclusionsExtensions": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+          "displayName": "VM-009: Antimalware VM Extension Excluded files extensions",
+          "description": "Semicolon delimited list of file extensions to exclude from scanning. We recommend avoiding the use of wildcard characters. For example: .ext1;.ext2"
+        }
+      },
+      "VM-009_ExclusionsProcesses": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+          "displayName": "VM-009: Antimalware VM Extension Excluded processes",
+          "description": "Semicolon delimited list of process names to exclude from scanning. No wildcard characters are permitted. For example: excludedproc1.exe;excludedproc2.exe"
+        }
+      },
+      "VM-009_ScheduledScanSettingsIsEnabled": {
+        "type": "string",
+        "defaultValue": "False",
+        "metadata": {
+          "displayName": "VM-009: Antimalware VM Extension Run a scheduled scan",
+          "description": "Indicates whether or not custom scheduled scan settings are enabled (default is false)"
+        },
+        "allowedValues": [
+          "True",
+          "False"
+        ]
+      },
+      "VM-009_ScheduledScanSettingsScanType": {
+        "type": "string",
+        "defaultValue": "Quick",
+        "metadata": {
+          "displayName": "VM-009: Antimalware VM Extension Scan type",
+          "description": "Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick when scheduled scan is enabled)"
+        },
+        "allowedValues": [
+          "Quick",
+          "Full"
+        ]
+      },
+      "VM-009_ScheduledScanSettingsDay": {
+        "type": "string",
+        "defaultValue": "7",
+        "metadata": {
+          "displayName": "VM-009: Antimalware VM Extension Scan day",
+          "description": "Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)"
+        },
+        "allowedValues": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ]
+      },
+      "VM-009_ScheduledScanSettingsTime": {
+        "type": "string",
+        "defaultValue": "120",
+        "metadata": {
+          "displayName": "VM-009: Antimalware VM Extension Scan time",
+          "description": "When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM."
+        }
+      },
+      "VM-009_ListOfImageIdToInclude": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "VM-009: Antimalware VM ExtensionOptional: List of VM images that have supported Windows OS to add to scope for Antimalware VM Extension policy",
+          "description": "Example values: '/subscriptions/<subscriptionId>/resourceGroups/YourResourceGroup/providers/Microsoft.Compute/images/ContosoStdImage'"
+        },
+        "defaultValue": []
+      },
+      "VM-009_ListOfImagePublisherToInclude": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "VM-009: Optional: List of VM Publishers that have supported Windows OS to add to scope for Antimalware VM Extension policy",
+          "description": "Example values: 'center-for-internet-security-inc'"
+        },
+        "defaultValue": [
+          "center-for-internet-security-inc"
+        ]
+      },
+      "VM-009_ListOfImageOfferToInclude": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "VM-009: Optional: List of VM Offers that have supported Windows OS to add to scope for Antimalware VM Extension policy",
+          "description": "Example values: 'cis-windows-server-2019-v1-0-0-l1'"
+        },
+        "defaultValue": [
+          "cis-windows-server-2019-v1-0-0-l1",
+          "cis-windows-server-2019-v1-0-0-l2",
+          "cis-windows-server-2022-l1",
+          "cis-windows-server-2022-l2"
+        ]
+      },
+      "VM-009_ListOfImageSkuToInclude": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "VM-009: Optional: List of VM SKU that have supported Windows OS to add to scope for Antimalware VM Extension policy",
+          "description": "Example values: 'cis-ws2019-l1'"
+        },
+        "defaultValue": [
+          "cis-ws2019-l1",
+          "cis-ws2019-l2",
+          "cis-windows-server-2022-l2",
+          "cis-windows-server-2022-l2-gen2"
+        ]
+      },
+      "VM-010_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "VM-010 Effect: Deploy Virtual Machine Auto Shutdown Schedule",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "VM-010_EvaluationDelay": {
+        "type": "string",
+        "metadata": {
+          "displayName": "VM-010: Evaluation Delay for VM Shutdown Schedule policy",
+          "description": "Specifies when the existence of the related resources should be evaluated. The delay is only used for evaluations that are a result of a create or update resource request. Allowed values are AfterProvisioning, AfterProvisioningSuccess, AfterProvisioningFailure, or an ISO 8601 duration between 0 and 360 minutes."
+        },
+        "defaultValue": "PT10M"
+      },
+      "VM-010_Time": {
+        "type": "string",
+        "metadata": {
+          "displayName": "VM-010: VM Shutdown Schedule time",
+          "description": "Specifies the time for VM Shutdown schedule."
+        },
+        "defaultValue": "1700"
+      },
+      "VM-010_TimezoneId": {
+        "type": "string",
+        "metadata": {
+          "displayName": "VM-010: VM Shutdown Schedule time zone Id",
+          "description": "Specifies the timezone Id for the VM Shutdown schedule policy."
+        },
+        "defaultValue": "UTC"
+      },
+      "VM-010_EnableNotification": {
+        "type": "string",
+        "defaultValue": "Disabled",
+        "metadata": {
+          "displayName": "VM-010: Send Notification before auto-shutdown for VM Shutdown schedule",
+          "description": "If notifications are enabled for this schedule (i.e. Enabled, Disabled)."
+        },
+        "allowedValues": [
+          "Disabled",
+          "Enabled"
+        ]
+      },
+      "VM-010_NotificationEmailRecipient": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+          "displayName": "VM-010: Email Address for VM Shutdown schedule notification",
+          "description": "Email address to be used for notification"
+        }
+      },
+      "VM-010_NotificationWebhookUrl": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+          "displayName": "VM-010: Webhook URL for VM Shutdown schedule notification",
+          "description": "A notification will be posted to the specified webhook endpoint when the auto-shutdown is about to happen."
+        }
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.12.2.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.2.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.6.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.6.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.6.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.6.2"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.3"
+      },
+      {
+        "name": "CB-AZ-051"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "VM-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-deny-nic-with-ip-forwarding",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VM-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "VM-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-deny-nic-with-public-ip",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VM-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "VM-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-deny-vm-update-assessment",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VM-003_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.6.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "VM-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-vm-enable-adaptive-application-controls",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VM-004_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.6.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "VM-005",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-vm-internet-facing-vms-should-be-protected-with-nsg",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VM-005_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.6.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "VM-006",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-vm-restrict-nsg-network-ports",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VM-006_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "VM-007",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-vm-install-approved-extensions",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VM-007_Effect')]"
+          },
+          "approvedExtensions": {
+            "value": "[parameters('VM-007_ApprovedExtensions')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.6.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "VM-008",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-vm-restrict-rdp-ssh-access-from-internet",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VM-008_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "VM-009",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-vm-iaasantimalware-extension-for-windows-servers",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VM-009_Effect')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('VM-009_EvaluationDelay')]"
+          },
+          "RealtimeProtectionEnabled": {
+            "value": "[parameters('VM-009_RealtimeProtectionEnabled')]"
+          },
+          "ExclusionsPaths": {
+            "value": "[parameters('VM-009_ExclusionsPaths')]"
+          },
+          "ExclusionsExtensions": {
+            "value": "[parameters('VM-009_ExclusionsExtensions')]"
+          },
+          "ExclusionsProcesses": {
+            "value": "[parameters('VM-009_ExclusionsProcesses')]"
+          },
+          "ScheduledScanSettingsIsEnabled": {
+            "value": "[parameters('VM-009_ScheduledScanSettingsIsEnabled')]"
+          },
+          "ScheduledScanSettingsScanType": {
+            "value": "[parameters('VM-009_ScheduledScanSettingsScanType')]"
+          },
+          "ScheduledScanSettingsDay": {
+            "value": "[parameters('VM-009_ScheduledScanSettingsDay')]"
+          },
+          "ScheduledScanSettingsTime": {
+            "value": "[parameters('VM-009_ScheduledScanSettingsTime')]"
+          },
+          "listOfImageIdToInclude": {
+            "value": "[parameters('VM-009_ListOfImageIdToInclude')]"
+          },
+          "listOfImagePublisherToInclude": {
+            "value": "[parameters('VM-009_ListOfImagePublisherToInclude')]"
+          },
+          "listOfImageOfferToInclude": {
+            "value": "[parameters('VM-009_ListOfImageOfferToInclude')]"
+          },
+          "listOfImageSkuToInclude": {
+            "value": "[parameters('VM-009_ListOfImageSkuToInclude')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.2.1",
+          "CB-AZ-051"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "VM-010",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-vm-shutdown-schedule",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VM-010_Effect')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('VM-010_EvaluationDelay')]"
+          },
+          "time": {
+            "value": "[parameters('VM-010_Time')]"
+          },
+          "timeZoneId": {
+            "value": "[parameters('VM-010_TimezoneId')]"
+          },
+          "enableNotification": {
+            "value": "[parameters('VM-010_EnableNotification')]"
+          },
+          "notificationEmailRecipient": {
+            "value": "[parameters('VM-010_NotificationEmailRecipient')]"
+          },
+          "notificationWebhookUrl": {
+            "value": "[parameters('VM-010_NotificationWebhookUrl')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.6.1"
+        ]
+      }
+    ]
+  }
+}

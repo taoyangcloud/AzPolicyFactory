@@ -1,0 +1,102 @@
+parameters:
+  - name: poolName
+    displayName: "Self Hosted Agent Pool Name"
+    type: string
+    default: ""
+
+  - name: vmImage
+    displayName: "MS Hosted Agent VM Image Name"
+    type: string
+    default: ""
+
+  - name: condition
+    displayName: "Custom Stage Conditions"
+    type: string
+    default: "succeeded()"
+
+  - name: environment
+    displayName: "Environment"
+    type: string
+
+  - name: definitionFilePath
+    displayName: "Policy Definition Path"
+    type: string
+
+  - name: definitionFileExcludePath
+    displayName: "Policy Definition Excluded Paths"
+    type: string
+    default: ""
+
+  - name: templateFileDirectory
+    displayName: "Bicep Template Directory Path"
+    type: string
+
+  - name: bicepFilePath
+    displayName: "Bicep File Path"
+    type: string
+
+  - name: bicepVariableName
+    displayName: "Bicep Variable Name"
+    type: string
+    default: 'policyDefinitions'
+
+  - name: buildArtifactName
+    displayName: "Build Artifact Name"
+    type: string
+
+  - name: dependsOn
+    displayName: "Depends on"
+    type: object
+    default: []
+
+stages:
+  - stage: "build_${{ parameters.environment }}"
+    displayName: "Build ${{ parameters.environment }}"
+    dependsOn: ${{ parameters.dependsOn }}
+    condition: ${{ parameters.condition }}
+    jobs:
+    - job: buildBicepTemplate
+      displayName: "Build Bicep Template"
+      workspace:
+        clean: all
+      pool:
+        ${{ if ne(parameters.vmImage, '') }}:
+          vmImage: ${{ parameters.vmImage }}
+        ${{ if ne(parameters.poolName, '') }}:
+          name: ${{ parameters.poolName }}
+      variables:
+        - name: bicepBuildScriptPath
+          value: "scripts/pipelines/pipeline-set-policy-resource-bicep-template-file.ps1"
+        - name: buildArtifactName
+          value: '${{ parameters.buildArtifactName }}'
+      steps:
+        - checkout: self
+          fetchDepth: 0
+        - task: PowerShell@2
+          name: buildBicep
+          displayName: "Build Bicep Template"
+          inputs:
+            targetType: "filePath"
+            pwsh: true
+            filePath: $(bicepBuildScriptPath)
+            arguments:
+              -bicepFilePath '${{ parameters.bicepFilePath }}' `
+              -bicepVariableName '${{ parameters.bicepVariableName }}' `
+              -resourceFileFolder '${{ parameters.definitionFilePath }}' `
+              -excludePath '${{ parameters.definitionFileExcludePath }}' `
+              -outputDir '${{ parameters.templateFileDirectory }}' `
+              -artifactName '$(buildArtifactName)' `
+              -updateBicepFileName 'main.bicep'
+            errorActionPreference: 'stop'
+        - task: CopyFiles@2
+          displayName: "Copy Updated Bicep Template to Build Artifact Staging Directory"
+          inputs:
+            SourceFolder: "${{ parameters.templateFileDirectory }}/$(buildArtifactName)"
+            TargetFolder: "$(Build.ArtifactStagingDirectory)/$(buildArtifactName)"
+            CleanTargetFolder: true
+            OverWrite: true
+        - task: PublishBuildArtifacts@1
+          displayName: "Publish Bicep Template Artifact"
+          inputs:
+            artifactName: "$(buildArtifactName)"
+            PathtoPublish: "$(Build.ArtifactStagingDirectory)/$(buildArtifactName)"

@@ -1,0 +1,30 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-p-databricks",
+    "displayName": "Databricks Policies Prod",
+    "description": "Policy Assignment for Azure Databricks - Prod",
+    "metadata": {
+      "category": "Databricks"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-databricks",
+    "identity": "None",
+    "parameters": {
+      "ADB-001_Effect": {
+        "value": "Deny"
+      },
+      "ADB-002_Effect": {
+        "value": "Deny"
+      },
+      "ADB-003_Effect": {
+        "value": "Deny"
+      },
+      "ADB-004_Effect": {
+        "value": "Deny"
+      }
+    },
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO"
+}

@@ -1,0 +1,126 @@
+{
+  "name": "polset-acr",
+  "properties": {
+    "displayName": "Azure Container Registry Policy Initiative",
+    "description": "This policy initiative defines the foundation security requirements for Azure Container Registries",
+    "metadata": {
+      "category": "Container Registry",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "ACR-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ACR-001 Effect: Enforce ACR CMK Encryption",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "ACR-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ACR-002 Effect: Enforce ACR Premium SKU",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "ACR-003_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ACR-003 Effect: Enforce ACR Disable Public Network Access",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "A.10.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.10.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.3"
+      },
+      {
+        "name": "AU_ISM_507"
+      },
+      {
+        "name": "CB-AZ-011"
+      },
+      {
+        "name": "AU_ISM_520",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/AU_ISM_520"
+      },
+      {
+        "name": "AU_ISM_1182",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/AU_ISM_1182"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "ACR-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-acr-encrypt-with-cmk",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ACR-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "A.10.1.1",
+          "AU_ISM_507"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ACR-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-acr-using-premium-sku",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ACR-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1",
+          "AU_ISM_520",
+          "AU_ISM_1182"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ACR-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-acr-disable-public-network-access",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ACR-003_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3",
+          "AU_ISM_520",
+          "AU_ISM_1182",
+          "CB-AZ-011"
+        ]
+      }
+    ]
+  }
+}

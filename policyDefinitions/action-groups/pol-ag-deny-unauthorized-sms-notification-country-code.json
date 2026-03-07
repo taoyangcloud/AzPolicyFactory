@@ -1,0 +1,59 @@
+{
+  "name": "pol-ag-deny-unauthorized-sms-notification-country-code",
+  "properties": {
+    "displayName": "Restrict Azure Monitor Action Group Send SMS Notification to Unauthorized country codes",
+    "description": "Deny Azure Monitor Action Groups that send SMS notifications to phone numbers that have unauthorized country code.",
+    "metadata": {
+      "category": "Monitoring",
+      "version": "1.0.0",
+      "preview": false,
+      "depreciated": false
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "allowedCountryCodes": {
+        "type": "array",
+        "metadata": {
+          "displayName": "Allowed Country Codes for SMS Notifications",
+          "description": "The list of allowed country codes for receiving SMS notifications."
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Insights/actiongroups"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Insights/actiongroups/smsReceivers[*]",
+              "where": {
+                "field": "Microsoft.Insights/actiongroups/smsReceivers[*].countryCode",
+                "notIn": "[parameters('allowedCountryCodes')]"
+              }
+            },
+            "greater": 0
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

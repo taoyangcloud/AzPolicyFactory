@@ -1,0 +1,174 @@
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger: none
+
+variables:
+  - name: templateName
+    value: PolicyDef
+  - name: templateFileDirectory
+    value: "bicep/templates/policyDefinitions"
+  - name: definitionFileDirectory
+    value: "policyDefinitions"
+  - name: templateFileName
+    value: "main.bicep"
+  - name: outputFileArtifactSuffix
+    value: "Outputs"
+  - template: "../../../settings.yml"
+
+stages:
+  - template: ../../templates/template-stage-initiation.yml
+    parameters:
+      vmImage: "${{ variables['defaultAgentPoolName'] }}"
+
+#policy pester test stage
+  - template: ../../templates/template-stage-policy-tests.yml
+    parameters:
+      vmImage: "${{ variables['defaultAgentPoolName'] }}"
+      policyFilesDirectory: "${{ variables['definitionFileDirectory'] }}"
+      dependsOn: [initiation]
+      runPolicyJsonPesterTests: true
+      runPolicyDefinitionPesterTests: true
+      runPolicyInitiativePesterTests: false
+
+# dev build stage
+  - template: ../../templates/template-stage-policy-def-build.yml
+    parameters:
+      dependsOn: [policy_tests]
+      condition: "and(succeeded(), eq(dependencies.policy_tests.result, 'Succeeded'))"
+      vmImage: "${{ variables['defaultAgentPoolName'] }}"
+      environment: "${{ variables['devEnv'] }}"
+      definitionFilePath: "${{ variables['definitionFileDirectory'] }}"
+      bicepFilePath: "${{ variables['templateFileDirectory'] }}/${{ variables['templateFileName'] }}"
+      templateFileDirectory: "${{ variables['templateFileDirectory'] }}"
+      bicepVariableName: 'policyDefinitions'
+      buildArtifactName: "policy_def_bicep_${{ variables['devEnv'] }}"
+
+# prod build stage
+  - template: ../../templates/template-stage-policy-def-build.yml
+    parameters:
+      dependsOn: [policy_tests]
+      condition: "and(succeeded(), eq(dependencies.policy_tests.result, 'Succeeded'))"
+      vmImage: "${{ variables['defaultAgentPoolName'] }}"
+      environment: "${{ variables['prodEnv'] }}"
+      definitionFilePath: "${{ variables['definitionFileDirectory'] }}"
+      bicepFilePath: "${{ variables['templateFileDirectory'] }}/${{ variables['templateFileName'] }}"
+      templateFileDirectory: "${{ variables['templateFileDirectory'] }}"
+      bicepVariableName: 'policyDefinitions'
+      buildArtifactName: "policy_def_bicep_${{ variables['prodEnv'] }}"
+
+# dev test stage
+  - stage: test_dev
+    displayName: "Test dev"
+    condition: and(succeeded(), eq(dependencies.build_${{ variables['devEnv'] }}.result, 'Succeeded'))
+    dependsOn:
+      - build_${{ variables['devEnv'] }}
+    variables:
+      environment: "${{ variables['devEnv'] }}"
+      whatIfResultArtifactName: "${{ variables['templateName'] }}-${{ variables['environment'] }}-whatIf-result"
+      serviceConnection: "${{ variables['ado-devPolicyServiceConnection'] }}"
+    jobs:
+    - template: ../../templates/template-job-test-and-validate.yml
+      parameters:
+        templateName: "${{ variables['templateName'] }}"
+        templateFileDirectory: "${{ variables['templateFileDirectory'] }}"
+        templateFileName: "${{ variables['templateFileName'] }}"
+        templateFileArtifactName: "policy_def_bicep_${{ variables['devEnv'] }}"
+        azureServiceConnection: "${{ variables['serviceConnection'] }}"
+        vmImage: "${{ variables['defaultAgentPoolName'] }}"
+        psRuleBaselineName: "Azure.Default"
+        runBicepSupportFilesTests: true
+        runPSRuleTests: true
+        runTemplateValidation: true
+        runWhatIfInTemplateValidation: false
+        runBicepLinter: true
+        maxParallelTasks: 0
+        whatIfResultArtifactName: "${{ variables['whatIfResultArtifactName'] }}"
+        templateScope: "managementGroup"
+        azureLocation: $(default-region)
+        targetName: "${{ variables['devManagementGroup'] }}"
+        preferredBicepCliVersion: "${{ variables['preferredBicepCliVersion'] }}"
+
+# prod test stage
+  - stage: test_prod
+    displayName: "Test prod"
+    condition: and(succeeded(), eq(dependencies.build_${{ variables['prodEnv'] }}.result, 'Succeeded'))
+    dependsOn:
+      - build_${{ variables['prodEnv'] }}
+    variables:
+      environment: "${{ variables['prodEnv'] }}"
+      whatIfResultArtifactName: "${{ variables['templateName'] }}-${{ variables['environment'] }}-whatIf-result"
+      serviceConnection: "${{ variables['ado-prodPolicyServiceConnection'] }}"
+    jobs:
+    - template: ../../templates/template-job-test-and-validate.yml
+      parameters:
+        templateName: "${{ variables['templateName'] }}"
+        templateFileDirectory: "${{ variables['templateFileDirectory'] }}"
+        templateFileName: "${{ variables['templateFileName'] }}"
+        templateFileArtifactName: "policy_def_bicep_${{ variables['prodEnv'] }}"
+        azureServiceConnection: "${{ variables['serviceConnection'] }}"
+        vmImage: "${{ variables['defaultAgentPoolName'] }}"
+        psRuleBaselineName: "Azure.Default"
+        runBicepSupportFilesTests: true
+        runPSRuleTests: true
+        runTemplateValidation: true
+        runWhatIfInTemplateValidation: false
+        runBicepLinter: true
+        maxParallelTasks: 0
+        whatIfResultArtifactName: "${{ variables['whatIfResultArtifactName'] }}"
+        templateScope: "managementGroup"
+        azureLocation: $(default-region)
+        targetName: "${{ variables['prodManagementGroup'] }}"
+        preferredBicepCliVersion: "${{ variables['preferredBicepCliVersion'] }}"
+
+# dev deploy stage
+  - template: ../../templates/template-stage-multiple-deployments.yml
+    parameters:
+      vmImage: "${{ variables['defaultAgentPoolName'] }}"
+      dependsOn:
+        - test_dev
+      condition: "and(succeeded(), eq(dependencies.test_dev.result, 'Succeeded'))"
+      stageName: "deploy_dev"
+      stageDisplayName: "Deploy Dev"
+      deploymentJobName: "deploy_${{ variables['templateName'] }}"
+      templateName: "${{ variables['templateName'] }}"
+      templateFileDirectory: "${{ variables['templateFileDirectory'] }}"
+      templateFileArtifactName: "policy_def_bicep_${{ variables['devEnv'] }}"
+      azureServiceConnection: "${{ variables['ado-devPolicyServiceConnection'] }}"
+      templateScope: "managementGroup"
+      azureLocation: "${{ variables['default-region'] }}"
+      maxParallelTasks: 0
+      targetName: "${{ variables['devManagementGroup'] }}"
+      retryFailedDeployment: true
+      publishDeploymentOutputs: true
+      deploymentOutputVariablePrefix: "${{ variables['devEnv'] }}"
+      maxWaitMinutes: 60
+      httpTimeoutSeconds: 1000
+      timeoutInMinutes: 60
+      preferredBicepCliVersion: "${{ variables['preferredBicepCliVersion'] }}"
+
+# prod deploy stage
+  - template: ../../templates/template-stage-multiple-deployments.yml
+    parameters:
+      vmImage: "${{ variables['defaultAgentPoolName'] }}"
+      dependsOn:
+        - test_prod
+        - deploy_dev
+      condition: "and(succeeded(), eq(dependencies.test_prod.result, 'Succeeded'), eq(dependencies.deploy_dev.result, 'Succeeded'), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/')))"
+      stageName: "deploy_prod"
+      stageDisplayName: "Deploy Prod"
+      deploymentJobName: "deploy_${{ variables['templateName'] }}"
+      templateName: "${{ variables['templateName'] }}"
+      templateFileDirectory: "${{ variables['templateFileDirectory'] }}"
+      templateFileArtifactName: "policy_def_bicep_${{ variables['prodEnv'] }}"
+      azureServiceConnection: "${{ variables['ado-prodPolicyServiceConnection'] }}"
+      templateScope: "managementGroup"
+      azureLocation: "${{ variables['default-region'] }}"
+      maxParallelTasks: 0
+      targetName: "${{ variables['prodManagementGroup'] }}"
+      retryFailedDeployment: true
+      publishDeploymentOutputs: true
+      deploymentOutputVariablePrefix: "${{ variables['prodEnv'] }}"
+      maxWaitMinutes: 60
+      httpTimeoutSeconds: 1000
+      timeoutInMinutes: 60
+      preferredBicepCliVersion: "${{ variables['preferredBicepCliVersion'] }}"

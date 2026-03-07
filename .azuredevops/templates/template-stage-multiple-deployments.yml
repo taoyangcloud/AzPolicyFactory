@@ -1,0 +1,314 @@
+parameters:
+- name: stageName
+  displayName: "Stage Name"
+  type: string
+
+- name: stageDisplayName
+  displayName: Stage Display Name
+  type: string
+
+- name: deploymentJobName
+  displayName: "Deployment Job Name"
+  type: string
+
+- name: templateName
+  displayName: "Template Name"
+  type: string
+
+- name: templateFileDirectory
+  displayName: "Template File Directory"
+  type: string
+
+- name: templateFileName
+  displayName: "Template File Name"
+  type: string
+  default: "main.bicep"
+
+- name: templateFileArtifactName
+  displayName: "Artifact Name of Update Template File"
+  type: string
+  default: ""
+
+- name: parameterFileArtifactName
+  displayName: "Artifact Name of Update Parameter File"
+  type: string
+  default: ""
+
+- name: parameterFileDirectory
+  displayName: "Parameter File Directory"
+  type: string
+  default: ""
+
+- name: parameterFileName
+  displayName: "Parameter File Name (wildcard and regex supported)"
+  type: string
+  default: ""
+
+- name: additionalResourceArtifactName
+  displayName: "Artifact Name of additional resources (Optional)"
+  type: string
+  default: ""
+
+- name: additionalResourceDirectory
+  displayName: "Directory for additional resources (Optional)"
+  type: string
+  default: ""
+
+- name: azureServiceConnection
+  displayName: "Name of the Azure Service Connection"
+  type: string
+
+- name: poolName
+  displayName: "Self Hosted Agent Pool Name"
+  type: string
+  default: ""
+
+- name: vmImage
+  displayName: "MS Hosted Agent VM Image Name"
+  type: string
+  default: ""
+
+- name: templateScope
+  displayName: Template Scope
+  type: string
+  default: "resourceGroup"
+  values:
+  - "resourceGroup"
+  - "subscription"
+  - "managementGroup"
+  - "tenant"
+
+- name: azureLocation
+  displayName: "Azure Location"
+  type: string
+
+- name: timeoutInMinutes
+  displayName: "Timeout in Minutes"
+  type: number
+  default: 180
+
+- name: uniqueBuildIdPrefix
+  displayName: "Prefix to add to Build ID" # Required to avoid duplicate deployment names with template deployments in a loop
+  type: string
+  default: ""
+
+- name: bicepModuleSubscriptionId
+  displayName: "Bicep module subscription Id (Optional)"
+  type: string
+  default: ""
+
+- name: targetName
+  displayName: "Target name. When scope is 'managementGroup' or 'resourceGroup', this is the name of the Management Group or Resource Group."
+  type: string
+  default: ""
+
+- name: subscriptionName
+  displayName: "Target name. When scope is 'subscription' or 'resourceGroup', this is the name of the subscription."
+  type: string
+  default: ""
+
+- name: publishDeploymentOutputs
+  displayName: "Publish Deployment Outputs to Artifact"
+  type: boolean
+  default: true
+
+- name: deploymentOutputVariablePrefix
+  displayName: "Deployment Output Variable name prefix (when specified, A pipeline variable will be created for each deployment output as '${prefix}_${outputName}'' )"
+  type: string
+  default: ""
+
+- name: retryFailedDeployment
+  displayName: "Retry Failed Deployment"
+  type: boolean
+  default: true
+
+- name: maxWaitMinutes
+  displayName: "Maximum time in minutes to wait before retrying Failed Deployment"
+  type: number
+  default: 60
+
+- name: retryDelayInSeconds
+  displayName: "Delay in Seconds Before Retry Failed Deployments"
+  type: number
+  default: 60
+
+- name: httpTimeoutSeconds
+  displayName: "ARM Deployment request HTTP Timeout Seconds"
+  type: number
+  default: 1000
+  values:
+    - 100
+    - 300
+    - 500
+    - 1000
+
+- name: preferredAzurePowerShellVersion
+  displayName: "Az Powershell module version."
+  type: string
+  default: ""
+
+- name: preferredBicepCliVersion
+  displayName: "Bicep CLI version."
+  type: string
+  default: ""
+
+- name: condition
+  displayName: "Custom Stage Conditions"
+  type: string
+  default: "succeeded()"
+
+- name: dependsOn
+  displayName: "Depends on"
+  type: object
+  default: []
+
+- name: maxParallelTasks
+  displayName: "Maximum number of parallel deployment tasks. Default is 0 (unlimited)."
+  type: number
+  default: 0
+
+stages:
+  - stage: ${{ parameters.stageName }}
+    condition: ${{ parameters.condition }}
+    displayName: ${{ parameters.stageDisplayName }}
+    dependsOn: ${{ parameters.dependsOn }}
+    variables:
+    - ${{ if eq(parameters.parameterFileDirectory, '') }}:
+      - name: parameterFileDirectory
+        value: ${{ parameters.templateFileDirectory}}
+
+    - ${{ if ne(parameters.parameterFileDirectory, '') }}:
+      - name: parameterFileDirectory
+        value: ${{ parameters.parameterFileDirectory}}
+    jobs:
+      - template: template-job-get-parameter-files.yml
+        parameters:
+          parameterFileArtifactName: ${{parameters.parameterFileArtifactName}}
+          parameterFileDirectory: $(parameterFileDirectory)
+          parameterFileName: ${{parameters.parameterFileName}}
+          poolName: ${{parameters.poolName}}
+          vmImage: ${{parameters.vmImage}}
+      - job: "${{parameters.deploymentJobName}}"
+        displayName: "Deploy ${{parameters.templateName}}"
+        dependsOn: ['getParameterFiles']
+        pool:
+          ${{ if ne(parameters.vmImage, '') }}:
+            vmImage: ${{ parameters.vmImage }}
+          ${{ if ne(parameters.poolName, '') }}:
+            name: ${{ parameters.poolName }}
+        variables:
+        - name: getDeploymentTargetScriptPath
+          value: "scripts/pipelines/pipeline-get-deployment-target-from-parameter-file.ps1"
+        - name: templateDeploymentScriptPath
+          value: "scripts/pipelines/pipeline-template-deployment-rest.ps1"
+        strategy:
+          matrix: $[ dependencies.getParameterFiles.outputs['getAllParameterFilesTask.ParameterFiles']]
+          maxParallel: ${{parameters.maxParallelTasks}}
+        timeoutInMinutes: ${{parameters.timeoutInMinutes}}
+        steps:
+          - checkout: self
+            fetchDepth: 0
+          - download: none
+          - template: ./template-task-install-bicep-cli.yml
+            parameters:
+              desiredVersion: '${{ parameters.preferredBicepCliVersion }}'
+          - template: ./template-task-install-ps-modules.yml
+            parameters:
+              displayName: "Install Az module v${{parameters.preferredAzurePowerShellVersion}}"
+              moduleNames: "Az`@${{parameters.preferredAzurePowerShellVersion}}"
+              shouldInstall: ${{ ne(parameters.preferredAzurePowerShellVersion, '') }}
+          - task: DownloadBuildArtifacts@0
+            displayName: "Download Parameter File Artifact"
+            condition: and(succeeded(), ne('${{parameters.parameterFileArtifactName}}', ''))
+            inputs:
+              artifactName: "${{parameters.parameterFileArtifactName}}"
+              downloadPath: '$(parameterFileDirectory)'
+          - task: DownloadBuildArtifacts@0
+            displayName: "Download Template File Artifact"
+            condition: and(succeeded(), ne('${{parameters.templateFileArtifactName}}', ''))
+            inputs:
+              artifactName: "${{parameters.templateFileArtifactName}}"
+          - task: CopyFiles@2
+            displayName: "Copy Updated Bicep Template from Build Artifact Staging Directory"
+            condition: and(succeeded(), ne('${{parameters.templateFileArtifactName}}', ''))
+            inputs:
+              SourceFolder: "$(Build.ArtifactStagingDirectory)/${{parameters.templateFileArtifactName}}"
+              TargetFolder: "${{parameters.templateFileDirectory}}"
+              CleanTargetFolder: false
+              OverWrite: true
+          - task: DownloadBuildArtifacts@0
+            displayName: "Download Additional Resource Artifact"
+            condition: and(succeeded(), ne('${{parameters.additionalResourceArtifactName}}', ''))
+            inputs:
+              artifactName: "${{parameters.additionalResourceArtifactName}}"
+          - task: CopyFiles@2
+            displayName: "Copy Additional Resource to Repo"
+            condition: and(succeeded(), ne('${{parameters.additionalResourceArtifactName}}', ''))
+            inputs:
+              SourceFolder: "$(System.ArtifactsDirectory)/${{parameters.additionalResourceArtifactName}}"
+              TargetFolder: "$(System.DefaultWorkingDirectory)/${{parameters.additionalResourceDirectory}}/"
+              CleanTargetFolder: false
+              OverWrite: true
+          - task: PowerShell@2
+            name: getDeploymentTarget
+            displayName: "Get Deployment Target"
+            inputs:
+              targetType: "filePath"
+              pwsh: true
+              filePath: $(getDeploymentTargetScriptPath)
+              arguments:
+                -parameterFileName '$(matrixParameterFileName)' `
+                -parameterFileArtifactName '${{parameters.parameterFileArtifactName}}' `
+                -parameterFileDirectory '$(parameterFileDirectory)' `
+                -targetName '${{parameters.targetName}}' `
+                -subscriptionName '${{parameters.subscriptionName}}'
+          - task: AzurePowerShell@5
+            name: template_deployment
+            displayName: "Template Deployment - ${{parameters.templateName}}"
+            inputs:
+              azureSubscription: "${{parameters.azureServiceConnection}}"
+              pwsh: true
+              #If preferredAzurePowerShellVersion is not provided, or it's running on Self-hosted agents, then use the latest version of Az module
+              ${{ if or(eq(parameters.preferredAzurePowerShellVersion, ''), ne(parameters.poolName, '')) }}:
+                azurePowerShellVersion: 'LatestVersion'
+              #if preferredAzurePowerShellVersion is provided, and it's running on MS-hosted agents, then use the provided version of Az module
+              ${{ else }}:
+                azurePowerShellVersion: 'OtherVersion'
+                preferredAzurePowerShellVersion: '${{parameters.preferredAzurePowerShellVersion}}'
+              scriptType: filePath
+              scriptPath: $(templateDeploymentScriptPath)
+              scriptArguments:
+                -templateFileDirectory '${{parameters.templateFileDirectory}}' `
+                -templateFileName '${{parameters.templateFileName}}' `
+                -parameterFileName '$(matrixParameterFileName)' `
+                -templateName '${{parameters.templateName}}' `
+                -uniqueBuildIdPrefix '${{parameters.uniqueBuildIdPrefix}}' `
+                -parameterFileArtifactName '${{parameters.parameterFileArtifactName}}' `
+                -parameterFileDirectory '$(parameterFileDirectory)' `
+                -SystemDefaultWorkingDirectory '$(System.DefaultWorkingDirectory)' `
+                -BuildNumber $(Build.BuildId) `
+                -templateScope '${{parameters.templateScope}}' `
+                -azureLocation '${{parameters.azureLocation}}' `
+                -targetName '$(targetName)' `
+                -subscriptionName '$(subscriptionName)' `
+                -retryFailedDeployment $${{parameters.retryFailedDeployment}} `
+                -maxWaitMinutes ${{parameters.maxWaitMinutes}} `
+                -httpTimeoutSeconds ${{ parameters.httpTimeoutSeconds }} `
+                -retryDelayInSeconds ${{parameters.retryDelayInSeconds}} `
+                -publishDeploymentOutputs $${{parameters.publishDeploymentOutputs}} `
+                -deploymentOutputVariablePrefix '${{parameters.deploymentOutputVariablePrefix}}'
+                -bicepModuleSubscriptionId '${{ parameters.bicepModuleSubscriptionId }}'
+          - task: CopyFiles@2
+            displayName: "Copy Deployment Outputs to Build Artifact Staging Directory"
+            condition: and(succeeded(), eq('${{parameters.publishDeploymentOutputs}}', true))
+            inputs:
+              SourceFolder: "${{parameters.templateFileDirectory}}/Outputs"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/Outputs"
+              CleanTargetFolder: true
+              OverWrite: true
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish Artifact"
+            condition: and(succeeded(), eq('${{parameters.publishDeploymentOutputs}}', true), eq(variables['deploymentOutputPublished'], true))
+            inputs:
+              artifactName: "$(template_deployment.deploymentName)-Outputs"
+              PathToPublish: "$(Build.ArtifactStagingDirectory)/Outputs"

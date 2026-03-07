@@ -1,0 +1,50 @@
+{
+  "name": "pol-deny-gateway-subnet-with-nsg",
+  "properties": {
+    "displayName": "Gateway Subnet should not have Network Security Group associated",
+    "mode": "All",
+    "description": "Gateway Subnets must not have a Network Security Group associated with them. This policy denies the creation of a Gateway Subnet with an NSG.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Network",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Set to 'deny' to deny creation of gateway subnet with NSG and 'audit' to only flag them."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/virtualNetworks/subnets"
+          },
+          {
+            "field": "name",
+            "equals": "GatewaySubnet"
+          },
+          {
+            "field": "Microsoft.Network/virtualNetworks/subnets/networkSecurityGroup.id",
+            "exists": true
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

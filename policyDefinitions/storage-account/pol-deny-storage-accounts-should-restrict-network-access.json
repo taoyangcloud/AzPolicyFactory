@@ -1,0 +1,59 @@
+{
+  "name": "pol-deny-storage-accounts-should-restrict-network-access",
+  "properties": {
+    "displayName": "Storage accounts should restrict network access",
+    "description": "Network access to storage accounts should be restricted. Configure network rules so only applications from allowed networks can access the storage account. To allow connections from specific internet or on-premises clients, access can be granted to traffic from specific Azure virtual networks or to public internet IP address ranges.",
+    "metadata": {
+      "category": "Network Security",
+      "version": "1.1.1",
+      "preview": false,
+      "deprecated": false,
+      "source_builtIn_name": "34c877ad-507e-4c82-993e-3452a6e0ad3c"
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "string",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "The effect determines what happens when the policy rule is evaluated to match"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "not": {
+              "field": "tags[application]",
+              "equals": "databricks"
+            }
+          },
+          {
+            "not": {
+              "field": "tags[application]",
+              "equals": "purview"
+            }
+          },
+          {
+            "field": "Microsoft.Storage/storageAccounts/networkAcls.defaultAction",
+            "notEquals": "Deny"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

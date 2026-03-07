@@ -1,0 +1,222 @@
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger: none
+
+resources:
+  pipelines:
+  - pipeline: Policy-Initiatives
+    source: Policy-Initiatives
+    trigger:
+      stages:
+      - deploy_prod
+
+variables:
+  - name: templateName
+    value: PolicyAssign
+  - name: templateFileDirectory
+    value: "bicep/templates/policyAssignments"
+  - name: devAssignmentConfigFileDirectory
+    value: "policyAssignments/dev"
+  - name: prodAssignmentConfigFileDirectory
+    value: "policyAssignments/prod"
+  - name: configurationSchemaFilePath
+    value: "policyAssignments/policyAssignment.schema.json"
+  - name: templateFileName
+    value: "main.bicep"
+  - name: outputFileArtifactSuffix
+    value: "Outputs"
+  - name: bicepVariableName
+    value: "policyAssignments"
+  - template: "../../../settings.yml"
+  - name: configSyntaxTestScriptPath
+    value: "tests/policyAssignment/configuration-syntax/assignmentConfigurationsSyntaxTest.ps1"
+
+stages:
+  - template: ../../templates/template-stage-initiation.yml
+    parameters:
+      vmImage: "${{ variables['defaultAgentPoolName'] }}"
+
+# dev build stage
+  - template: ../../templates/template-stage-policy-assignment-exemption-build.yml
+    parameters:
+      dependsOn: [initiation]
+      azureServiceConnection: "${{ variables['ado-devPolicyServiceConnection'] }}"
+      vmImage: "${{ variables['defaultAgentPoolName'] }}"
+      environment: "${{ variables['devEnv'] }}"
+      resourceType: "assignment"
+      bicepFilePath: "${{ variables['templateFileDirectory'] }}/${{ variables['templateFileName'] }}"
+      templateFileDirectory: "${{ variables['templateFileDirectory'] }}"
+      bicepVariableName: "${{ variables['bicepVariableName'] }}"
+      configFilesPath: "${{ variables['devAssignmentConfigFileDirectory'] }}"
+      outputDir: "${{ variables['devAssignmentConfigFileDirectory'] }}"
+      configBuildArtifactName: "policy_assign_config_${{ variables['devEnv'] }}"
+      bicepTemplateBuildArtifactName: "policy_assign_bicep_${{ variables['devEnv'] }}"
+      policyLocationResourceId: "/providers/Microsoft.Management/managementGroups/${{ variables['devManagementGroup'] }}"
+
+# prod build stage
+  - template: ../../templates/template-stage-policy-assignment-exemption-build.yml
+    parameters:
+      dependsOn: [initiation]
+      azureServiceConnection: "${{ variables['ado-prodPolicyServiceConnection'] }}"
+      vmImage: "${{ variables['defaultAgentPoolName'] }}"
+      environment: "${{ variables['prodEnv'] }}"
+      resourceType: "assignment"
+      bicepFilePath: "${{ variables['templateFileDirectory'] }}/${{ variables['templateFileName'] }}"
+      templateFileDirectory: "${{ variables['templateFileDirectory'] }}"
+      bicepVariableName: "${{ variables['bicepVariableName'] }}"
+      configFilesPath: "${{ variables['prodAssignmentConfigFileDirectory'] }}"
+      outputDir: "${{ variables['prodAssignmentConfigFileDirectory'] }}"
+      configBuildArtifactName: "policy_assign_config_${{ variables['prodEnv'] }}"
+      bicepTemplateBuildArtifactName: "policy_assign_bicep_${{ variables['prodEnv'] }}"
+      policyLocationResourceId: "/providers/Microsoft.Management/managementGroups/${{ variables['prodManagementGroup'] }}"
+
+# dev test stage
+  - stage: test_dev
+    displayName: "Test dev"
+    condition: and(succeeded(), eq(dependencies.build_${{ variables['devEnv'] }}.result, 'Succeeded'))
+    dependsOn:
+      - build_${{ variables['devEnv'] }}
+    variables:
+      environment: "${{ variables['devEnv'] }}"
+      whatIfResultArtifactName: "${{ variables['templateName'] }}-${{ variables['environment'] }}-whatIf-result"
+      serviceConnection: "${{ variables['ado-devPolicyServiceConnection'] }}"
+    jobs:
+    - template: ../../templates/template-job-policy-assignment-exemption-config-syntax-validate.yml
+      parameters:
+        configurationFileArtifactName: "policy_assign_config_${{ variables['devEnv'] }}"
+        configurationFileDirectory: "${{ variables['devAssignmentConfigFileDirectory'] }}"
+        configurationSchemaFilePath: "${{ variables['configurationSchemaFilePath'] }}"
+        testScriptPath: "${{ variables['configSyntaxTestScriptPath'] }}"
+        vmImage: "${{ variables['defaultAgentPoolName'] }}"
+        testRunTitle: "DevAssignmentConfigSyntaxTest"
+        excludeTags: "AssignPolicyInitiative,NonComplianceMessages"
+        outputFilePrefix: "TEST-AssignmentConfigurationSyntax"
+    - template: ../../templates/template-job-test-and-validate.yml
+      parameters:
+        dependsOn: 'Config_File_Syntax_Validation'
+        templateName: "${{ variables['templateName'] }}"
+        templateFileDirectory: "${{ variables['templateFileDirectory'] }}"
+        templateFileName: "${{ variables['templateFileName'] }}"
+        templateFileArtifactName: "policy_assign_bicep_${{ variables['devEnv'] }}"
+        additionalResourceDirectory: "${{ variables['devAssignmentConfigFileDirectory'] }}"
+        additionalResourceArtifactName: "policy_assign_config_${{ variables['devEnv'] }}"
+        azureServiceConnection: "${{ variables['serviceConnection'] }}"
+        preferredBicepCliVersion: "${{ variables['preferredBicepCliVersion'] }}"
+        vmImage: "${{ variables['defaultAgentPoolName'] }}"
+        psRuleBaselineName: "Azure.Default"
+        runBicepSupportFilesTests: true
+        runPSRuleTests: true
+        runTemplateValidation: true
+        runWhatIfInTemplateValidation: false
+        runBicepLinter: true
+        maxParallelTasks: 0
+        whatIfMaxRetry: ${{ variables['whatIfValidationMaxRetry'] }}
+        whatIfResultArtifactName: "${{ variables['whatIfResultArtifactName'] }}"
+        templateScope: "managementGroup"
+        targetName: "${{ variables['devManagementGroup'] }}"
+        azureLocation: "${{ variables['default-region'] }}"
+
+# prod test stage
+  - stage: test_prod
+    displayName: "Test Prod"
+    condition: and(succeeded(), eq(dependencies.build_${{ variables['prodEnv'] }}.result, 'Succeeded'))
+    dependsOn:
+      - build_${{ variables['prodEnv'] }}
+    variables:
+      environment: "${{ variables['prodEnv'] }}"
+      whatIfResultArtifactName: "${{ variables['templateName'] }}-${{ variables['environment'] }}-whatIf-result"
+      serviceConnection: "${{ variables['ado-prodPolicyServiceConnection'] }}"
+    jobs:
+    - template: ../../templates/template-job-policy-assignment-exemption-config-syntax-validate.yml
+      parameters:
+        configurationFileArtifactName: "policy_assign_config_${{ variables['prodEnv'] }}"
+        configurationFileDirectory: "${{ variables['prodAssignmentConfigFileDirectory'] }}"
+        configurationSchemaFilePath: "${{ variables['configurationSchemaFilePath'] }}"
+        testScriptPath: "${{ variables['configSyntaxTestScriptPath'] }}"
+        vmImage: "${{ variables['defaultAgentPoolName'] }}"
+        testRunTitle: "ProdAssignmentConfigSyntaxTest"
+        excludeTags: "AssignPolicyInitiative,NonComplianceMessages"
+        outputFilePrefix: "TEST-AssignmentConfigurationSyntax"
+    - template: ../../templates/template-job-test-and-validate.yml
+      parameters:
+        dependsOn: 'Config_File_Syntax_Validation'
+        templateName: "${{ variables['templateName'] }}"
+        templateFileDirectory: "${{ variables['templateFileDirectory'] }}"
+        templateFileName: "${{ variables['templateFileName'] }}"
+        templateFileArtifactName: "policy_assign_bicep_${{ variables['prodEnv'] }}"
+        additionalResourceDirectory: "${{ variables['prodAssignmentConfigFileDirectory'] }}"
+        additionalResourceArtifactName: "policy_assign_config_${{ variables['prodEnv'] }}"
+        azureServiceConnection: "${{ variables['serviceConnection'] }}"
+        preferredBicepCliVersion: "${{ variables['preferredBicepCliVersion'] }}"
+        vmImage: "${{ variables['defaultAgentPoolName'] }}"
+        psRuleBaselineName: "Azure.Default"
+        runBicepSupportFilesTests: true
+        runPSRuleTests: true
+        runTemplateValidation: true
+        runWhatIfInTemplateValidation: false
+        runBicepLinter: true
+        maxParallelTasks: 0
+        whatIfMaxRetry: ${{ variables['whatIfValidationMaxRetry'] }}
+        whatIfResultArtifactName: "${{ variables['whatIfResultArtifactName'] }}"
+        templateScope: "managementGroup"
+        targetName: "${{ variables['prodManagementGroup'] }}"
+        azureLocation: "${{ variables['default-region'] }}"
+
+# dev deploy stage
+  - template: ../../templates/template-stage-multiple-deployments.yml
+    parameters:
+      vmImage: "${{ variables['defaultAgentPoolName'] }}"
+      dependsOn:
+        - test_dev
+      condition: "and(succeeded(), eq(dependencies.test_dev.result, 'Succeeded'))"
+      stageName: "deploy_dev"
+      stageDisplayName: "Deploy Dev"
+      deploymentJobName: "deploy_${{ variables['templateName'] }}"
+      templateName: "${{ variables['templateName'] }}"
+      templateFileDirectory: "${{ variables['templateFileDirectory'] }}"
+      templateFileName: "${{ variables['templateFileName'] }}"
+      templateFileArtifactName: "policy_assign_bicep_${{ variables['devEnv'] }}"
+      additionalResourceDirectory: "${{ variables['devAssignmentConfigFileDirectory'] }}"
+      additionalResourceArtifactName: "policy_assign_config_${{ variables['devEnv'] }}"
+      azureServiceConnection: "${{ variables['ado-devPolicyServiceConnection'] }}"
+      templateScope: "managementGroup"
+      targetName: "${{ variables['devManagementGroup'] }}"
+      azureLocation: "${{ variables['default-region'] }}"
+      maxParallelTasks: 0
+      retryFailedDeployment: true
+      publishDeploymentOutputs: true
+      deploymentOutputVariablePrefix: "${{ variables['devEnv'] }}"
+      maxWaitMinutes: 60
+      httpTimeoutSeconds: 1000
+      timeoutInMinutes: 60
+      preferredBicepCliVersion: "${{ variables['preferredBicepCliVersion'] }}"
+
+# prod deploy stage
+  - template: ../../templates/template-stage-multiple-deployments.yml
+    parameters:
+      vmImage: "${{ variables['defaultAgentPoolName'] }}"
+      dependsOn:
+        - test_prod
+        - deploy_dev
+      condition: "and(succeeded(), eq(dependencies.test_prod.result, 'Succeeded'), eq(dependencies.deploy_dev.result, 'Succeeded'), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/')))"
+      stageName: "deploy_prod"
+      stageDisplayName: "Deploy Prod"
+      deploymentJobName: "deploy_${{ variables['templateName'] }}"
+      templateName: "${{ variables['templateName'] }}"
+      templateFileDirectory: "${{ variables['templateFileDirectory'] }}"
+      templateFileName: "${{ variables['templateFileName'] }}"
+      templateFileArtifactName: "policy_assign_bicep_${{ variables['prodEnv'] }}"
+      additionalResourceDirectory: "${{ variables['prodAssignmentConfigFileDirectory'] }}"
+      additionalResourceArtifactName: "policy_assign_config_${{ variables['prodEnv'] }}"
+      azureServiceConnection: "${{ variables['ado-prodPolicyServiceConnection'] }}"
+      templateScope: "managementGroup"
+      targetName: "${{ variables['prodManagementGroup'] }}"
+      azureLocation: "${{ variables['default-region'] }}"
+      maxParallelTasks: 0
+      retryFailedDeployment: true
+      publishDeploymentOutputs: true
+      deploymentOutputVariablePrefix: "${{ variables['prodEnv'] }}"
+      maxWaitMinutes: 60
+      httpTimeoutSeconds: 1000
+      timeoutInMinutes: 60
+      preferredBicepCliVersion: "${{ variables['preferredBicepCliVersion'] }}"

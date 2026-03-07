@@ -1,0 +1,58 @@
+// TY template - v0.1.0
+{
+  "files.exclude": {
+    ".vs/": true,
+    "reports/": false,
+    "out/": true
+  },
+  "files.associations": {
+    "**/.azuredevops/pipelines/**/*.yml": "azure-pipelines",
+    "**/.azuredevops/templates/**/*.yml": "azure-pipelines",
+    "**/.github/actions/**/*.yml": "github-actions-workflow",
+    "**/.github/workflows/**/*.yml": "github-actions-workflow"
+  },
+  "files.insertFinalNewline": true,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "yaml.format.singleQuote": false,
+  "yaml.format.enable": true,
+  "yaml.format.bracketSpacing": true,
+  "[bicep]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-bicep"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+  },
+  "[powershell]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "git.branchProtection": [
+    "main"
+  ],
+  "powershell.codeFormatting.preset": "OTBS",
+  "powershell.scriptAnalysis.settingsPath": ".vscode/PSScriptAnalyzerSettings.psd1",
+  "powershell.scriptAnalysis.enable": true,
+  "git.branchProtectionPrompt": "alwaysCommitToNewBranch",
+  "git.branchValidationRegex": "^develop/[a-z][a-z0-9]{3,}[a-z0-9]/[a-z][a-z0-9-]{3,}[a-z0-9]$",
+  "json.schemas": [
+    {
+      "url": "https://schema.managemwent.azure.com/schemas/2020-10-01/policyDefinition.json#",
+      "fileMatch": [
+        "./definitions/**/*.json"
+      ]
+    }
+  ],
+  "cSpell.words": [
+    "australiaeast",
+    "australiasoutheast",
+    "CONTOSO",
+    "Mgmt",
+    "psrule",
+    "unauthorized",
+    "vnet",
+    "whatif"
+  ]
+}

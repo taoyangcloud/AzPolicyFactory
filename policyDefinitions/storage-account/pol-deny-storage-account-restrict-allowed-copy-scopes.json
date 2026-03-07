@@ -1,0 +1,50 @@
+{
+  "name": "pol-deny-storage-account-restrict-allowed-copy-scopes",
+  "properties": {
+    "displayName": "Storage accounts should prevent permitted copy scopes from any storage accounts",
+    "description": "Restrict copy operations from source storage accounts that are within the same Microsoft Entra tenant or that have a private link to the same virtual network as this storage account.",
+    "metadata": {
+      "category": "Data Protection",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false,
+      "source_builtIn_name": "92a89a79-6c52-4a7e-a03f-61306fc49312"
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "string",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "The effect determines what happens when the policy rule is evaluated to match"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "field": "Microsoft.Storage/storageAccounts/allowedCopyScope",
+            "notIn": [
+              "AAD",
+              "PrivateLink"
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

@@ -1,0 +1,49 @@
+name: "Policy Assignment Environment Consistency Tests"
+description: "Runs Pester tests for environment consistency between environments for Policy Assignment configuration files"
+author: "Tao Yang"
+
+inputs:
+  prod-configuration-files-directory:
+    description: "Production Configuration Files Directory"
+    required: true
+
+  dev-configuration-files-directory:
+    description: "Development Configuration Files Directory"
+    required: true
+
+  check-name:
+    description: "Name for the GitHub check annotation"
+    required: false
+    default: "Assignment Configurations Test Results"
+
+  skip-passed-tests-report:
+    description: "Show only failed tests in the job summary report"
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Test Assignment Configurations
+      shell: pwsh
+      run: |
+        #Test Assignment Configurations
+        Write-Output '::group::Test Assignment Configurations'
+        $testScriptPath = "${{ github.workspace }}/tests/policyAssignment/environment-consistency/prdAssignmentConfigurationsTest.ps1"
+        & $testScriptPath `
+          -prodConfigurationFilesPath "${{ inputs.prod-configuration-files-directory }}" `
+          -devConfigurationFilesPath "${{ inputs.dev-configuration-files-directory }}" `
+          -OutputFileDir "${{ github.workspace }}" `
+          -OutputFilePrefix 'TEST-ProdAssignmentConfigurations' `
+          -OutputFormat 'NUnitXml'
+        Write-Output '::endgroup::'
+      continue-on-error: true
+
+    - name: Parse and Publish Pester Test Results
+      uses: ./.github/actions/templates/parse-pester-results
+      with:
+        test-result-files: "${{ github.workspace }}/TEST-ProdAssignmentConfigurations.XML"
+        test-title: "Assignment Configurations Test"
+        check-name: "${{ inputs.check-name }}"
+        fail-on-test-failure: "true"
+        skip-passed-tests-report: "${{ inputs.skip-passed-tests-report }}"

@@ -1,0 +1,46 @@
+{
+  "name": "pol-deny-resource-type",
+  "properties": {
+    "displayName": "Deny Resource Type",
+    "description": "This policy enables you to restrict a specific type of resource from being created.",
+    "metadata": {
+      "category": "Asset Management",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "mode": "All",
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "disallowedResourceType": {
+        "type": "string",
+        "metadata": {
+          "description": "The resource type that is prohibited to be deployed.",
+          "displayName": "Disallowed Resource Type",
+          "strongType": "resourceTypes"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "[parameters('disallowedResourceType')]"
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

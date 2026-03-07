@@ -1,0 +1,74 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-p-storage",
+    "displayName": "Storage Account Policies Prod",
+    "description": "Policy Assignment for Storage Account - Prod",
+    "metadata": {
+      "category": "Storage Account"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-storage-account",
+    "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV",
+    "identity": "SystemAssigned",
+    "parameters": {
+      "STG-001_Effect": {
+        "value": "Audit"
+      },
+      "STG-002_Effect": {
+        "value": "Deny"
+      },
+      "STG-003_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "STG-003_EvaluationDelay": {
+        "value": "AfterProvisioning"
+      },
+      "STG-003_MinimumRetentionInDays": {
+        "value": 7
+      },
+      "STG-003_AllowPermanentDelete": {
+        "value": true
+      },
+      "STG-004_Effect": {
+        "value": "Deny"
+      },
+      "STG-005_Effect": {
+        "value": "Deny"
+      },
+      "STG-006_Effect": {
+        "value": "Deny"
+      },
+      "STG-007_Effect": {
+        "value": "Audit"
+      },
+      "STG-008_Effect": {
+        "value": "Deny"
+      },
+      "STG-009_Effect": {
+        "value": "Deny"
+      },
+      "STG-010_Effect": {
+        "value": "Deny"
+      },
+      "STG-010_MinTlsVersion": {
+        "value": "TLS1_2"
+      },
+      "STG-011_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "STG-011_EvaluationDelay": {
+        "value": "AfterProvisioning"
+      },
+      "STG-012_Effect": {
+        "value": "Deny"
+      }
+    },
+    "roleDefinitionIds": [
+      "/providers/microsoft.authorization/roleDefinitions/fb1c8493-542b-48eb-b624-b4c8fea62acd",
+      "/providers/microsoft.authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab"
+    ],
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO"
+}

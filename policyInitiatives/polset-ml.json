@@ -1,0 +1,139 @@
+{
+  "name": "polset-ml",
+  "properties": {
+    "displayName": "Azure Machine Learning Policy Initiative",
+    "description": "This policy initiative defines the foundation security requirements for Azure Machine Learning Clusters",
+    "metadata": {
+      "category": "Machine Learning",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "ML-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ML-001 Effect: Audit Azure Machine Learning Compute Cluster and Instance is behind virtual network",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "ML-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ML-002 Effect: Azure Machine Learning workspaces should use user-assigned managed identity",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "ML-003_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ML-003 Effect: Azure Machine Learning workspaces should disable public network access",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "ML-004_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ML-004 Effect: Azure Machine Learning workspaces should use private link",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.9.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.9.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.10.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.10.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.2.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.2.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.3"
+      },
+      {
+        "name": "ISO27001-2013_A.14.1.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.14.1.2"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "ML-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-ml-vnet",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ML-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ML-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-ml-user-assigned-mi",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ML-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.9.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ML-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-ml-public-network-access",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ML-003_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.2.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ML-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-ml-private-endpoints",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ML-004_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1",
+          "ISO27001-2013_A.14.1.2"
+        ]
+      }
+    ]
+  }
+}

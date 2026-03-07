@@ -1,0 +1,123 @@
+{
+  "name": "polset-databricks",
+  "properties": {
+    "displayName": "Azure Databricks Policy Initiative",
+    "description": "This policy initiative defines the foundation security requirements for Azure Databricks.",
+    "metadata": {
+      "category": "Azure Databricks",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": true
+    },
+    "parameters": {
+      "ADB-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADB-001 Effect: Azure Databricks Clusters should disable public IP",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "ADB-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADB-002 Effect: Azure Databricks Workspaces should disable public network access",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "ADB-003_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADB-003 Effect: Azure Databricks Workspaces should be in a virtual network",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "ADB-004_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "ADB-004 Effect: Azure Databricks workspaces should be Premium SKU that supports features like private link",
+          "description": "Enable or disable the execution of the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.13.1.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.3"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "ADB-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-adb-cluster-public-network-access",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADB-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ADB-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-adb-workspace-public-network-access",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADB-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ADB-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-adb-workspace-vnet",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADB-003_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "ADB-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-adb-workspace-sku",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('ADB-004_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-d-key-vault",
+    "displayName": "Key Vault Policies Dev",
+    "description": "Policy Assignment for Azure Key Vault - Dev",
+    "metadata": {
+      "category": "Key Vault"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-key-vault",
+    "identity": "SystemAssigned",
+    "parameters": {
+      "KV-002_Effect": {
+        "value": "Audit"
+      },
+      "KV-001_Effect": {
+        "value": "Append"
+      },
+      "KV-003_Effect": {
+        "value": "Deny"
+      },
+      "KV-004_Effect": {
+        "value": "Audit"
+      },
+      "KV-005_Effect": {
+        "value": "audit"
+      },
+      "KV-005_MaximumValidityInMonths": {
+        "value": 12
+      },
+      "KV-006_Effect": {
+        "value": "Audit"
+      },
+      "KV-007_Effect": {
+        "value": "Audit"
+      }
+    },
+    "roleDefinitionIds": [
+      "/providers/microsoft.authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+    ],
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV",
+  "managementGroupId": "CONTOSO-DEV"
+}

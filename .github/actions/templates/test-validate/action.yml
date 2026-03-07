@@ -1,0 +1,278 @@
+name: "Test and Validate Bicep Template"
+description: "Performs static validation, PSRule tests, bicep linting, and online validation for Bicep templates"
+author: "Tao Yang"
+
+inputs:
+  template-name:
+    description: "Template Name"
+    required: true
+
+  template-file-directory:
+    description: "Template File Directory"
+    required: true
+
+  template-file-name:
+    description: "Template File Name"
+    required: false
+    default: "main.bicep"
+
+  template-file-artifact-name:
+    description: "Artifact Name of Updated Template File"
+    required: false
+    default: ""
+  parameter-file-directory:
+    description: "Parameter File Directory"
+    required: false
+    default: ""
+
+  parameter-file-name:
+    description: "Parameter File Name (wildcard and regex supported)"
+    required: false
+    default: ""
+
+  parameter-file-artifact-name:
+    description: "Artifact Name of Updated Parameter File"
+    required: false
+    default: ""
+
+  additional-resource-artifact-name:
+    description: "Artifact Name of additional resources (Optional)"
+    required: false
+    default: ""
+
+  additional-resource-directory:
+    description: "Directory for additional resources (Optional)"
+    required: false
+    default: ""
+
+  psrule-baseline-name:
+    description: "PSRule Baseline Name"
+    required: false
+    default: "Azure.Default"
+  psrule-test-title:
+    description: "PSRule Test Title to show in the report (Optional)"
+    required: false
+    default: "PSRule Validation Summary"
+  psrulePath:
+    description: "The path to PSRule configurations"
+    required: false
+
+  skip-passed-tests-report:
+    description: "Show only failed tests in the job summary report"
+    required: false
+    default: "false"
+
+  run-bicep-support-files-tests:
+    description: "Run Bicep Support Files Tests"
+    required: false
+    default: "true"
+
+  run-psrule-tests:
+    description: "Run PSRule Tests"
+    required: false
+    default: "true"
+
+  run-template-validation:
+    description: "Run Template Validation"
+    required: false
+    default: "true"
+
+  run-whatif-in-template-validation:
+    description: "Run What-If in Template Validation"
+    required: false
+    default: "true"
+
+  run-bicep-linter:
+    description: "Run Bicep Linter"
+    required: false
+    default: "true"
+
+  whatif-max-retry:
+    description: "Number of retries for what-if validation, valid values are 3-10"
+    required: false
+    default: "3"
+
+  whatif-result-artifact-name:
+    description: "Template What-If Result Artifacts Name (Optional)"
+    required: false
+    default: ""
+
+  bicep-module-subscription-id:
+    description: "Bicep module subscription Id (Optional)"
+    required: false
+    default: ""
+
+  template-scope:
+    description: "Template Scope: resourceGroup, subscription, managementGroup, or tenant"
+    required: false
+    default: "resourceGroup"
+
+  azure-location:
+    description: "Azure Location. Not required for resource group scope"
+    required: false
+    default: ""
+
+  target-name:
+    description: "Target name. When scope is managementGroup or resourceGroup, this is the name of the Management Group or Resource Group."
+    required: false
+    default: ""
+
+  subscription-name:
+    description: "Subscription name. When scope is subscription or resourceGroup, this is the name of the subscription."
+    required: false
+    default: ""
+
+outputs:
+  validation-result:
+    description: "Validation result"
+    value: ${{ steps.validation-summary.outputs.result }}
+
+runs:
+  using: "composite"
+  steps:
+    # Download Parameter file artifact if artifact name provided
+    - name: Download Parameter File Artifact
+      if: inputs.parameter-file-artifact-name != ''
+      uses: actions/download-artifact@v7
+      with:
+        name: ${{ inputs.parameter-file-artifact-name }}
+        path: "${{ inputs.template-file-directory }}/psrule-test/"
+
+    - name: Copy Parameter Files For PSRule Tests
+      if: inputs.parameter-file-artifact-name == '' && inputs.parameter-file-name != ''
+      shell: pwsh
+      run: |
+        #Copy Parameter Files to PSRule Tests
+        echo '::group::Copy Parameter Files to PSRule Tests'
+        $psruleTestDir = "${{ inputs.template-file-directory }}/psrule-test"
+        if (!(Test-Path $psruleTestDir)) {
+          New-Item -Path $psruleTestDir -ItemType 'Directory' -Force
+        }
+        $parameterFiles = Get-ChildItem -Path ${{ inputs.parameter-file-directory }} -Filter ${{ inputs.parameter-file-name }}
+        foreach ($file in $parameterFiles) {
+          Write-Output "Copying parameter file $($file.FullName) to '$psruleTestDir'"
+          Copy-Item -Path $file.FullName -Destination "$psruleTestDir" -Force
+        }
+        echo '::endgroup::'
+
+    # Download template file artifact if artifact name provided
+    - name: Download Template File Artifact
+      if: inputs.template-file-artifact-name != ''
+      uses: actions/download-artifact@v7
+      with:
+        name: ${{ inputs.template-file-artifact-name }}
+        path: ${{ inputs.template-file-directory }}
+
+    - name: Download Additional Resource Artifact
+      if: inputs.additional-resource-artifact-name != ''
+      uses: actions/download-artifact@v7
+      with:
+        name: ${{ inputs.additional-resource-artifact-name }}
+        path: "${{ inputs.additional-resource-directory }}"
+
+    # Run Bicep Support Files Tests
+    - name: Run Bicep Support Files Tests
+      if: inputs.run-bicep-support-files-tests == 'true'
+      shell: pwsh
+      run: |
+        echo '::group::Run Bicep Support Files Tests'
+        $scriptPath = "${{ github.workspace }}/tests/bicep/BicepRequiredSupportFilesTests.ps1"
+        & $scriptPath -bicepDir '${{ inputs.template-file-directory }}' -OutputFileDir '${{ github.workspace }}'
+        echo '::endgroup::'
+
+    - name: "Parse and Publish Bicep Support File Test Results"
+      if: inputs.run-bicep-support-files-tests == 'true'
+      uses: ./.github/actions/templates/parse-pester-results
+      with:
+        test-result-files: "${{ github.workspace }}/TEST-Bicep.*.xml"
+        test-title: "Bicep Support Files Test Summary"
+        check-name: "Bicep Support File - ${{ inputs.template-name }}"
+        skip-passed-tests-report: "${{ inputs.skip-passed-tests-report }}"
+
+    # Run Bicep Linter and Build
+    - name: Azure Login
+      if: inputs.run-psrule-tests == 'true' || inputs.run-bicep-linter == 'true' || inputs.run-template-validation == 'true' || inputs.run-whatif-in-template-validation == 'true'
+      uses: Azure/login@v2
+      with:
+        creds: ${{ env.AZURE_CREDENTIALS }}
+        enable-AzPSSession: true
+    - name: Run Bicep Linter - ${{ inputs.template-name }}
+      if: inputs.run-psrule-tests == 'true' || inputs.run-bicep-linter == 'true'
+      shell: pwsh
+      env:
+        BICEP_MODULE_SUBSCRIPTION_ID: ${{ inputs.bicep-module-subscription-id }}
+      run: |
+        Write-Output "::group::Run Bicep Linter - ${{ inputs.template-name }}"
+        $scriptPath = "${{ github.action_path }}/scripts/run-bicep-linter.ps1"
+        & $scriptPath `
+          -TemplateFileDirectory '${{ inputs.template-file-directory }}' `
+          -TemplateFileName '${{ inputs.template-file-name }}'
+        Write-Output '::endgroup::'
+    # Run PSRule Validation
+    - name: Run PSRule Validation - ${{ inputs.template-name }}
+      if: inputs.run-psrule-tests == 'true'
+      uses: microsoft/ps-rule@v2.9.0
+      continue-on-error: true
+      with:
+        inputType: repository
+        inputPath: "${{ inputs.template-file-directory }}/psrule-test/*.json"
+        modules: "PSRule.Rules.Azure"
+        baseline: "${{ inputs.psrule-baseline-name }}"
+        outputPath: "${{ github.workspace }}/TEST-${{ inputs.template-name }}-template-psrule.xml"
+        option: "${{ github.workspace }}/ps-rule.yaml" # Path to PSRule configuration options file
+        source: "${{ inputs.psrulePath}}/.ps-rule/" # Path to folder containing suppression rules to use for analysis
+        outputFormat: NUnit3
+        outcome: All
+        summary: false # Disabling as taken care in customized task
+
+      # [Print to Summary] task(s)
+    #-----------------------------
+    - name: "Parse and Publish PSRule Results"
+      if: inputs.run-psrule-tests == 'true'
+      uses: ./.github/actions/templates/parse-pester-results
+      with:
+        test-result-files: "${{ github.workspace }}/TEST-${{ inputs.template-name }}-template-psrule.xml"
+        test-title: "${{ inputs.psrule-test-title }}"
+        check-name: "PSRule - ${{ inputs.template-name }}"
+        skip-passed-tests-report: "${{ inputs.skip-passed-tests-report }}"
+
+    # Run Template Validation
+    - name: Run Template Validation - ${{ inputs.template-name }}
+      if: inputs.run-template-validation == 'true'
+      id: template-validation
+      shell: pwsh
+      run: |
+        Write-Output '::group::Run Template Validation'
+        $scriptPath = "${{ github.action_path }}/scripts/Invoke-AllTemplateValidations.ps1"
+        & $scriptPath `
+          -templateFileDirectory '${{ inputs.template-file-directory }}' `
+          -templateFileName '${{ inputs.template-file-name }}' `
+          -parameterFileDirectory '${{ inputs.parameter-file-directory }}' `
+          -parameterFileNamePattern '${{ inputs.parameter-file-name }}' `
+          -templateScope '${{ inputs.template-scope }}' `
+          -azureLocation '${{ inputs.azure-location }}' `
+          -targetName '${{ inputs.target-name }}' `
+          -subscriptionName '${{ inputs.subscription-name }}' `
+          -runWhatIfValidation '${{ inputs.run-whatif-in-template-validation }}' `
+          -whatIfMaxRetry ${{ inputs.whatif-max-retry }} `
+          -whatIfResultArtifactName '${{ inputs.whatif-result-artifact-name }}' `
+          -bicepModuleSubscriptionId '${{ inputs.bicep-module-subscription-id }}' `
+          -scriptsDirectory '${{ github.action_path }}/scripts'
+        Write-Output '::endgroup::'
+
+    # Upload What-If Results Artifact
+    - name: Upload What-If Results Artifact
+      if: inputs.run-template-validation == 'true' && inputs.run-whatif-in-template-validation == 'true' && inputs.whatif-result-artifact-name != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.whatif-result-artifact-name }}
+        path: "${{ inputs.template-file-directory }}/${{ inputs.whatif-result-artifact-name }}/"
+        if-no-files-found: ignore
+
+    # Validation Summary
+    - name: Validation Summary
+      id: validation-summary
+      shell: pwsh
+      run: |
+        Write-Output "Validation completed for template: ${{ inputs.template-name }}"
+        echo "result=success" >> $env:GITHUB_OUTPUT

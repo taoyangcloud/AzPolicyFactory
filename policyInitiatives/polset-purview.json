@@ -1,0 +1,76 @@
+{
+  "name": "polset-purview",
+  "properties": {
+    "displayName": "Azure Purview Policy Initiative",
+    "description": "This policy initiative defines the foundation security requirements for Azure Purview Accounts",
+    "metadata": {
+      "category": "Purview",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "PVIEW-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "PVIEW-001 Effect: Azure Purview accounts should use private link",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "PVIEW-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "PVIEW-002 Effect: Azure Purview Accounts should disable public network access",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.13.1.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.2"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.3"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "PVIEW-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-purview-private-endpoint",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('PVIEW-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "PVIEW-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-deny-purview-public-network-access",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('PVIEW-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3"
+        ]
+      }
+    ]
+  }
+}

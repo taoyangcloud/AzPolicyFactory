@@ -1,0 +1,48 @@
+{
+  "name": "pol-deny-aks-should-have-local-auth-methods-disabled",
+  "properties": {
+    "displayName": "Azure Kubernetes Service Clusters should have local authentication methods disabled",
+    "description": "This policy denies  the creation of  Azure Kubernetes Service non-private clusters.",
+    "metadata": {
+      "category": "Identity and Access Management",
+      "version": "1.0.1",
+      "preview": false,
+      "deprecated": false,
+      "source_builtIn_name": "993c2fcd-2b29-49d2-9eb0-df2c3a730c32"
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "defaultValue": "Deny",
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy.",
+          "portalReview": true
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.ContainerService/managedClusters"
+          },
+          {
+            "field": "Microsoft.ContainerService/managedClusters/disableLocalAccounts",
+            "notEquals": true
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

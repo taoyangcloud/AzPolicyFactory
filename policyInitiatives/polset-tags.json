@@ -1,0 +1,621 @@
+{
+  "name": "polset-tags",
+  "properties": {
+    "displayName": "Azure Resource Tags Policy Initiative",
+    "description": "This initiative includes policies that implement the tagging requirements for CONTOSO's Azure environment",
+    "metadata": {
+      "category": "Tags",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "TAG-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-001 Effect: Subscription Should have appid tag",
+          "description": "Require appid tag for the subscription."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "TAG-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-002 Effect: Subscription Should have dataclass tag with allowed value",
+          "description": "Require dataclass tag for the subscription."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "TAG-003_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-003 Effect: Subscription Should have owner tag",
+          "description": "Require owner tag for the subscription."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "TAG-004_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-004 Effect: Subscription Should have supportteam tag",
+          "description": "Require supportteam tag for the subscription."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "TAG-005_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-005 Effect: Resource Group inherit appid tag from Subscription",
+          "description": "Inherit appid tag for the resource group."
+        },
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
+      },
+      "TAG-006_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-006 Effect: Resource Group inherit dataclass tag from Subscription",
+          "description": "Inherit dataclass tag for the resource group."
+        },
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
+      },
+      "TAG-007_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-007 Effect: Resource Group inherit owner tag from Subscription",
+          "description": "Inherit owner tag for the resource group."
+        },
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
+      },
+      "TAG-008_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-008 Effect: Resource Group inherit supportteam tag from Subscription",
+          "description": "Inherit supportteam tag for the resource group."
+        },
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
+      },
+      "TAG-009_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-009 Effect: Resource inherit appid tag from Resource Group",
+          "description": "Inherit appid tag for the resource."
+        },
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
+      },
+      "TAG-010_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-010 Effect: Resource inherit dataclass tag from Resource Group",
+          "description": "Inherit dataclass tag for the resource."
+        },
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
+      },
+      "TAG-011_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-011 Effect: Resource inherit owner tag from Resource Group",
+          "description": "Inherit owner tag for the resource."
+        },
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
+      },
+      "TAG-012_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-012 Effect: Resource inherit supportteam tag from Resource Group",
+          "description": "Inherit supportteam tag for the resource."
+        },
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
+      },
+      "TAG-013_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-013 Effect: Resource Group Should have dataclass tag with allowed value",
+          "description": "Require dataclass tag for the resource group."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "TAG-014_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-014 Effect: Resource Should have dataclass tag with allowed value",
+          "description": "Require dataclass tag for resources."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "TAG-015_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-015 Effect: Subscription Should have environment tag with allowed value",
+          "description": "Require environment tag for the subscription."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "TAG-016_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-016 Effect: Resource Group Should have environment tag with allowed value",
+          "description": "Require environment tag for the resource group."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "TAG-017_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-017 Effect: Resource Should have environment tag with allowed value",
+          "description": "Require environment tag for resources."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "TAG-018_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-018 Effect: Resource Group inherit environment tag from Subscription",
+          "description": "Inherit environment tag for the resource group."
+        },
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
+      },
+      "TAG-019_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "TAG-019 Effect: Resource inherit environment tag from Resource Group",
+          "description": "Inherit environment tag for the resource."
+        },
+        "allowedValues": [
+          "Modify",
+          "Disabled"
+        ],
+        "defaultValue": "Modify"
+      },
+      "TAG-dataclass_allowedTagValues": {
+        "type": "array",
+        "metadata": {
+          "displayName": "Allowed Tag Values for the dataclass tag on subscription",
+          "description": "Require dataclass tag value for the subscription."
+        }
+      },
+      "TAG-environment_allowedTagValues": {
+        "type": "array",
+        "metadata": {
+          "displayName": "Allowed Tag Values for the environment tag on subscription",
+          "description": "Require environment tag value for the subscription."
+        }
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.8.2.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.8.2.1"
+      },
+      {
+        "name": "ISO27001-2013_A.8.2.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.8.2.2"
+      },
+      {
+        "name": "CB-AZ-037"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "TAG-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-sub-should-have-required-tag",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-001_Effect')]"
+          },
+          "tagName": {
+            "value": "appid"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-sub-should-have-required-tag-value",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-002_Effect')]"
+          },
+          "tagName": {
+            "value": "dataclass"
+          },
+          "allowedTagValues": {
+            "value": "[parameters('TAG-dataclass_allowedTagValues')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-sub-should-have-required-tag",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-003_Effect')]"
+          },
+          "tagName": {
+            "value": "owner"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-sub-should-have-required-tag",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-004_Effect')]"
+          },
+          "tagName": {
+            "value": "supportteam"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-005",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-rg-inherit-tag-from-sub",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-005_Effect')]"
+          },
+          "tagName": {
+            "value": "appid"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-006",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-rg-inherit-tag-from-sub",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-006_Effect')]"
+          },
+          "tagName": {
+            "value": "dataclass"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-007",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-rg-inherit-tag-from-sub",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-007_Effect')]"
+          },
+          "tagName": {
+            "value": "owner"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-008",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-rg-inherit-tag-from-sub",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-008_Effect')]"
+          },
+          "tagName": {
+            "value": "supportteam"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-009",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-all-inherit-tag-from-rg",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-009_Effect')]"
+          },
+          "tagName": {
+            "value": "appid"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-010",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-all-inherit-tag-from-rg",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-010_Effect')]"
+          },
+          "tagName": {
+            "value": "dataclass"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-011",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-all-inherit-tag-from-rg",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-011_Effect')]"
+          },
+          "tagName": {
+            "value": "owner"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-012",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-all-inherit-tag-from-rg",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-012_Effect')]"
+          },
+          "tagName": {
+            "value": "supportteam"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-013",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-rg-should-have-required-tag-value",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-013_Effect')]"
+          },
+          "tagName": {
+            "value": "dataclass"
+          },
+          "allowedTagValues": {
+            "value": "[parameters('TAG-dataclass_allowedTagValues')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-014",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-all-should-have-required-tag-value",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-014_Effect')]"
+          },
+          "tagName": {
+            "value": "dataclass"
+          },
+          "allowedTagValues": {
+            "value": "[parameters('TAG-dataclass_allowedTagValues')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-015",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-sub-should-have-required-tag-value",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-015_Effect')]"
+          },
+          "tagName": {
+            "value": "environment"
+          },
+          "allowedTagValues": {
+            "value": "[parameters('TAG-environment_allowedTagValues')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-016",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-rg-should-have-required-tag-value",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-016_Effect')]"
+          },
+          "tagName": {
+            "value": "environment"
+          },
+          "allowedTagValues": {
+            "value": "[parameters('TAG-environment_allowedTagValues')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-017",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-all-should-have-required-tag-value",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-017_Effect')]"
+          },
+          "tagName": {
+            "value": "environment"
+          },
+          "allowedTagValues": {
+            "value": "[parameters('TAG-environment_allowedTagValues')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-018",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-rg-inherit-tag-from-sub",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-018_Effect')]"
+          },
+          "tagName": {
+            "value": "environment"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "TAG-019",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-all-inherit-tag-from-rg",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('TAG-019_Effect')]"
+          },
+          "tagName": {
+            "value": "environment"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.8.2.1",
+          "ISO27001-2013_A.8.2.2",
+          "CB-AZ-037"
+        ]
+      }
+    ]
+  }
+}

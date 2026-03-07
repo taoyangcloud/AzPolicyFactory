@@ -1,0 +1,2293 @@
+{
+  "name": "polset-diag-settings",
+  "properties": {
+    "displayName": "Azure Diagnostic Settings Policy Initiative",
+    "description": "This initiative configures application Azure resources to forward diagnostic logs and metrics to an Azure Log Analytics workspace.",
+    "metadata": {
+      "category": "Logging and monitoring",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "profileName": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Profile name",
+          "description": "The diagnostic settings profile name."
+        },
+        "defaultValue": "setByPolicyLAW"
+      },
+      "evaluationDelay": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Evaluation Delay",
+          "description": "Specifies when the existence of the related resources should be evaluated. The delay is only used for evaluations that are a result of a create or update resource request. Allowed values are AfterProvisioning, AfterProvisioningSuccess, AfterProvisioningFailure, or an ISO 8601 duration between 0 and 360 minutes."
+        },
+        "defaultValue": "AfterProvisioning"
+      },
+      "logAnalytics": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Log Analytics workspace",
+          "description": "Select the Log Analytics workspace from dropdown list",
+          "strongType": "omsWorkspace"
+        }
+      },
+      "DS-001_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-001 Effect: Configure Diagnostic Setting for Azure Automation Account",
+          "description": "DEnable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-002_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-002 Effect: Configure Diagnostic Setting for Azure Container Instances",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-003_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-003 Effect: Configure Diagnostic Setting for Azure Container Registries",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-004_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-004 Effect: Configure Diagnostic Setting for Azure Kubernetes Service",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-005_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-005 Effect: Configure Diagnostic Setting for Azure Analysis Services",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-006_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-006 Effect: Configure Diagnostic Setting for API Management services",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-007_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-007 Effect: Configure Diagnostic Setting for Application Gateways",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-008_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-008 Effect: Configure Diagnostic Setting for Azure AppInsights",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-009_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-009 Effect: Configure Diagnostic Setting for App Service Environments",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-010_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-010 Effect: Configure Diagnostic Setting for Azure Batch accounts",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-011_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-011 Effect: Configure Diagnostic Setting for Azure CDN Endpoints",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-012_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-012 Effect: Configure Diagnostic Setting for Azure CDN Profiles",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-013_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-013 Effect: Configure Diagnostic Setting for Azure Cognitive Services",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-014_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-014 Effect: Configure Diagnostic Setting for Azure Cosmos DB",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-015_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-015 Effect: Configure Diagnostic Setting for Azure Databricks Premium",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-016_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-016 Effect: Configure Diagnostic Setting for Azure Data Factory V2",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-017_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-017 Effect: Configure Diagnostic Setting for Azure Data Lake Analytics",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-018_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-018 Effect: Configure Diagnostic Setting for Azure Data Lake Storage",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-019_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-019 Effect: Configure Diagnostic Setting for Event Grid Subscriptions",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-020_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-020 Effect: Configure Diagnostic Setting for Event Grid System Topics",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-021_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-021 Effect: Configure Diagnostic Setting for Event Grid Topics",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-022_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-022 Effect: Configure Diagnostic Setting for Event Hub Namespaces",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-023_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-023 Effect: Configure Diagnostic Setting for ExpressRoute Circuits",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-024_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-024 Effect: Configure Diagnostic Setting for Azure Firewalls",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-025_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-025 Effect: Configure Diagnostic Setting for Azure Front Door",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-026_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-026 Effect: Configure Diagnostic Setting for Azure Function Apps",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-027_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-027 Effect: Configure Diagnostic Setting for HDInsight Clusters",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-028_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-028 Effect: Configure Diagnostic Setting for IoT Hubs",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-029_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-029 Effect: Configure Diagnostic Setting for Azure Key Vaults",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-030_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-030 Effect: Configure Diagnostic Setting for Log Analytics Workspaces",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-031_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-031 Effect: Configure Diagnostic Setting for Azure Load Balancers",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-032_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-032 Effect: Configure Diagnostic Setting for Logic Apps Integration Accounts",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-033_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-033 Effect: Configure Diagnostic Setting for Logic Apps workflows",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-034_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-034 Effect: Configure Diagnostic Setting for Maria Databases",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-035_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-035 Effect: Configure Diagnostic Setting for Machine Learning Workspaces",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-036_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-036 Effect: Configure Diagnostic Setting for Azure Database for MySQL",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-037_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-037 Effect: Configure Diagnostic Setting for Network Interfaces",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-038_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-038 Effect: Configure Diagnostic Setting for ANetwork Security Groups",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-039_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-039 Effect: Configure Diagnostic Setting for Public IPs",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-040_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-040 Effect: Configure Diagnostic Setting for Azure Database for PostgreSQL",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-041_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-041 Effect: Configure Diagnostic Setting for Power BI Embedded",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-042_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-042 Effect: Configure Diagnostic Setting for Azure Cache for Redis",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-043_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-043 Effect: Configure Diagnostic Setting for Azure Relay",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-044_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-044 Effect: Configure Diagnostic Setting for Recovery Services Vault",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-045_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-045 Effect: Configure Diagnostic Setting for Azure Search Services",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-046_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-046 Effect: Configure Diagnostic Setting for Azure Service Bus",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-047_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-047 Effect: Configure Diagnostic Setting for SignalR",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-048_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-048 Effect: Configure Diagnostic Setting for Azure SQL Databases",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-049_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-049 Effect: Configure Diagnostic Setting for Azure SQL Elastic Pools",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-050_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-050 Effect: Configure Diagnostic Setting for Azure SQL Managed Instances",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-051_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-051 Effect: Configure Diagnostic Setting for Azure SQL Managed Instance Databases",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-052_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-052 Effect: Configure Diagnostic Setting for Azure Storage Account",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-053_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-053 Effect: Configure Diagnostic Setting for Stream Analytics Jobs",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-054_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-054 Effect: Configure Diagnostic Setting for Azure Subscriptions",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-055_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-055 Effect: Configure Diagnostic Setting for Synapse Analytics",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-056_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-056 Effect: Configure Diagnostic Setting for Time Series Insights Environment",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-057_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-057 Effect: Configure Diagnostic Setting for Azure Traffic Manager Profiles",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-058_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-058 Effect: Configure Diagnostic Setting for Azure Virtual Networks",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-059_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-059 Effect: Configure Diagnostic Setting for Virtual Network Gateways",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-060_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-060 Effect: Configure Diagnostic Setting for VPN Gateways",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-061_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-061 Effect: Configure Diagnostic Setting for Azure App Service Plans",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "DS-062_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "DS-062 Effect: Configure Diagnostic Setting for Azure App Services",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.12.4.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.4.1"
+      },
+      {
+        "name": "ISO27001-2022_A.8.15"
+      },
+      {
+        "name": "ISO_IEC_27002_2022_8.16",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO_IEC_27002_2022_8.16"
+      },
+      {
+        "name": "AU_ISM_580",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/AU_ISM_580"
+      },
+      {
+        "name": "CB-AZ-021"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "DS-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-aa",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-001_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-aci",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-002_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-acr",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-003_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-aks",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-004_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-005",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-analysisService",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-005_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-006",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-apim",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-006_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-007",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-appGW",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-007_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-008",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-appInsights",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-008_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-009",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-ase",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-009_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-010",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-batch",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-010_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-011",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-cdnEndpoints",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-011_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-012",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-cdnProfiles",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-012_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-013",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-cognitive",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-013_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-014",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-cosmosDB",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-014_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-015",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-databricks",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-015_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-016",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-dataFactory",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-016_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-017",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-dlanalytics",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-017_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-018",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-dlstore",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-018_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-019",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-eventGridSub",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-019_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-020",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-eventGridSystemTopic",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-020_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-021",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-eventGridTopic",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-021_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-022",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-eventhub",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-022_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-023",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-expressRoutes",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-023_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-024",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-firewall",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-024_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-025",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-frontDoor",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-025_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-026",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-function",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-026_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-027",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-hdInsight",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-027_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-028",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-iothub",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-028_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-029",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-kv",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-029_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-030",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-la",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-030_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-031",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-lb",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-031_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-032",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-logicAppsIntegrationAccounts",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-032_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-033",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-logicAppsWorkflow",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-033_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-034",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-mariaDB",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-034_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-035",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-mlworkspace",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-035_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-036",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-mySql",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-036_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-037",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-nic",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-037_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-038",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-nsg",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-038_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-039",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-pip",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-039_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-040",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-postgreSQL",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-040_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-041",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-powerBIEmbedded",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-041_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-042",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-redisCache",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-042_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-043",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-relay",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-043_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-044",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-rsv",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-044_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-045",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-searchService",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-045_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-046",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-serviceBus",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-046_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-047",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-signalR",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-047_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-048",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-sqlDBs",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-048_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-049",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-sqlElasticPools",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-049_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-050",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-sqlMi",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-050_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-051",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-sqlMiDBs",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-051_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-052",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-storageAccount",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-052_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-053",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-streamAnalyticsJobs",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-053_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-054",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-sub",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-054_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-055",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-synapseAnalytics",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-055_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-056",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-timeSeriesInsights",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-056_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-057",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-trafficManager",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-057_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-058",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-vnet",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-058_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-059",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-vnetGW",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-059_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-060",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-vpnGW",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-060_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-061",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-webServerFarm",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-061_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "DS-062",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-diag-website",
+        "parameters": {
+          "profileName": {
+            "value": "[parameters('profileName')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "effect": {
+            "value": "[parameters('DS-062_Effect')]"
+          },
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2022_A.8.15",
+          "AU_ISM_580",
+          "CB-AZ-021"
+        ]
+      }
+    ]
+  }
+}

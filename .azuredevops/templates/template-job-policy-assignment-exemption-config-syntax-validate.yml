@@ -1,0 +1,97 @@
+parameters:
+- name: configurationFileArtifactName
+  displayName: "Artifact Name of Configuration Files (Optional)"
+  type: string
+  default: ""
+
+- name: configurationFileDirectory
+  displayName: "Directory for Configuration Files (Optional)"
+  type: string
+  default: ""
+
+- name: configurationSchemaFilePath
+  displayName: "Path to Configuration JSON Schema File"
+  type: string
+
+- name: poolName
+  displayName: "Self Hosted Agent Pool Name"
+  type: string
+  default: ""
+
+- name: vmImage
+  displayName: "MS Hosted Agent VM Image Name"
+  type: string
+  default: ""
+
+- name: testScriptPath
+  displayName: "Path to Test Script"
+  type: string
+
+- name: outputFilePrefix
+  displayName: "Output File Prefix"
+  type: string
+
+- name: testRunTitle
+  displayName: "Test Run Title"
+  type: string
+
+- name: excludeTags
+  displayName: "Pester test tags to exclude, use comma to separate values"
+  type: string
+  default: ""
+
+- name: dependsOn
+  displayName: "Depends On"
+  type: object
+  default: []
+
+jobs:
+- job: "Config_File_Syntax_Validation"
+  displayName: "Config File Syntax Validation"
+  workspace:
+    clean: all
+  dependsOn: ${{ parameters.dependsOn }}
+  pool:
+    ${{ if ne(parameters.vmImage, '') }}:
+      vmImage: ${{ parameters.vmImage }}
+    ${{ if ne(parameters.poolName, '') }}:
+      name: ${{ parameters.poolName }}
+  steps:
+    - checkout: self
+      fetchDepth: 0
+    - task: DownloadBuildArtifacts@0
+      displayName: "Download Config File Artifact"
+      condition: and(succeeded(), ne('${{parameters.configurationFileArtifactName}}', ''))
+      inputs:
+        artifactName: "${{parameters.configurationFileArtifactName}}"
+    - task: CopyFiles@2
+      displayName: "Copy Config Files to Repo"
+      condition: and(succeeded(), ne('${{parameters.configurationFileArtifactName}}', ''))
+      inputs:
+        SourceFolder: "$(System.ArtifactsDirectory)/${{parameters.configurationFileArtifactName}}"
+        TargetFolder: "$(System.DefaultWorkingDirectory)/${{parameters.configurationFileDirectory}}/"
+        CleanTargetFolder: false
+        OverWrite: true
+    - task: PowerShell@2
+      name: TestConfigurations
+      displayName: "Test Configurations Syntax"
+      continueOnError: true
+      inputs:
+        targetType: "filePath"
+        pwsh: true
+        filePath: "${{ parameters.testScriptPath }}"
+        arguments:
+          -configurationFilesPath "${{parameters.configurationFileDirectory}}" `
+          -configurationSchemaFilePath "${{parameters.configurationSchemaFilePath}}" `
+          -ExcludeTags "${{ parameters.excludeTags }}" `
+          -OutputFileDir $(System.DefaultWorkingDirectory) `
+          -OutputFilePrefix '${{ parameters.outputFilePrefix }}' `
+          -OutputFormat 'NUnitXml'
+    - task: PublishTestResults@2
+      displayName: "Publish Policy Pester Test results"
+      inputs:
+        testRunTitle: "${{ parameters.testRunTitle }}"
+        testRunner: NUnit
+        testResultsFiles: "$(System.DefaultWorkingDirectory)/${{ parameters.outputFilePrefix }}.XML"
+        failTaskOnFailedTests: true
+        failTaskOnMissingResultsFile: true

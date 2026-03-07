@@ -1,0 +1,47 @@
+{
+  "name": "pol-deny-adb-cluster-public-network-access",
+  "properties": {
+    "displayName": "Azure Databricks Clusters should disable public IP",
+    "description": "Disabling public IP of clusters in Azure Databricks Workspaces improves security by ensuring that the clusters aren't exposed on the public internet. Learn more at: https://learn.microsoft.com/azure/databricks/security/secure-cluster-connectivity.",
+    "metadata": {
+      "category": "Network Security",
+      "version": "1.0.1",
+      "preview": false,
+      "deprecated": false,
+      "source_builtIn_name": "51c1490f-3319-459c-bbbc-7f391bbed753"
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "The desired effect of the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Databricks/workspaces"
+          },
+          {
+            "field": "Microsoft.DataBricks/workspaces/parameters.enableNoPublicIp.value",
+            "notEquals": "true"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

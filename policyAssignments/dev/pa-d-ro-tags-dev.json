@@ -1,0 +1,36 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-d-ro-tags-dev",
+    "displayName": "Read-Only Tagging Policies Dev",
+    "description": "Policy Assignment for Azure Read-Only tagging policies - Dev",
+    "metadata": {
+      "category": "Tags"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-readonly-tags",
+    "identity": "SystemAssigned",
+    "parameters": {
+      "ROTAG-001_Effect": {
+        "value": "Modify"
+      },
+      "ROTAG-002_Effect": {
+        "value": "Modify"
+      },
+      "platform-environment_TagValue": {
+        "value": "Development"
+      },
+      "platform-environment_TagName": {
+        "value": "hidden-platform-environment"
+      }
+    },
+    "roleDefinitionIds": [
+      "/providers/microsoft.authorization/roleDefinitions/4a9ae827-6dc8-4573-8ac7-8239d42aa03f"
+    ],
+    "notScopes": [
+      "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV-Sandbox"
+    ],
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV",
+  "managementGroupId": "CONTOSO-DEV"
+}

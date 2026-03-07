@@ -1,0 +1,317 @@
+name: policy-assignments
+
+on:
+  workflow_dispatch: # allows a manual run from the UI
+  workflow_run:
+    workflows: ["policy-initiatives"] # name of the triggering workflow
+    types: [completed]
+    branches: [main]
+env:
+  variablesPath: "settings.yml"
+  templateName: "PolicyAssign"
+  templateFileDirectory: "bicep/templates/policyAssignments"
+  devAssignmentConfigFileDirectory: "policyAssignments/dev"
+  prodAssignmentConfigFileDirectory: "policyAssignments/prod"
+  configurationSchemaFilePath: "policyAssignments/policyAssignment.schema.json"
+  templateFileName: "main.bicep"
+  outputFileArtifactSuffix: "Output"
+  bicepVariableName: "policyAssignments"
+  configSyntaxTestScriptPath: "tests/policyAssignment/configuration-syntax/assignmentConfigurationsSyntaxTest.ps1"
+
+jobs:
+  job_call_initiation:
+    name: Initiation
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: "Initiation"
+        uses: ./.github/actions/templates/initiation
+        with:
+          variablesPath: "${{ env.variablesPath }}"
+
+  job_build_dev:
+    name: Build Dev
+    runs-on: ubuntu-latest
+    needs: job_call_initiation
+    env:
+      AZURE_CREDENTIALS: ${{ secrets.POLICY_DEV_MG_OWNER }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Import Variables
+        shell: pwsh # PowerShell Core
+        env:
+          variablesPath: "settings.yml"
+        run: |
+          echo '::group::Import Variables from ${{ env.variablesPath }}'
+          ./scripts/pipelines/github-set-variables.ps1 -configFilePath ${{ env.variablesPath }}
+          echo '::endgroup::'
+      - name: "Update Files"
+        uses: ./.github/actions/templates/build-policy-assignment-and-exemption
+        with:
+          resource-type: "assignment"
+          config-files-path: "${{ env.devAssignmentConfigFileDirectory }}"
+          template-file-directory: "${{ env.templateFileDirectory }}"
+          bicep-file-path: "${{ env.templateFileDirectory }}/${{ env.templateFileName }}"
+          bicep-variable-name: "${{ env.bicepVariableName }}"
+          output-dir: "${{ env.devAssignmentConfigFileDirectory }}"
+          policy-location-resource-id: "/providers/Microsoft.Management/managementGroups/${{ env.devManagementGroup }}"
+          config-build-artifact-name: "policy_assign_config_${{ env.devEnv }}"
+          bicep-template-build-artifact-name: "policy_assign_bicep_${{ env.devEnv }}"
+
+  job_build_prod:
+    name: Build Prod
+    runs-on: ubuntu-latest
+    needs: job_call_initiation
+    env:
+      AZURE_CREDENTIALS: ${{ secrets.POLICY_PROD_MG_OWNER }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Import Variables
+        shell: pwsh # PowerShell Core
+        env:
+          variablesPath: "settings.yml"
+        run: |
+          echo '::group::Import Variables from ${{ env.variablesPath }}'
+          ./scripts/pipelines/github-set-variables.ps1 -configFilePath ${{ env.variablesPath }}
+          echo '::endgroup::'
+      - name: "Update Files"
+        uses: ./.github/actions/templates/build-policy-assignment-and-exemption
+        with:
+          resource-type: "assignment"
+          config-files-path: "${{ env.prodAssignmentConfigFileDirectory }}"
+          template-file-directory: "${{ env.templateFileDirectory }}"
+          bicep-file-path: "${{ env.templateFileDirectory }}/${{ env.templateFileName }}"
+          bicep-variable-name: "${{ env.bicepVariableName }}"
+          output-dir: "${{ env.prodAssignmentConfigFileDirectory }}"
+          policy-location-resource-id: "/providers/Microsoft.Management/managementGroups/${{ env.prodManagementGroup }}"
+          config-build-artifact-name: "policy_assign_config_${{ env.prodEnv }}"
+          bicep-template-build-artifact-name: "policy_assign_bicep_${{ env.prodEnv }}"
+
+  job_test_dev:
+    name: Test Dev
+    runs-on: ubuntu-latest
+    needs: job_build_dev
+    env:
+      AZURE_CREDENTIALS: ${{ secrets.POLICY_DEV_MG_OWNER }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: "Install PowerShell-Yaml Module"
+        shell: pwsh
+        run: |
+          echo '::group::Install PowerShell-Yaml Module if not present'
+          if (-not (Get-Module -ListAvailable -Name powershell-yaml)) {
+            Write-Output "Installing powershell-yaml module..."
+            Install-Module -Name powershell-yaml -Force -Scope CurrentUser
+          }
+          echo '::endgroup::'
+      - name: Import Variables
+        shell: pwsh # PowerShell Core
+        env:
+          variablesPath: "settings.yml"
+        run: |
+          echo '::group::Import Variables from ${{ env.variablesPath }}'
+          ./scripts/pipelines/github-set-variables.ps1 -configFilePath ${{ env.variablesPath }}
+          echo '::endgroup::'
+      - name: "Validate Configuration Files Syntax"
+        uses: ./.github/actions/templates/validate-policy-assignment-and-exemption-config-syntax
+        with:
+          config-artifact-name: "policy_assign_config_${{ env.devEnv }}"
+          config-file-directory: "${{ env.devAssignmentConfigFileDirectory }}"
+          config-schema-file-path: "${{ env.configurationSchemaFilePath }}"
+          test-script-path: "${{ env.configSyntaxTestScriptPath }}"
+          exclude-tags: "AssignPolicyInitiative,NonComplianceMessages"
+          output-file-prefix: "TEST-AssignmentConfigSyntax-${{ env.devEnv }}"
+          test-run-title: "DevAssignmentConfigSyntaxTest"
+          skip-passed-tests-report: true
+      - name: "Test and Validate Bicep Template"
+        uses: ./.github/actions/templates/test-validate
+        with:
+          template-name: "${{ env.templateName }}"
+          template-file-directory: "${{ env.templateFileDirectory }}"
+          template-file-artifact-name: "policy_assign_bicep_${{ env.devEnv }}"
+          template-file-name: "${{ env.templateFileName }}"
+          additional-resource-directory: "${{ env.devAssignmentConfigFileDirectory }}"
+          additional-resource-artifact-name: "policy_assign_config_${{ env.devEnv }}"
+          psrule-baseline-name: "Azure.Default"
+          psrule-test-title: "PSRule Validation Summary - Dev"
+          run-bicep-support-files-tests: true
+          run-psrule-tests: true
+          run-template-validation: true
+          run-whatif-in-template-validation: false
+          run-bicep-linter: true
+          whatif-max-retry: 3
+          template-scope: "managementGroup"
+          target-name: ${{ env.devManagementGroup }}
+          azure-location: ${{ env.default-region }}
+          skip-passed-tests-report: false
+
+  job_test_prod:
+    name: Test Prod
+    runs-on: ubuntu-latest
+    needs: job_build_prod
+    env:
+      AZURE_CREDENTIALS: ${{ secrets.POLICY_PROD_MG_OWNER }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: "Install PowerShell-Yaml Module"
+        shell: pwsh
+        run: |
+          echo '::group::Install PowerShell-Yaml Module if not present'
+          if (-not (Get-Module -ListAvailable -Name powershell-yaml)) {
+            Write-Output "Installing powershell-yaml module..."
+            Install-Module -Name powershell-yaml -Force -Scope CurrentUser
+          }
+          echo '::endgroup::'
+      - name: Import Variables
+        shell: pwsh # PowerShell Core
+        env:
+          variablesPath: "settings.yml"
+        run: |
+          echo '::group::Import Variables from ${{ env.variablesPath }}'
+          ./scripts/pipelines/github-set-variables.ps1 -configFilePath ${{ env.variablesPath }}
+          echo '::endgroup::'
+      - name: "Validate Configuration Files Syntax"
+        uses: ./.github/actions/templates/validate-policy-assignment-and-exemption-config-syntax
+        with:
+          config-artifact-name: "policy_assign_config_${{ env.prodEnv }}"
+          config-file-directory: "${{ env.prodAssignmentConfigFileDirectory }}"
+          config-schema-file-path: "${{ env.configurationSchemaFilePath }}"
+          test-script-path: "${{ env.configSyntaxTestScriptPath }}"
+          exclude-tags: "AssignPolicyInitiative,NonComplianceMessages"
+          output-file-prefix: "TEST-AssignmentConfigSyntax-${{ env.prodEnv }}"
+          test-run-title: "ProdAssignmentConfigSyntaxTest"
+          skip-passed-tests-report: true
+      - name: "Test and Validate Bicep Template"
+        uses: ./.github/actions/templates/test-validate
+        with:
+          template-name: "${{ env.templateName }}"
+          template-file-directory: "${{ env.templateFileDirectory }}"
+          template-file-artifact-name: "policy_assign_bicep_${{ env.prodEnv }}"
+          template-file-name: "${{ env.templateFileName }}"
+          additional-resource-directory: "${{ env.prodAssignmentConfigFileDirectory }}"
+          additional-resource-artifact-name: "policy_assign_config_${{ env.prodEnv }}"
+          psrule-baseline-name: "Azure.Default"
+          psrule-test-title: "PSRule Validation Summary - Prod"
+          run-bicep-support-files-tests: true
+          run-psrule-tests: true
+          run-template-validation: true
+          run-whatif-in-template-validation: false
+          run-bicep-linter: true
+          whatif-max-retry: 3
+          template-scope: "managementGroup"
+          target-name: ${{ env.prodManagementGroup }}
+          azure-location: ${{ env.default-region }}
+          skip-passed-tests-report: false
+
+  job_deploy_dev:
+    name: "Deploy Dev"
+    runs-on: ubuntu-latest
+    needs:
+      - job_test_dev
+    env:
+      AZURE_CREDENTIALS: ${{ secrets.POLICY_DEV_MG_OWNER }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: "Install PowerShell-Yaml Module"
+        shell: pwsh
+        run: |
+          echo '::group::Install PowerShell-Yaml Module if not present'
+          if (-not (Get-Module -ListAvailable -Name powershell-yaml)) {
+            Write-Output "Installing powershell-yaml module..."
+            Install-Module -Name powershell-yaml -Force -Scope CurrentUser
+          }
+          echo '::endgroup::'
+      - name: Import Variables
+        shell: pwsh # PowerShell Core
+        env:
+          variablesPath: "settings.yml"
+        run: |
+          echo '::group::Import Variables from ${{ env.variablesPath }}'
+          ./scripts/pipelines/github-set-variables.ps1 -configFilePath ${{ env.variablesPath }}
+          echo '::endgroup::'
+      - name: Deploy Template
+        uses: ./.github/actions/templates/bicep-deployments
+        with:
+          template-name: "${{env.templateName}}"
+          template-file-directory: "${{ env.templateFileDirectory }}"
+          template-file-name: "${{ env.templateFileName }}"
+          template-file-artifact-name: "policy_assign_bicep_${{ env.devEnv }}"
+          additional-resource-directory: "${{ env.devAssignmentConfigFileDirectory }}"
+          additional-resource-artifact-name: "policy_assign_config_${{ env.devEnv }}"
+          template-scope: "managementGroup"
+          target-name: ${{ env.devManagementGroup }}
+          azure-location: ${{ env.default-region }}
+          publish-deployment-outputs: true
+          retry-failed-deployment: true
+          deployment-output-variable-prefix: "${{ env.devEnv }}"
+          max-wait-minutes: 60
+          http-timeout-seconds: 1000
+
+  job_deploy_prod:
+    name: "Deploy Prod"
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs:
+      - job_test_prod
+      - job_deploy_dev
+    env:
+      AZURE_CREDENTIALS: ${{ secrets.POLICY_PROD_MG_OWNER }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: "Install PowerShell-Yaml Module"
+        shell: pwsh
+        run: |
+          echo '::group::Install PowerShell-Yaml Module if not present'
+          if (-not (Get-Module -ListAvailable -Name powershell-yaml)) {
+            Write-Output "Installing powershell-yaml module..."
+            Install-Module -Name powershell-yaml -Force -Scope CurrentUser
+          }
+          echo '::endgroup::'
+      - name: Import Variables
+        shell: pwsh # PowerShell Core
+        env:
+          variablesPath: "settings.yml"
+        run: |
+          echo '::group::Import Variables from ${{ env.variablesPath }}'
+          ./scripts/pipelines/github-set-variables.ps1 -configFilePath ${{ env.variablesPath }}
+          echo '::endgroup::'
+
+      - name: Deploy Template
+        uses: ./.github/actions/templates/bicep-deployments
+        with:
+          template-name: "${{env.templateName}}"
+          template-file-directory: "${{ env.templateFileDirectory }}"
+          template-file-name: "${{ env.templateFileName }}"
+          template-file-artifact-name: "policy_assign_bicep_${{ env.prodEnv }}"
+          additional-resource-directory: "${{ env.prodAssignmentConfigFileDirectory }}"
+          additional-resource-artifact-name: "policy_assign_config_${{ env.prodEnv }}"
+          template-scope: "managementGroup"
+          target-name: ${{ env.prodManagementGroup }}
+          azure-location: ${{ env.default-region }}
+          publish-deployment-outputs: true
+          retry-failed-deployment: true
+          deployment-output-variable-prefix: "${{ env.prodEnv }}"
+          max-wait-minutes: 60
+          http-timeout-seconds: 1000

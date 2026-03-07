@@ -1,0 +1,36 @@
+parameters:
+  - name: installScriptPath
+    displayName: "PS module installation Script Path"
+    type: string
+    default: "scripts/pipelines/pipeline-install-bicep.ps1"
+
+  - name: desiredVersion
+    displayName: "Desired Bicep Version"
+    type: string
+    default: "0.34.44"
+
+  - name: powershellCore
+    displayName: "Run on Powershell Core"
+    type: boolean
+    default: true
+
+  - name: shouldInstall
+    displayName: "Should Install"
+    type: boolean
+    default: true
+
+  - name: displayName
+    displayName: "Display Name"
+    type: string
+    default: "Install Bicep CLI"
+
+steps:
+  - task: PowerShell@2
+    displayName: "${{parameters.displayName}}"
+    condition: and(succeeded(), eq(${{ parameters.shouldInstall }}, true))
+    inputs:
+      targetType: "filePath"
+      pwsh: ${{parameters.powershellCore}}
+      filePath: ${{ parameters.installScriptPath }}
+      arguments:
+        -desiredVersion '${{ parameters.desiredVersion }}'

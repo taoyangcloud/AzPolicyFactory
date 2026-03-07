@@ -1,0 +1,70 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-p-monitor",
+    "displayName": "Azure Monitor Policies Prod",
+    "description": "Assignment of Azure Monitor Policies in Prod.",
+    "metadata": {
+      "category": "Azure Monitor"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-monitor",
+    "parameters": {
+      "MON-001_Effect": {
+        "value": "Deny"
+      },
+      "MON-001_allowedEmailDomains": {
+        "value": [
+          "contoso.com",
+          "lumagatena.com"
+        ]
+      },
+      "MON-002_Effect": {
+        "value": "Deny"
+      },
+      "MON-002_allowedCountryCodes": {
+        "value": [
+          "1",
+          "61"
+        ]
+      },
+      "MON-003_Effect": {
+        "value": "Deny"
+      },
+      "MON-003_allowedAutomationAccounts": {
+        "value": []
+      },
+      "MON-004_Effect": {
+        "value": "Deny"
+      },
+      "MON-004_allowedEventHubNamespaces": {
+        "value": []
+      },
+      "MON-005_Effect": {
+        "value": "Deny"
+      },
+      "MON-005_allowedFunctionApps": {
+        "value": []
+      },
+      "MON-006_Effect": {
+        "value": "Deny"
+      },
+      "MON-006_allowedLogicApps": {
+        "value": []
+      },
+      "MON-007_Effect": {
+        "value": "Deny"
+      },
+      "MON-007_allowedURIs": {
+        "value": [
+          "https://webhookuri.com"
+        ]
+      },
+      "MON-008_Effect": {
+        "value": "Deny"
+      }
+    },
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO"
+}

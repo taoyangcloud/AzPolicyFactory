@@ -1,0 +1,48 @@
+{
+  "name": "polset-vml",
+  "properties": {
+    "displayName": "Azure Verified Module Library Policy Initiative",
+    "description": "This policy initiative defines the foundation security requirements for CONTOSO Verified Module Library",
+    "metadata": {
+      "category": "VML",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "VML-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "VML-001 Effect: Restrict Deploying Resources using VML Pre-release modules",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.12.6.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.6.1"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "VML-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-prerelease-vml-module-versions",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VML-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.6.1"
+        ]
+      }
+    ]
+  }
+}

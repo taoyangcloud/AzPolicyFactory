@@ -1,0 +1,162 @@
+{
+  "name": "polset-nsg",
+  "properties": {
+    "displayName": "Azure Network Security Groups Policy Initiative",
+    "description": "This policy initiative defines the foundation security requirements for Network Security Groups",
+    "metadata": {
+      "category": "Network Security Group",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": true
+    },
+    "parameters": {
+      "NSG-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "NSG-001 Effect: Network Watcher should be enabled",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "AuditIfNotExists"
+      },
+      "NSG-001_ResourceGroupName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "NSG-001: Network Watcher resource group name",
+          "description": "Name of the resource group of NetworkWatcher, such as NetworkWatcherRG. This is the resource group where the Network Watchers are located."
+        },
+        "defaultValue": "NetworkWatcherRG"
+      },
+      "NSG-002_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "NSG-002 Effect: Subnets should be associated with a Network Security Group",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "AuditIfNotExists"
+      },
+      "NSG-003_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "NSG-003 Effect: Allowed list of Service Tags in Network Security Group Inbound Security Rules",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "NSG-003_AllowedServiceTags": {
+        "type": "array",
+        "metadata": {
+          "displayName": "NSG-003: Allowed Inbound Service Tags",
+          "description": "List of allowed service tags for inbound rules"
+        }
+      },
+      "NSG-004_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "NSG-004 Effect: Allowed list of Service Tags in Network Security Group Outbound Security Rules",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "NSG-004_AllowedServiceTags": {
+        "type": "array",
+        "metadata": {
+          "displayName": "NSG-004: Allowed Outbound Service Tags",
+          "description": "List of allowed service tags for outbound rules"
+        }
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.12.4.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.4.1"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.1"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "NSG-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-nsg-network-watcher-enabled",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('NSG-001_Effect')]"
+          },
+          "resourceGroupName": {
+            "value": "[parameters('NSG-001_ResourceGroupName')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "NSG-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-nsg-on-subnet",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('NSG-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "NSG-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-allowed-service-tags-in-nsg-rule",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('NSG-003_Effect')]"
+          },
+          "direction": {
+            "value": "Inbound"
+          },
+          "allowedServiceTags": {
+            "value": "[parameters('NSG-003_AllowedServiceTags')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "NSG-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-allowed-service-tags-in-nsg-rule",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('NSG-004_Effect')]"
+          },
+          "direction": {
+            "value": "Outbound"
+          },
+          "allowedServiceTags": {
+            "value": "[parameters('NSG-004_AllowedServiceTags')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      }
+    ]
+  }
+}

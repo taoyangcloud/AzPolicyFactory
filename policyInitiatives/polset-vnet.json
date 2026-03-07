@@ -1,0 +1,248 @@
+{
+  "name": "polset-vnet",
+  "properties": {
+    "displayName": "Azure Virtual Network Policy Initiative",
+    "description": "This initiative includes policies that address the security controls for Azure Virtual Network.",
+    "metadata": {
+      "category": "Network",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "VNET-001_effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "VNET-001 Effect: Gateway Subnet should not have Network Security Group associated",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "VNET-002_effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "VNET-002 Effect: Subnets should be associated with a Network Security Group",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Deny",
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "VNET-002_excludedSubnets": {
+        "type": "Array",
+        "metadata": {
+          "displayName": "VNET-002: Excluded Subnets",
+          "description": "Array of subnet names that are excluded from this policy"
+        },
+        "defaultValue": [
+          "GatewaySubnet",
+          "AzureFirewallSubnet",
+          "AzureFirewallManagementSubnet",
+          "AzureBastionSubnet"
+        ]
+      },
+      "VNET-003_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "VNET-003 Effect: Configure virtual networks to enable vnet flow log and traffic analytics (Australia East)",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "VNET-003_storageId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "VNET-003: Storage Resource ID (Australia East)",
+          "description": "Resource ID of the storage account where the flow logs are written. Make sure this storage account is located in the same region as the virtual network. The format must be: '/subscriptions/{subscription id}/resourceGroups/{resourceGroup name}/providers/Microsoft.Storage/storageAccounts/{storage account name}",
+          "assignPermissions": true
+        }
+      },
+      "VNET-004_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "VNET-004 Effect: Configure virtual networks to enable vnet flow log and traffic analytics (Australia Southeast)",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "VNET-004_storageId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "VNET-004: Storage Resource ID (Australia Southeast)",
+          "description": "Resource ID of the storage account where the flow logs are written. Make sure this storage account is located in the same region as the virtual network. The format must be: '/subscriptions/{subscription id}/resourceGroups/{resourceGroup name}/providers/Microsoft.Storage/storageAccounts/{storage account name}",
+          "assignPermissions": true
+        }
+      },
+      "evaluationDelay": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Evaluation Delay",
+          "description": "Specifies when the existence of the related resources should be evaluated. The delay is only used for evaluations that are a result of a create or update resource request. Allowed values are AfterProvisioning, AfterProvisioningSuccess, AfterProvisioningFailure, or an ISO 8601 duration between 0 and 360 minutes."
+        },
+        "defaultValue": "AfterProvisioning"
+      },
+      "vnetFlowLogWorkspaceResourceId": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Log Analytics workspace for VNet Flow Logs",
+          "description": "Select the Log Analytics workspace from dropdown list",
+          "strongType": "omsWorkspace",
+          "assignPermissions": true
+        }
+      },
+      "vnetFlowLogTimeInterval": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Traffic analytics processing interval in minutes",
+          "description": "Traffic analytics processes blobs at the selected frequency."
+        },
+        "defaultValue": "10",
+        "allowedValues": [
+          "10",
+          "60"
+        ]
+      },
+      "vnetFlowLogRetentionInDays": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Flow Log Retention in Days",
+          "description": "Flow Log Retention in Days. Set it to 0 if you do not want to apply retention policy"
+        },
+        "defaultValue": "90"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.13.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.4.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.4.1"
+      },
+      {
+        "name": "ISO27001-2013_A.12.4.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.4.3"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "VNET-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-gateway-subnet-with-nsg",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VNET-001_effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "VNET-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deny-subnet-without-nsg",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VNET-002_effect')]"
+          },
+          "excludedSubnets": {
+            "value": "[parameters('VNET-002_excludedSubnets')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.1"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "VNET-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-vnet-flow-logs",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VNET-003_effect')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "vnetRegion": {
+            "value": "australiaeast"
+          },
+          "storageId": {
+            "value": "[parameters('VNET-003_storageId')]"
+          },
+          "timeInterval": {
+            "value": "[parameters('vnetFlowLogTimeInterval')]"
+          },
+          "retentionInDays": {
+            "value": "[parameters('vnetFlowLogRetentionInDays')]"
+          },
+          "networkWatcherRG": {
+            "value": "NetworkWatcherRG"
+          },
+          "networkWatcherName": {
+            "value": "NetworkWatcher_australiaeast"
+          },
+          "workspaceResourceId": {
+            "value": "[parameters('vnetFlowLogWorkspaceResourceId')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2013_A.12.4.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "VNET-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-deploy-vnet-flow-logs",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('VNET-004_effect')]"
+          },
+          "evaluationDelay": {
+            "value": "[parameters('evaluationDelay')]"
+          },
+          "vnetRegion": {
+            "value": "australiasoutheast"
+          },
+          "storageId": {
+            "value": "[parameters('VNET-004_storageId')]"
+          },
+          "timeInterval": {
+            "value": "[parameters('vnetFlowLogTimeInterval')]"
+          },
+          "retentionInDays": {
+            "value": "[parameters('vnetFlowLogRetentionInDays')]"
+          },
+          "networkWatcherRG": {
+            "value": "NetworkWatcherRG"
+          },
+          "networkWatcherName": {
+            "value": "NetworkWatcher_australiaeast"
+          },
+          "workspaceResourceId": {
+            "value": "[parameters('vnetFlowLogWorkspaceResourceId')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.4.1",
+          "ISO27001-2013_A.12.4.3"
+        ]
+      }
+    ]
+  }
+}

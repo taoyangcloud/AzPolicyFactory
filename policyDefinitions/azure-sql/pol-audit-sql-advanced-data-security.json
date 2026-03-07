@@ -1,0 +1,63 @@
+{
+  "name": "pol-audit-sql-advanced-data-security",
+  "properties": {
+    "displayName": "Azure Defender for SQL should be enabled for unprotected Azure SQL servers",
+    "description": "Audit SQL servers without Advanced Data Security",
+    "metadata": {
+      "category": "Application and Database security",
+      "version": "2.0.1",
+      "preview": false,
+      "deprecated": false,
+      "source_builtIn_name": "abfb4388-5bf4-4ad7-ba82-2cd2f41ceae9"
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "AuditIfNotExists"
+      },
+      "evaluationDelay": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Evaluation Delay",
+          "description": "Specifies when the existence of the related resources should be evaluated. The delay is only used for evaluations that are a result of a create or update resource request. Allowed values are AfterProvisioning, AfterProvisioningSuccess, AfterProvisioningFailure, or an ISO 8601 duration between 0 and 360 minutes."
+        },
+        "defaultValue": "AfterProvisioning"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Sql/servers"
+          },
+          {
+            "field": "kind",
+            "notContains": "analytics"
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Sql/servers/securityAlertPolicies",
+          "evaluationDelay": "[parameters('evaluationDelay')]",
+          "name": "Default",
+          "existenceCondition": {
+            "field": "Microsoft.Sql/servers/securityAlertPolicies/state",
+            "equals": "Enabled"
+          }
+        }
+      }
+    }
+  }
+}

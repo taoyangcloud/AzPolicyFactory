@@ -1,0 +1,297 @@
+{
+  "name": "polset-monitor",
+  "properties": {
+    "displayName": "CONTOSO - Azure Monitor Policy Initiative",
+    "description": "This initiative includes policies that address the security controls for Azure Monitor.",
+    "metadata": {
+      "category": "Azure Monitor",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "MON-001_effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "MON-001 Effect: Restrict Azure Monitor Action Group Send Email Notification to External Email Addresses",
+          "description": "MON-001 Effect: Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "MON-001_allowedEmailDomains": {
+        "type": "array",
+        "metadata": {
+          "displayName": "MON-001: Allowed Email Domains",
+          "description": "MON-001: List of allowed email domains for receiving email notifications."
+        }
+      },
+      "MON-002_effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "MON-002 Effect: Restrict Azure Monitor Action Group Send SMS Notification to Unauthorized country codes",
+          "description": "MON-002 Effect: Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "MON-002_allowedCountryCodes": {
+        "type": "array",
+        "metadata": {
+          "displayName": "MON-002: Allowed Country Codes for SMS Notifications",
+          "description": "MON-002: The list of allowed country codes for receiving SMS notifications."
+        }
+      },
+      "MON-003_effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "MON-003 Effect: Restrict Azure Monitor Action Group Trigger Actions to Cross-Subscription Azure Automation or not on the Allowed List",
+          "description": "MON-003 Effect: Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "MON-003_allowedAutomationAccounts": {
+        "type": "array",
+        "metadata": {
+          "displayName": "MON-003: Allowed Automation Accounts",
+          "description": "MON-003: List of resource IDs of allowed Automation Accounts."
+        }
+      },
+      "MON-004_effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "MON-004 Effect: Restrict Azure Monitor Action Group Trigger Actions to Cross-Subscription Event Hubs or not on the Allowed List",
+          "description": "MON-004 Effect: Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "MON-004_allowedEventHubNamespaces": {
+        "type": "array",
+        "metadata": {
+          "displayName": "MON-004: Allowed Event Hub Namespaces",
+          "description": "MON-004: List of resource IDs of allowed Event Hub Namespaces."
+        }
+      },
+      "MON-005_effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "MON-005 Effect: Restrict Azure Monitor Action Group Trigger Actions to Cross-Subscription Function Apps or not on the Allowed List",
+          "description": "MON-005 Effect: Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "MON-005_allowedFunctionApps": {
+        "type": "array",
+        "metadata": {
+          "displayName": "MON-005: Allowed Function Apps",
+          "description": "MON-005: List of resource IDs of allowed Function Apps."
+        }
+      },
+      "MON-006_effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "MON-006 Effect: Restrict Azure Monitor Action Group Trigger Actions to Cross-Subscription Logic Apps or not on the Allowed List",
+          "description": "MON-006 Effect: Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "MON-006_allowedLogicApps": {
+        "type": "array",
+        "metadata": {
+          "displayName": "MON-006: Allowed Logic Apps",
+          "description": "MON-006: List of resource IDs of allowed Logic Apps."
+        }
+      },
+      "MON-007_effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "MON-007 Effect: Restrict Azure Monitor Action Group Trigger Actions to Webhooks that are not on the Allowed List",
+          "description": "MON-007 Effect: Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "MON-007_allowedURIs": {
+        "type": "array",
+        "metadata": {
+          "displayName": "MON-006: Allowed URIs for Webhook Actions",
+          "description": "MON-006: List of allowed URIs for Webhook Actions."
+        }
+      },
+      "MON-008_effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "MON-008 Effect: Restrict Azure Monitor Action Group Trigger Actions to Webhooks that are not using HTTPS",
+          "description": "MON-008 Effect: Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.13.2.2",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.2.2"
+      },
+      {
+        "name": "ISO27001-2013_A.10.1.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.10.1.1"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "MON-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-ag-deny-external-email-notification",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('MON-001_effect')]"
+          },
+          "allowedEmailDomains": {
+            "value": "[parameters('MON-001_allowedEmailDomains')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.2.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "MON-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-ag-deny-unauthorized-sms-notification-country-code",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('MON-002_effect')]"
+          },
+          "allowedCountryCodes": {
+            "value": "[parameters('MON-002_allowedCountryCodes')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.2.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "MON-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-ag-deny-unauthorized-azure-automation-actions",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('MON-003_effect')]"
+          },
+          "allowedAutomationAccounts": {
+            "value": "[parameters('MON-003_allowedAutomationAccounts')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.2.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "MON-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-ag-deny-unauthorized-event-hub-actions",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('MON-004_effect')]"
+          },
+          "allowedEventHubNamespaces": {
+            "value": "[parameters('MON-004_allowedEventHubNamespaces')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.2.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "MON-005",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-ag-deny-unauthorized-function-app-actions",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('MON-005_effect')]"
+          },
+          "allowedFunctionApps": {
+            "value": "[parameters('MON-005_allowedFunctionApps')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.2.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "MON-006",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-ag-deny-unauthorized-logic-app-actions",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('MON-006_effect')]"
+          },
+          "allowedLogicApps": {
+            "value": "[parameters('MON-006_allowedLogicApps')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.2.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "MON-007",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-ag-deny-unauthorized-webhooks",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('MON-007_effect')]"
+          },
+          "allowedURIs": {
+            "value": "[parameters('MON-007_allowedURIs')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.2.2"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "MON-008",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-ag-deny-http-webhooks",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('MON-008_effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.10.1.1"
+        ]
+      }
+    ]
+  }
+}

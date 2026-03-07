@@ -1,0 +1,22 @@
+{
+  "$schema": "../policyExemption.schema.json",
+  "policyExemption": {
+    "name": "pex-sandbox-mg-rr-003",
+    "displayName": "Exempt Sandbox from Azure Data Factory Resource Restriction",
+    "description": "This is a test exemption for CONTOSO-Sandbox management group.",
+    "metadata": {
+      "requestedBy": "Bart Simpson",
+      "approvedBy": "Eric Cartman",
+      "approvedOn": "2025-01-01",
+      "ticketRef": "INC123456"
+    },
+    "policyAssignmentId": "/providers/Microsoft.Management/managementGroups/CONTOSO/providers/microsoft.authorization/policyassignments/pa-p-res-restriction",
+    "exemptionCategory": "Waiver",
+    "assignmentScopeValidation": "Default",
+    "policyDefinitionReferenceIds": [
+      "RR-003"
+    ],
+    "expiresOn": "2026-05-31T23:59:59Z"
+  },
+  "managementGroupId": "CONTOSO-Sandbox"
+}

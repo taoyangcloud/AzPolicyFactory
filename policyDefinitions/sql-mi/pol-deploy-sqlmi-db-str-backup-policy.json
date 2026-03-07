@@ -1,0 +1,102 @@
+{
+  "name": "pol-deploy-sqlmi-db-str-backup-policy",
+  "properties": {
+    "displayName": "Deploy SQL MI Database Short Term Backup Retention Policy",
+    "description": "This policy configures the SQL MI Database Short Term Backup Retention Policy.",
+    "metadata": {
+      "category": "Data Protection",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "mode": "All",
+    "parameters": {
+      "effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      },
+      "retentionDays": {
+        "type": "integer",
+        "metadata": {
+          "displayName": "Retention Days",
+          "description": "Required retention days for short term backup retention policy"
+        },
+        "defaultValue": 35
+      },
+      "evaluationDelay": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Evaluation Delay",
+          "description": "Specifies when the existence of the related resources should be evaluated. The delay is only used for evaluations that are a result of a create or update resource request. Allowed values are AfterProvisioning, AfterProvisioningSuccess, AfterProvisioningFailure, or an ISO 8601 duration between 0 and 360 minutes."
+        },
+        "defaultValue": "AfterProvisioning"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "field": "type",
+        "equals": "Microsoft.Sql/managedInstances/databases"
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies",
+          "name": "default",
+          "evaluationDelay": "[parameters('evaluationDelay')]",
+          "existenceCondition": {
+            "field": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies/retentionDays",
+            "equals": "[parameters('retentionDays')]"
+          },
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "fullDbName": {
+                    "type": "string"
+                  },
+                  "retentionDays": {
+                    "type": "int"
+                  }
+                },
+                "variables": {},
+                "resources": [
+                  {
+                    "type": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies",
+                    "apiVersion": "2022-05-01-preview",
+                    "name": "[concat(parameters('fullDbName'), '/default')]",
+                    "properties": {
+                      "retentionDays": "[parameters('retentionDays')]"
+                    }
+                  }
+                ],
+                "outputs": {}
+              },
+              "parameters": {
+                "fullDbName": {
+                  "value": "[field('fullName')]"
+                },
+                "retentionDays": {
+                  "value": "[parameters('retentionDays')]"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

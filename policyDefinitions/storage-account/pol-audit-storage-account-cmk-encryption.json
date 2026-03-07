@@ -1,0 +1,55 @@
+{
+  "name": "pol-audit-storage-account-cmk-encryption",
+  "properties": {
+    "displayName": "Storage accounts should use customer-managed key for encryption",
+    "description": "TSecure your blob and file storage account with greater flexibility using customer-managed keys. When you specify a customer-managed key, that key is used to protect and control access to the key that encrypts your data. Using customer-managed keys provides additional capabilities to control rotation of the key encryption key or cryptographically erase data",
+    "metadata": {
+      "category": "Data Protection",
+      "version": "1.0.3",
+      "preview": false,
+      "deprecated": false,
+      "source_builtIn_name": "6fac406b-40ca-413b-bf8e-0bf964659c25"
+    },
+    "mode": "All",
+    "parameters": {
+      "effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "not": {
+              "field": "tags[application]",
+              "equals": "purview"
+            }
+          },
+          {
+            "not": {
+              "field": "Microsoft.Storage/storageAccounts/encryption.keySource",
+              "equals": "Microsoft.Keyvault"
+            }
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

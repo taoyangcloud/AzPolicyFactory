@@ -1,0 +1,52 @@
+{
+  "name": "pol-audit-sql-server-private-endpoint",
+  "properties": {
+    "displayName": "Private endpoint connections on Azure SQL Database should be enabled",
+    "description": "Private endpoint connections enforce secure communication by enabling private connectivity to Azure SQL Database.",
+    "metadata": {
+      "category": "Network security",
+      "version": "1.1.0",
+      "preview": false,
+      "deprecated": false,
+      "source_builtIn_name": "7698e800-9299-47a6-b3b6-5a0fee576eed"
+    },
+    "mode": "Indexed",
+    "parameters": {
+      "effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Sql/servers"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Sql/servers/privateEndpointConnections[*]",
+              "where": {
+                "field": "Microsoft.Sql/servers/privateEndpointConnections[*].privateLinkServiceConnectionState.status",
+                "equals": "Approved"
+              }
+            },
+            "less": 1
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    }
+  }
+}

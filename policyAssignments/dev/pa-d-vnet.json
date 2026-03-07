@@ -1,0 +1,59 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-d-vnet",
+    "displayName": "Azure Virtual Network Policies Dev",
+    "description": "Policy Assignment for Azure Virtual Network - Dev",
+    "metadata": {
+      "category": "Network"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/POLSET-VNET",
+    "identity": "SystemAssigned",
+    "parameters": {
+      "VNET-001_Effect": {
+        "value": "Deny"
+      },
+      "VNET-002_Effect": {
+        "value": "Deny"
+      },
+      "VNET-002_excludedSubnets": {
+        "value": [
+          "GatewaySubnet",
+          "AzureFirewallSubnet",
+          "AzureFirewallManagementSubnet",
+          "AzureBastionSubnet"
+        ]
+      },
+      "VNET-003_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "VNET-003_storageId": {
+        "value": "/subscriptions/f27ab1cb-9c1a-4bdb-9e18-bb11ec9205db/resourceGroups/rg-ae-d-monitor/providers/Microsoft.Storage/storageAccounts/satydevflowlogs01"
+      },
+      "VNET-004_Effect": {
+        "value": "DeployIfNotExists"
+      },
+      "VNET-004_storageId": {
+        "value": "/subscriptions/f27ab1cb-9c1a-4bdb-9e18-bb11ec9205db/resourceGroups/rg-ae-d-monitor/providers/Microsoft.Storage/storageAccounts/satydevflowlogs02"
+      },
+      "evaluationDelay": {
+        "value": "AfterProvisioning"
+      },
+      "vnetFlowLogWorkspaceResourceId": {
+        "value": "/subscriptions/f27ab1cb-9c1a-4bdb-9e18-bb11ec9205db/resourcegroups/rg-ae-d-monitor/providers/microsoft.operationalinsights/workspaces/law-ae-d-mgmt-01"
+      },
+      "vnetFlowLogTimeInterval": {
+        "value": "10"
+      },
+      "vnetFlowLogRetentionInDays": {
+        "value": "90"
+      }
+    },
+    "nonComplianceMessages": [],
+    "notScopes": [],
+    "roleDefinitionIds": [],
+    "additionalRoleAssignments": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV",
+  "managementGroupId": "CONTOSO-DEV"
+}

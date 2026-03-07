@@ -1,0 +1,209 @@
+{
+  //mapping of target scopes between environments
+  "targetScopeMapping": {
+    /*
+    mapping for management groups. the key is just a description of the target scope.
+    within the child object, each key is the name of the environment and the value is the management group name in that environment.
+    */
+    "managementGroup": {
+      "landing-zone-root": {
+        "development": "CONTOSO-DEV",
+        "production": "CONTOSO"
+      },
+      "landing-zones": {
+        "development": "CONTOSO-DEV-LandingZones",
+        "production": "CONTOSO-LandingZones"
+      },
+      "landing-zones-corp": {
+        "development": "CONTOSO-DEV-LandingZones-Corp",
+        "production": "CONTOSO-LandingZones-Corp"
+      },
+      "landing-zones-online": {
+        "development": "CONTOSO-DEV-LandingZones-Online",
+        "production": "CONTOSO-LandingZones-Online"
+      },
+      "platform": {
+        "development": "CONTOSO-DEV-Platform",
+        "production": "CONTOSO-Platform"
+      },
+      "platform-connectivity": {
+        "development": "CONTOSO-DEV-Platform-Connectivity",
+        "production": "CONTOSO-Platform-Connectivity"
+      },
+      "platform-identity": {
+        "development": "CONTOSO-DEV-Platform-Identity",
+        "production": "CONTOSO-Platform-Identity"
+      },
+      "platform-management": {
+        "development": "CONTOSO-DEV-Platform-Management",
+        "production": "CONTOSO-Platform-Management"
+      },
+      "sandbox": {
+        "development": "CONTOSO-DEV-Sandbox",
+        "production": "CONTOSO-Sandbox"
+      }
+    },
+    /*
+    mapping for subscriptions. the key is just a description of the target scope.
+    within the child object, each key is the name of the environment and the value is the subscription id in that environment.
+    */
+    "subscription": {
+      "management": {
+        "development": "f27ab1cb-9c1a-4bdb-9e18-bb11ec9205db",
+        "production": "fca82a86-9abc-4ef3-8628-cd6e3e426325"
+      }
+    },
+    /*
+    mapping for resource groups. the key is just a description of the target scope.
+    within the child object, each key is the name of the environment and the value is the resource id of the resource group in that environment.
+    */
+    "resourceGroup": {
+      "connectivity-network-rg": {
+        "development": "/subscriptions/3cea5943-a7f2-4991-ba22-19e240671e63/resourceGroups/rg-ae-d-net-hub",
+        "production": "/subscriptions/b92da35a-73a9-4554-8711-f6af2342fb52/resourceGroups/rg-ae-p-net-hub"
+      }
+    }
+  },
+  //Define interchangeable parameter values for the parameters used in the assignments
+  "interchangeableParameterValues": {
+    "dinePolicyEffects": [
+      "Disabled",
+      "DeployIfNotExists"
+    ],
+    "ainePolicyEffects": [
+      "Disabled",
+      "AuditIfNotExists"
+    ],
+    "auditDenyEffects": [
+      "Disabled",
+      "Audit",
+      "Deny"
+    ],
+    "appendEffects": [
+      "Disabled",
+      "Append"
+    ],
+    "modifyEffects": [
+      "Disabled",
+      "Modify"
+    ]
+  },
+  //Define allowed deviations for the parameter values used in the assignments
+  "allowedParameterValueDeviations": [
+    {
+      "sourceAssignmentName": "pa-p-nsg",
+      "sourceAssignmentScopeName": "CONTOSO",
+      "parameterName": "nsgAllowedInboundServiceTags",
+      "sourceParameterValue": [
+        "VirtualNetwork",
+        "AzureLoadBalancer",
+        "Internet",
+        "GatewayManager",
+        "ApplicationInsightsAvailability",
+        "*"
+      ],
+      "correspondingParameterValue": [
+        "VirtualNetwork",
+        "AzureLoadBalancer",
+        "Internet",
+        "GatewayManager",
+        "ApplicationInsightsAvailability",
+        "*"
+      ],
+      "deviationReason": "The additional service tags are required for the Policy Integration test for ADF policies."
+    },
+    {
+      "sourceAssignmentName": "pa-p-nsg",
+      "sourceAssignmentScopeName": "CONTOSO",
+      "parameterName": "nsgAllowedOutboundServiceTags",
+      "sourceParameterValue": [
+        "VirtualNetwork",
+        "AzureLoadBalancer",
+        "AzureCloud.australiaeast",
+        "Internet",
+        "AzureCloud",
+        "AzureDatabricks",
+        "Sql",
+        "Storage",
+        "EventHub",
+        "*"
+      ],
+      "correspondingParameterValue": [
+        "VirtualNetwork",
+        "AzureLoadBalancer",
+        "AzureCloud.australiaeast",
+        "Internet",
+        "AzureCloud",
+        "AzureDatabricks",
+        "Sql",
+        "Storage",
+        "EventHub",
+        "*"
+      ],
+      "deviationReason": "The additional service tags are required for the Policy Integration test for ADF policies."
+    },
+    {
+      "sourceAssignmentName": "pa-p-ro-tags-prod",
+      "sourceAssignmentScopeName": "CONTOSO",
+      "parameterName": "platform-environment_TagValue",
+      "sourceParameterValue": "Production",
+      "correspondingParameterValue": "Development",
+      "deviationReason": "tag value for the environment is different."
+    }
+  ],
+  //Define environment specific values for the parameters used in the assignments (i.e. Azure resource IDs specific to each environment)
+  "environmentSpecificValues": {
+    "logAnalyticsWorkspace": {
+      "development": [
+        "/subscriptions/f27ab1cb-9c1a-4bdb-9e18-bb11ec9205db/resourcegroups/rg-ae-d-monitor/providers/microsoft.operationalinsights/workspaces/law-ae-d-mgmt-01"
+      ],
+      "production": [
+        "/subscriptions/fca82a86-9abc-4ef3-8628-cd6e3e426325/resourcegroups/rg-ae-p-monitor/providers/microsoft.operationalinsights/workspaces/law-ae-p-mgmt-01"
+      ]
+    },
+    "privateDnsZoneResourceGroup": {
+      "development": [
+        "/subscriptions/3cea5943-a7f2-4991-ba22-19e240671e63/resourceGroups/rg-ae-d-net-hub"
+      ],
+      "production": [
+        "/subscriptions/b92da35a-73a9-4554-8711-f6af2342fb52/resourceGroups/rg-ae-p-net-hub"
+      ]
+    },
+    "flowLogStorageAccountAE": {
+      "development": [
+        "/subscriptions/f27ab1cb-9c1a-4bdb-9e18-bb11ec9205db/resourceGroups/rg-ae-d-monitor/providers/Microsoft.Storage/storageAccounts/satydevflowlogs01"
+      ],
+      "production": [
+        "/subscriptions/fca82a86-9abc-4ef3-8628-cd6e3e426325/resourceGroups/rg-ae-p-monitor/providers/Microsoft.Storage/storageAccounts/satyprodflowlogs01"
+      ]
+    },
+    "flowLogStorageAccountASE": {
+      "development": [
+        "/subscriptions/f27ab1cb-9c1a-4bdb-9e18-bb11ec9205db/resourceGroups/rg-ae-d-monitor/providers/Microsoft.Storage/storageAccounts/satydevflowlogs02"
+      ],
+      "production": [
+        "/subscriptions/fca82a86-9abc-4ef3-8628-cd6e3e426325/resourceGroups/rg-ae-p-monitor/providers/Microsoft.Storage/storageAccounts/satyprodflowlogs02"
+      ]
+    }
+  },
+  /*
+  Define the exclusion list for the assignment's NotScopes property.
+  items in this list will be excluded when checking for corresponding values in the other environment.
+  */
+  "assignmentNotScopeExclusions": [
+    "/providers/Microsoft.Management/managementGroups/CONTOSO-AVM",
+    "/providers/Microsoft.Management/managementGroups/CONTOSO-Quarantine"
+  ],
+  /*
+  Define the exclusion deviation for a specific policy assignment.
+  */
+  "assignmentNotScopeDeviations": [
+    {
+      "sourceAssignmentName": "pa-lz-res-restriction",
+      "correspondingNotScopeValue": [
+        "/providers/Microsoft.Management/managementGroups/CONTOSO-DEV-LandingZones-Corp"
+      ],
+      "deviationReason": "These child management groups need to be excluded so Public IP addresses can be created for tests for AKS, Bastion and VNet Gateway."
+    }
+  ]
+}

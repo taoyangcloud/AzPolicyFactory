@@ -1,0 +1,51 @@
+{
+  "name": "polset-rsv",
+  "properties": {
+    "displayName": "Azure Recovery Services Vault Policy Initiative",
+    "description": "This policy initiative defines the foundation security requirements for Azure Recovery Services Vaults",
+    "metadata": {
+      "category": "Recovery Services Vault",
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "RSV-001_Effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "RSV-001 Effect: Azure Recovery Services vaults should use private link for backup",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.12.2.1",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.12.2.1"
+      },
+      {
+        "name": "CB-AZ-011"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "RSV-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-rsv-private-endpoint",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('RSV-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.12.2.1",
+          "CB-AZ-011"
+        ]
+      }
+    ]
+  }
+}

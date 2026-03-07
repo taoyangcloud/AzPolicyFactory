@@ -1,0 +1,211 @@
+{
+  "name": "polset-key-vault",
+  "properties": {
+    "displayName": "Azure Key Vaults Policy Initiative",
+    "description": "This policy initiative defines the security requirements for Key Vaults",
+    "metadata": {
+      "version": "1.0.0",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "KV-001_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "KV-001 Effect:Automatically enable Key vault Soft-Delete and Purge Protection",
+          "description": "'Append' is used to add additional fields to the requested resource during creation or update. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "Append",
+          "Disabled"
+        ],
+        "defaultValue": "Append"
+      },
+      "KV-002_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "KV-002 Effect: Key vaults should have purge protection enabled",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "KV-003_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "KV-003 Effect: Azure Key Vault should use RBAC permission model",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Deny"
+      },
+      "KV-004_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "KV-004 Effect: Azure Key Vault should disable public network access",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "KV-005_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "KV-005 Effect: Certificates should have the specified maximum validity period",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "audit",
+          "deny",
+          "disabled"
+        ],
+        "defaultValue": "audit"
+      },
+      "KV-005_MaximumValidityInMonths": {
+        "type": "Integer",
+        "metadata": {
+          "displayName": "KV-005: The maximum validity in months",
+          "description": "The limit to how long a certificate may be valid for. Certificates with lengthy validity periods aren't best practice."
+        },
+        "defaultValue": 12
+      },
+      "KV-006_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "KV-006 Effect: Key Vault keys should have an expiration date",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      },
+      "KV-007_Effect": {
+        "type": "string",
+        "metadata": {
+          "displayName": "KV-007 Effect: Key Vault secrets should have an expiration date",
+          "description": "'Audit' allows a non-compliant resource to be created, but flags it as non-compliant. 'Deny' blocks the resource creation. 'Disable' turns off the policy."
+        },
+        "allowedValues": [
+          "Audit",
+          "Deny",
+          "Disabled"
+        ],
+        "defaultValue": "Audit"
+      }
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "ISO27001-2013_A.9.2.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.9.2.3"
+      },
+      {
+        "name": "ISO27001-2013_A.13.1.3",
+        "additionalMetadataId": "/providers/Microsoft.PolicyInsights/policyMetadata/ISO27001-2013_A.13.1.3"
+      }
+    ],
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "KV-001",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-append-kv-soft-Delete-purge-protection",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('KV-001_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.9.2.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "KV-002",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-enforce-kv-purge-protection",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('KV-002_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.9.2.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "KV-003",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-enforce-kv-rbac-authorization",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('KV-003_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.9.2.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "KV-004",
+        "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policyDefinitions/pol-audit-deny-kv-public-network-access",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('KV-004_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.13.1.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "KV-005",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/0a075868-4c26-42ef-914c-5bc007359560",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('KV-005_Effect')]"
+          },
+          "maximumValidityInMonths": {
+            "value": "[parameters('KV-005_MaximumValidityInMonths')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.9.2.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "KV-006",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/152b15f7-8e1f-4c1f-ab71-8c010ba5dbc0",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('KV-006_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.9.2.3"
+        ]
+      },
+      {
+        "policyDefinitionReferenceId": "KV-007",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/98728c90-32c7-4049-8429-847dc0f4fe37",
+        "parameters": {
+          "effect": {
+            "value": "[parameters('KV-007_Effect')]"
+          }
+        },
+        "groupNames": [
+          "ISO27001-2013_A.9.2.3"
+        ]
+      }
+    ]
+  }
+}

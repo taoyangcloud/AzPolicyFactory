@@ -1,0 +1,29 @@
+{
+  "$schema": "../policyAssignment.schema.json",
+  "policyAssignment": {
+    "name": "pa-p-pe-lz",
+    "displayName": "Azure Private Endpoints Policies Prod Landing Zones",
+    "description": "Policy Assignment for Azure Private Endpoints - Prod Landing Zones",
+    "metadata": {
+      "category": "Azure Private Endpoints"
+    },
+    "policyDefinitionId": "{policyLocationResourceId}/providers/Microsoft.Authorization/policySetDefinitions/polset-pe",
+    "parameters": {
+      "PE-001_Effect": {
+        "value": "Deny"
+      },
+      "PE-002_Effect": {
+        "value": "Deny"
+      },
+      "PE-003_Effect": {
+        "value": "Deny"
+      },
+      "PE-003_AllowedCrossSubPrivateLinkResources": {
+        "value": [ ]
+      }
+    },
+    "nonComplianceMessages": []
+  },
+  "definitionSourceManagementGroupId": "/providers/Microsoft.Management/managementGroups/CONTOSO",
+  "managementGroupId": "CONTOSO-LandingZones"
+}

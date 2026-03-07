@@ -1,0 +1,70 @@
+parameters:
+- name: poolName
+  displayName: "Self Hosted Agent Pool Name"
+  type: string
+  default: ""
+
+- name: vmImage
+  displayName: "MS Hosted Agent VM Image Name"
+  type: string
+  default: ""
+
+- name: condition
+  displayName: "Custom Stage Conditions"
+  type: string
+  default: "succeeded()"
+
+- name: dependsOn
+  displayName: "Depends On"
+  type: object
+  default: []
+
+- name: prodConfigurationFilesDirectory
+  displayName: "Production Configuration Files Directory"
+  type: string
+
+- name: devConfigurationFilesDirectory
+  displayName: "Development Configuration Files Directory"
+  type: string
+
+stages:
+  - stage: assignment_configurations_tests
+    displayName: "Assignment Configurations Tests"
+    dependsOn: ${{ parameters.dependsOn }}
+    condition: ${{ parameters.condition }}
+    jobs:
+    - job: "prd_configurations_tests"
+      displayName: "Production Configurations Tests"
+      variables:
+      - name: testScriptPath
+        value: "tests/policyAssignment/environment-consistency/prdAssignmentConfigurationsTest.ps1"
+      pool:
+        ${{ if ne(parameters.vmImage, '') }}:
+          vmImage: ${{ parameters.vmImage }}
+        ${{ if ne(parameters.poolName, '') }}:
+          name: ${{ parameters.poolName }}
+      steps:
+        - checkout: self
+          fetchDepth: 0
+        - task: PowerShell@2
+          name: TestAssignmentConfigurations
+          displayName: "Test Assignment Configurations"
+          continueOnError: true
+          inputs:
+            targetType: "filePath"
+            pwsh: true
+            filePath: $(testScriptPath)
+            arguments:
+              -prodConfigurationFilesPath "${{parameters.prodConfigurationFilesDirectory}}" `
+              -devConfigurationFilesPath "${{parameters.devConfigurationFilesDirectory}}" `
+              -OutputFileDir $(System.DefaultWorkingDirectory) `
+              -OutputFilePrefix 'TEST-ProdAssignmentConfigurations' `
+              -OutputFormat 'NUnitXml'
+        - task: PublishTestResults@2
+          displayName: "Publish Policy Pester Test results"
+          inputs:
+            testRunTitle: "AssignmentConfigurationsTest"
+            testRunner: NUnit
+            testResultsFiles: "$(System.DefaultWorkingDirectory)/TEST-ProdAssignmentConfigurations.XML"
+            failTaskOnFailedTests: true
+            failTaskOnMissingResultsFile: true
