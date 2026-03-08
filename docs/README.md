@@ -1,4 +1,4 @@
-# Azure Policy Factory — Documentation
+# AzPolicyFactory — Documentation
 
 ## Supported Platforms
 
@@ -18,13 +18,13 @@ The following DevOps / CICD platforms are supported:
 | PR Validation Code Scan | [Documentation](ado-pipelines/pr-validation.md) | [Documentation](github-action/pr-code-scan.md) | Runs GitHub Super-Linter to validate code quality and syntax in pull requests |
 | PR Validation for Policy Assignment Consistency | [Documentation](ado-pipelines/pr-policy-assignment-env-consistency.md) | [Documentation](github-action/pr-policy-assignment-env-consistency.md) | Validates that policy assignment configurations in development and production environments are consistent and do not contain unintended differences |
 
-## Setup Guides
+## Instructions
 
 - [Setup Guide for Azure DevOps Pipelines](ado-pipelines/setup-guide.md)
 - [Setup Guide for GitHub Actions Workflows](github-action/setup-guide.md)
 - [Add Policy Resources to the Repository](add-policy-resources.md)
 - [Policy Assignment Environment Consistency Tests](assignment-environment-consistency-tests.md)
-
+- [How to generate documentations for Bicep templates and modules](generate-bicep-docs.md)
 ## FAQs
 
 - [Frequently Asked Questions](FAQ.md)

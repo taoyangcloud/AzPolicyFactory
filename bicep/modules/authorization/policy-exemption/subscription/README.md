@@ -1,5 +1,7 @@
 # Policy Exemptions (Subscription scope)
 
+Deploy Policy Exemptions at a Subscription scope.
+
 This module deploys a Policy Exemption at a Subscription scope.
 
 ## Parameters

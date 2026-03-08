@@ -1,6 +1,6 @@
 metadata name = 'Role Assignments (Subscription scope)'
 metadata description = 'This module deploys a Role Assignment at a Subscription scope.'
-metadata owner = 'Tao Yang'
+metadata summary = 'Deploy Role Assignments at a Subscription scope.'
 
 targetScope = 'subscription'
 

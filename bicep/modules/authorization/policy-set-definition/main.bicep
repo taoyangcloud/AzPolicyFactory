@@ -1,7 +1,6 @@
 metadata name = 'Policy Set Definitions (Initiatives) (All scopes)'
-metadata description = 'This module deploys Policy Set Definitions (Initiatives) at a Management Group or Subscription scope.'
-metadata owner = 'Tao Yang'
-
+metadata description = 'Policy Set Definitions (Initiatives) module. Originally forked from the CARML project with modifications.'
+metadata summary = 'Deploy Policy Set Definitions (Initiatives) at a Management Group or Subscription scope.'
 targetScope = 'managementGroup'
 
 import {

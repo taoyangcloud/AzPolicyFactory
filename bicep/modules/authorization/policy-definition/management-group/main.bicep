@@ -1,6 +1,6 @@
 metadata name = 'Policy Definitions (Management Group scope)'
 metadata description = 'This module deploys Policy Definitions at a Management Group scope.'
-metadata owner = 'Tao Yang'
+metadata summary = 'Deploy Policy Definitions at a Management Group scope.'
 
 targetScope = 'managementGroup'
 import {

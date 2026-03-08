@@ -1,12 +1,12 @@
 # Setup Guide for GitHub Actions Workflows
 
-This document provides a step-by-step guide to set up the GitHub Actions workflows for deploying Azure Policy resources using the Azure Policy Factory solution.
+This document provides a step-by-step guide to set up the GitHub Actions workflows for deploying Azure Policy resources using the AzPolicyFactory solution.
 
 Before you begin, make sure you have the necessary pre-requisites in place as outlined in the [Pre-requisites](pre-requisites.md) document.
 
 ## Step 1: Create GitHub Secrets for Azure authentication
 
-The GitHub Actions workflows use the [`Azure Login Action`](https://github.com/marketplace/actions/azure-login) to authenticate with Azure. You need to create the an action secret for each environment (development and production) in your GitHub repository to store the credentials for the Azure service principal that will be used for authentication.
+The GitHub Actions workflows use the [`Azure Login Action`](https://github.com/marketplace/actions/azure-login) to authenticate with Azure. You need to create an action secret for each environment (development and production) in your GitHub repository to store the credentials for the Azure service principal that will be used for authentication.
 
 The identity used by the service connection needs to have the `Owner` role assigned at the top Enterprise Scale Landing Zone (ESLZ) management group.
 
@@ -70,7 +70,7 @@ We recommend at least the following configurations are in place for the main bra
 
 ## Step 5: Temporarily Disable the `Deploy Prod` jobs in the workflow YAML files (Recommended)
 
-Since GitHub won't recognize the new workflows until they are merged into the main branch, we recommend you to temporarily disable the `Deploy Prod` jobs in the workflow YAML files by adding `if: false` condition to the job definition.
+Since GitHub won't recognize the new workflows until they are merged into the main branch, we recommend that you temporarily disable the `Deploy Prod` jobs in the workflow YAML files by adding `if: false` condition to the job definition.
 
 This will allow you to create and merge the workflows into the main branch without triggering any deployments to production environment until you are ready to enable them.
 
@@ -94,7 +94,7 @@ to
 
 You can change it back to the original condition by creating a PR to update the workflow YAML files once you are ready to enable the production deployment jobs.
 
-## Step 6: Assessing PR Validation workfllows for the main branch (Optional but Recommended)
+## Step 6: Assessing PR Validation workflows for the main branch (Optional but Recommended)
 
 To ensure that any changes to the policy resources are validated before being merged into the main branch, we have included 2 workflows that are configured to run when a pull request (PR) is created or updated. It is recommended to set up these PR validation workflows in the branch protection policy for the `main` branch.
 
@@ -128,11 +128,11 @@ This workflow performs a code scan using GitHub Super-Linter to validate all the
 
 >:memo: NOTE: You can customize the linters and rulesets used by GitHub Super-Linter by modifying the configuration file of each linter in the `.github/linters` folder. For details on how to customize the GitHub Super-Linter, please refer to the [official project site](https://github.com/super-linter/super-linter).
 
-## Step 9 : Merge changes to the main branch and test run the workflows
+## Step 7: Merge changes to the main branch and test run the workflows
 
 Create a PR to merge your changes into the `main` branch.
 
-After the PR is approved and merged, manually trigger the the workflows in the following order:
+After the PR is approved and merged, manually trigger the workflows in the following order:
 
 - `policy-definitions`
 - `policy-initiatives`
@@ -141,4 +141,4 @@ After the PR is approved and merged, manually trigger the the workflows in the f
 
 Since you have added the `if: false` condition to the `Deploy Prod` jobs in the workflow YAML files, the production deployment jobs will be skipped during this initial run. You can then create a PR to update the workflow YAML files to change the condition back to `if: github.ref == 'refs/heads/main'` to enable the production deployment jobs for future runs.
 
-:memo: NOTE: The workflows are not daisychained together until you have changed the condition for the `Deploy Prod` jobs back to `if: github.ref == 'refs/heads/main'`.
+:memo: NOTE: The workflows are not daisy-chained together until you have changed the condition for the `Deploy Prod` jobs back to `if: github.ref == 'refs/heads/main'`.

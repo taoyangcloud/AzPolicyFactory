@@ -1,6 +1,6 @@
 metadata name = 'Policy Exemptions (Management Group scope)'
 metadata description = 'This module deploys a Policy Exemption at a Management Group scope.'
-metadata owner = 'Tao Yang'
+metadata summary = 'Deploy Policy Exemptions at a Management Group scope.'
 
 targetScope = 'managementGroup'
 import { policyExemptionType } from '../../../user-defined-types.bicep'

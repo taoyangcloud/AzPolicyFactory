@@ -1,6 +1,6 @@
 metadata name = 'Policy Set Definitions (Initiatives) (Management Group scope)'
 metadata description = 'This module deploys Policy Set Definitions (Initiatives) at a Management Group scope.'
-metadata owner = 'Tao Yang'
+metadata summary = 'Deploy Policy Set Definitions (Initiatives) at a Management Group scope.'
 
 targetScope = 'managementGroup'
 

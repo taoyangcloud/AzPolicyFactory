@@ -1,5 +1,7 @@
 # Policy Definitions (Management Group scope)
 
+Deploy Policy Definitions at a Management Group scope.
+
 This module deploys Policy Definitions at a Management Group scope.
 
 ## Parameters

@@ -7,7 +7,7 @@ The [Policy Exemptions Azure DevOps Pipeline](../../.azuredevops/pipelines/polic
 
 ![Policy Exemptions Pipeline](../images/ado-pipeline-policy-exemptions.png)
 
-TThe pipeline consists of the following stages:
+The pipeline consists of the following stages:
 
 - Initiation
 - Build Dev
@@ -18,7 +18,7 @@ TThe pipeline consists of the following stages:
 - Deploy Prod
 
 1. After the `Initiation` stage, the `Build Dev` and `Build Prod` stages are kicked off concurrently. These stages are responsible for building the policy exemption Bicep template for the development and production environments respectively.
-2. The `Test Dev` and `Test Prod` stages are responsible for perform additional tests in their respective environments. They are kicked off after the `Build Dev` and `Build Prod` stages respectively.
+2. The `Test Dev` and `Test Prod` stages are responsible for performing additional tests in their respective environments. They are kicked off after the `Build Dev` and `Build Prod` stages respectively.
 3. The `Deploy Dev` stage is kicked off upon successful completion of the `Test Dev` stage. It is responsible for deploying the policy exemptions to the development environment.
 4. The `Deploy Prod` stage will only be kicked off when all the following conditions are met:
     - The `Deploy Dev` stage has completed successfully.
@@ -30,28 +30,28 @@ TThe pipeline consists of the following stages:
 The Policy Exemptions pipeline is designed to be triggered by the following methods:
 
 - Manually
-- Upon the successful completion of the [Policy Assignments pipeline](../../.azuredevops/pipelines/policies/azure-pipelines-policy-assignments.yml) when the `Deploy Prod` stage is completed and the pipeline is triggered from the `main` branch .
+- Upon the successful completion of the [Policy Assignments pipeline](../../.azuredevops/pipelines/policies/azure-pipelines-policy-assignments.yml) when the `Deploy Prod` stage is completed and the pipeline is triggered from the `main` branch.
 
 ## 3. Stages
 
 ### 3.1 Initiation
 
-This stage is the entry point of the pipeline. It uses the pipeline template [template-stage-initiation.yml](../../.azuredevops/templates/template-stage-initiation.yml). It simply display the current UTC time and environment variables on the agent for debugging purposes.
+This stage is the entry point of the pipeline. It uses the pipeline template [template-stage-initiation.yml](../../.azuredevops/templates/template-stage-initiation.yml). It simply displays the current UTC time and environment variables on the agent for debugging purposes.
 
 ### 3.2 Build Dev and Build Prod
 
-These stages uses the pipeline template [template-stage-policy-assignment-exemption-build.yml](../../.azuredevops/templates/template-stage-policy-assignment-exemption-build.yml) to populate the paths of each policy exemption configuration file and add them to the Policy exemption Bicep template file.
+These stages use the pipeline template [template-stage-policy-assignment-exemption-build.yml](../../.azuredevops/templates/template-stage-policy-assignment-exemption-build.yml) to populate the paths of each policy exemption configuration file and add them to the Policy exemption Bicep template file.
 
-The pipeline evaluates each policy exemption configuration file and filter out the ones that are already expired because there is no point to deploy expired exemptions.
+The pipeline evaluates each policy exemption configuration file and filters out the ones that are already expired because there is no point to deploy expired exemptions.
 
-These JSON files which will then get loaded at compile time by the Policy Exemptions bicep module using the `LoadJsonContent()` Bicep function.
+These JSON files will then get loaded at compile time by the Policy Exemptions bicep module using the `LoadJsonContent()` Bicep function.
 
-The updated Bicep template file is then stored in a build artifacts.
+The updated Bicep template file is then stored as build artifacts.
 
 
 ### 3.3 Test Dev and Test Prod
 
-These stages uses the following pipeline templates to perform a set of tests on the Bicep templates generated in the `Build Dev` and `Build Prod` stages respectively:
+These stages use the following pipeline templates to perform a set of tests on the Bicep templates generated in the `Build Dev` and `Build Prod` stages respectively:
 
 - [template-job-policy-assignment-exemption-config-syntax-validate.yml](../../.azuredevops/pipelines/templates/template-job-policy-assignment-exemption-config-syntax-validate.yml)
 - [template-job-test-and-validate.yml](../../.azuredevops/pipelines/templates/template-job-test-and-validate.yml)
@@ -86,6 +86,6 @@ Although only a single deployment job is created to deploy all the policy exempt
 
 Same as the `Deploy Dev` stage, this stage uses the pipeline template [template-stage-multiple-deployments.yml](../../.azuredevops/templates/template-stage-multiple-deployments.yml).
 
-It deploys the policy exemptions Bicep template generated from the `Build Prod` stage upon successful completion of the `Test Prod` and `Deploy Dev' stages.
+It deploys the policy exemptions Bicep template generated from the `Build Prod` stage upon successful completion of the `Test Prod` and `Deploy Dev` stages.
 
 The condition for this stage also dictates that the pipeline must be triggered from the `main` branch for this stage to start.

@@ -1,5 +1,7 @@
 # Policy Set Definitions (Initiatives) (Subscription scope)
 
+Deploy Policy Set Definitions (Initiatives) at a Subscription scope.
+
 This module deploys Policy Set Definitions (Initiatives) at a Subscription scope.
 
 ## Parameters

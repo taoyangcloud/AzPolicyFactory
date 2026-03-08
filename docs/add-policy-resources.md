@@ -1,4 +1,4 @@
-# Add Policy Resources to Azure Policy Factory
+# Add Policy Resources to AzPolicyFactory
 
 ## Step 1: Add Policy Definitions to the repository
 

@@ -1,5 +1,7 @@
 # Policy Assignments (Management Group scope)
 
+Deploy Policy Assignments at a Management Group scope.
+
 This module deploys a Policy Assignment at a Management Group scope.
 
 ## Parameters

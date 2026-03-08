@@ -1,6 +1,8 @@
 # Policy Definitions (All scopes)
 
-This module deploys Policy Definitions at a Management Group or Subscription scope.
+Deploy Policy Definitions at a Management Group or Subscription scope.
+
+Policy Definition module. Originally forked from the CARML project with modifications.
 
 ## Parameters
 

@@ -1,6 +1,6 @@
 # Pre-requisites
 
-Before you can use the ADO pipelines and GitHub Actions workflows provided in Azure Policy Factory, you need to have the following pre-requisites in place.
+Before you can use the ADO pipelines and GitHub Actions workflows provided in AzPolicyFactory, you need to have the following pre-requisites in place.
 
 ## Azure DevOps Project or GitHub Repository
 

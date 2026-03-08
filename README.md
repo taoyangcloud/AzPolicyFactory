@@ -1,13 +1,13 @@
 
-# Azure Policy Factory
+# AzPolicyFactory
 
-**azure-policy-factory** — Infrastructure as Code (IaC) solutions for Azure Policy resources.
+**AzPolicyFactory** — Infrastructure as Code (IaC) solutions for Azure Policy resources.
 
 ## Introduction
 
 It can be challenging to manage Azure Policy resources at scale, especially in large organizations with complex governance requirements.
 
-Azure Policy Factory provides a comprehensive set of IaC solutions for testing, deploying and managing Azure Policy resources at scale.
+AzPolicyFactory provides a comprehensive set of IaC solutions for testing, deploying and managing Azure Policy resources at scale.
 
 By leveraging these IaC templates and pipelines, organizations can automate the deployment and management of Azure Policy resources, ensuring consistent governance across their Azure environments while reducing manual effort and the risk of misconfigurations.
 
@@ -23,6 +23,10 @@ This repository contains the complete set of IaC solutions for deploying Azure P
   - Deploying Azure Policy Definitions, Initiatives, Assignments, and Exemptions
   - PR Validation Code Scan using GitHub Super-Linter
   - PR Validation for Azure Policy Assignment configurations between production and development environments
+
+The solution automates the entire lifecycle of Azure Policy resources — from code commit through testing and validation to production deployment — ensuring quality and correctness at every stage.
+
+![high-level-process](./docs/images/high-level-process.png)
 
 ## Feature Highlights
 

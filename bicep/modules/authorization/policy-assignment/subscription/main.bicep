@@ -1,6 +1,6 @@
 metadata name = 'Policy Assignments (Subscription scope)'
 metadata description = 'This module deploys a Policy Assignment at a Subscription scope.'
-metadata owner = 'Tao Yang'
+metadata summary = 'Deploy Policy Assignments at a Subscription scope.'
 
 targetScope = 'subscription'
 

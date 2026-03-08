@@ -1,6 +1,6 @@
 # Setup Guide for Azure DevOps Pipelines
 
-This document provides a step-by-step guide to set up the Azure DevOps (ADO) pipelines for deploying Azure Policy resources using the Azure Policy Factory solution.
+This document provides a step-by-step guide to set up the Azure DevOps (ADO) pipelines for deploying Azure Policy resources using the AzPolicyFactory solution.
 
 Before you begin, make sure you have the necessary pre-requisites in place as outlined in the [Pre-requisites](pre-requisites.md) document.
 
@@ -50,7 +50,7 @@ Create the following pipelines in your Azure DevOps project using the YAML files
 | Policy-Assignments | deploys Azure Policy assignments | [`azure-pipelines-policy-assignments.yml`](.azuredevops/pipelines/policies/azure-pipelines-policy-assignments.yml) |
 | Policy-Exemptions | deploys Azure Policy exemptions | [`azure-pipelines-policy-exemptions.yml`](.azuredevops/pipelines/policies/azure-pipelines-policy-exemptions.yml) |
 
->:exclamation: IMPORTANT: You **MUST** create the  ADO pipelines with the **EXACT** name as shown in the table above. The pipeline YAML files reference each other and rely on the pipeline names to trigger the correct downstream pipelines. If you choose to use different pipeline names, you will need to update the downstream pipeline YAML files to reference the new pipeline names.
+>:exclamation: IMPORTANT: You **MUST** create the ADO pipelines with the **EXACT** name as shown in the table above. The pipeline YAML files reference each other and rely on the pipeline names to trigger the correct downstream pipelines. If you choose to use different pipeline names, you will need to update the downstream pipeline YAML files to reference the new pipeline names.
 
 ## Step 5: Configure Branch Protection Policies (Optional)
 
@@ -85,7 +85,7 @@ This pipeline should be triggered automatically when a pull request is created t
 - Path filter: `/policyAssignments/*; /.azuredevops/pipelines/validation/azure-pipelines-pr-policy-assignment-config-tests.yml; /.azuredevops/templates/template-stage-policy-assignment-config-tests.yml; /tests/policy/assignment/environment-consistency/*`
 - trigger: `Automatic`
 - Policy requirement: `Required`
-- Build expiration: `Immediately when main is upddated`
+- `Build expiration`: `Immediately when main is updated`
 - Display name: `Policy Assignment Configuration Validation`
 
 ### PR-Validation (Code Scan)
@@ -102,7 +102,7 @@ Once the pipeline is created, configure the branch protection policy for the `ma
 - Path filter: leave it blank
 - trigger: `Automatic`
 - Policy requirement: `Required`
-- Build expiration: `Immediately when main is upddated`
+- `Build expiration`: `Immediately when main is updated`
 - Display name: `PR Validation`
 
 >:memo: NOTE: You can customize the linters and rulesets used by GitHub Super-Linter by modifying the configuration file of each linter in the `.github/linters` folder. For details on how to customize the GitHub Super-Linter, please refer to the [official project site](https://github.com/super-linter/super-linter).
@@ -119,7 +119,7 @@ Test run the pipelines from your feature branch to ensure they are working as ex
 
 The production environment will be automatically ignored during the test runs as long as they are not triggered from the main branch.
 
-## Step 9 : Merge changes to the main branch
+## Step 9: Merge changes to the main branch
 
 After successful tests, you can merge the changes to the main branch by raising a Pull Request (PR) and having it reviewed and approved by the required number of reviewers as per your branch protection policy.
 

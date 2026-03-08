@@ -1,6 +1,6 @@
 metadata name = 'Policy Exemptions (All scopes)'
-metadata description = 'This module deploys a Policy Exemption at a Management Group, Subscription or Resource Group scope.'
-metadata owner = 'Tao Yang'
+metadata description = 'Policy Exemption module. Originally forked from the CARML project with modifications.'
+metadata summary = 'Deploy Policy Exemptions at a Management Group, Subscription or Resource Group scope.'
 
 targetScope = 'managementGroup'
 

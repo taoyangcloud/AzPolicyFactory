@@ -1,5 +1,7 @@
 # Policy Assignments (Resource Group scope)
 
+Deploy Policy Assignments at a Resource Group scope.
+
 This module deploys a Policy Assignment at a Resource Group scope.
 
 ## Parameters

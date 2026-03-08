@@ -1,6 +1,6 @@
 metadata name = 'Policy Definitions (All scopes)'
-metadata description = 'This module deploys Policy Definitions at a Management Group or Subscription scope.'
-metadata owner = 'Tao Yang'
+metadata description = 'Policy Definition module. Originally forked from the CARML project with modifications.'
+metadata summary = 'Deploy Policy Definitions at a Management Group or Subscription scope.'
 
 targetScope = 'managementGroup'
 

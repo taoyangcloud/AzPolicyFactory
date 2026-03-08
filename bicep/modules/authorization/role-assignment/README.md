@@ -1,6 +1,8 @@
 # Role Assignments (All scopes)
 
-This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.
+Deploy Role Assignments at a Management Group, Subscription or Resource Group scope.
+
+Role Assignments module. Originally forked from the AVM project with modifications.
 
 ## Parameters
 

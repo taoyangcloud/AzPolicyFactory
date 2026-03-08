@@ -164,7 +164,7 @@ For example, the tag values for the tagging policy assignment may be different b
 ]
 ```
 
-or the allowed service tags used in the NSG rules are different between environments as the production environment may allow more service tags compared to the development environment, you can specify the allowed service tag value deviations for the NSG rules in the network policy assignment as shown below:
+Or, if the allowed service tags used in the NSG rules are different between environments because the production environment may allow more service tags compared to the development environment, you can specify the allowed service tag value deviations for the NSG rules in the network policy assignment as shown below:
 
 ```json
 //Define allowed deviations for the parameter values used in the assignments

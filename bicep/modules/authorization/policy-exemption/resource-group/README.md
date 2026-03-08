@@ -1,5 +1,7 @@
 # Policy Exemptions (Resource Group scope)
 
+Deploy Policy Exemptions at a Resource Group scope.
+
 This module deploys a Policy Exemption at a Resource Group scope.
 
 ## Parameters

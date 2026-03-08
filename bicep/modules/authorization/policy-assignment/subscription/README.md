@@ -1,5 +1,7 @@
 # Policy Assignments (Subscription scope)
 
+Deploy Policy Assignments at a Subscription scope.
+
 This module deploys a Policy Assignment at a Subscription scope.
 
 ## Parameters

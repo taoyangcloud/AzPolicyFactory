@@ -4,7 +4,7 @@
 
 The [Policy Definitions GitHub Actions Workflow](../../.github/workflows/policy-definitions.yml) deploys all required custom policy definitions to the target Azure environments.
 
-![Policy Definitions Workflow](../images/github-worfklow-policy-definitions.png)
+![Policy Definitions Workflow](../images/github-workflow-policy-definitions.png)
 
 The workflow consists of the following jobs:
 
@@ -17,9 +17,9 @@ The workflow consists of the following jobs:
 - Deploy Dev
 - Deploy Prod
 
-1. After the `Initiation` job, the `Policy Test` job performs a number of predefined Pester tests for each policy definition file that are to be deployed.
+1. After the `Initiation` job, the `Policy Tests` job performs a number of predefined Pester tests for each policy definition file that are to be deployed.
 2. The `Build Dev` and `Build Prod` jobs are kicked off concurrently upon the successful completion of the `Policy Tests` job. These jobs are responsible for building the policy definition Bicep template for the development and production environments respectively.
-3. The `Test Dev` and `Test Prod` jobs are responsible for perform additional tests in their respective environments. They are kicked off after the `Build Dev` and `Build Prod` jobs respectively.
+3. The `Test Dev` and `Test Prod` jobs are responsible for performing additional tests in their respective environments. They are kicked off after the `Build Dev` and `Build Prod` jobs respectively.
 4. The `Deploy Dev` job is kicked off upon successful completion of the `Test Dev` job. It is responsible for deploying the policy definitions to the development environment.
 5. The `Deploy Prod` job will only be kicked off when all the following conditions are met:
     - The `Deploy Dev` job has completed successfully.
@@ -34,25 +34,25 @@ The Policy Definitions workflow is designed to be triggered manually. It is not 
 
 ### 3.1 Initiation
 
-This job is the entry point of the workflow. It uses the custom action [initiation](../../.github/actions/templates/initiation/action.yml). It simply display the current UTC time and environment variables on the agent for debugging purposes.
+This job is the entry point of the workflow. It uses the custom action [initiation](../../.github/actions/templates/initiation/action.yml). It simply displays the current UTC time and environment variables on the agent for debugging purposes.
 
 ### 3.2 Policy Tests
 
 This job uses the custom action [test-policy-def](../../.github/actions/templates/test-policy-def/action.yml) to perform Pester tests defined in the open-source PowerShell module [AzPolicyTest](https://www.powershellgallery.com/packages/AzPolicyTest).
 
-The test results summarized and written to the job summary using the custom action [parse-pester-results](../../.github/actions/templates/parse-pester-results/action.yml).
+The test results are summarized and written to the job summary using the custom action [parse-pester-results](../../.github/actions/templates/parse-pester-results/action.yml).
 
 ### 3.3 Build Dev and Build Prod
 
-These jobs use the custom action [build-policy-def](../../.github/actions/templates/build-policy-def/action.yml) to populate the paths of each policy definition JSON files and add them to the Policy Definition Bicep template file.
+These jobs use the custom action [build-policy-def](../../.github/actions/templates/build-policy-def/action.yml) to populate the paths of each policy definition JSON file and add them to the Policy Definition Bicep template file.
 
-These JSON files which will then get loaded at compile time by the Policy Definition bicep module using the `LoadJsonContent()` Bicep function.
+These JSON files will then get loaded at compile time by the Policy Definition bicep module using the `LoadJsonContent()` Bicep function.
 
-The updated Bicep template file is then stored in a build artifacts.
+The updated Bicep template file is then stored as build artifacts.
 
 ### 3.4 Test Dev and Test Prod
 
-These jobs uses the custom action [test-validate](../../.github/actions/templates/test-validate/action.yml) to perform a set of tests on the Bicep templates generated in the `Build Dev` and `Build Prod` jobs respectively.
+These jobs use the custom action [test-validate](../../.github/actions/templates/test-validate/action.yml) to perform a set of tests on the Bicep templates generated in the `Build Dev` and `Build Prod` jobs respectively.
 
 The tests include:
 
@@ -75,6 +75,6 @@ Although only a single deployment job is created to deploy all the policy defini
 
 Same as the `Deploy Dev` job, this job uses the custom action [bicep-deployment](../../.github/actions/templates/bicep-deployment/action.yml).
 
-It deploys the policy definitions Bicep template generated from the `Build Prod` job upon successful completion of the `Test Prod` and `Deploy Dev' jobs.
+It deploys the policy definitions Bicep template generated from the `Build Prod` job upon successful completion of the `Test Prod` and `Deploy Dev` jobs.
 
 The condition for this job also dictates that the workflow must be triggered from the `main` branch for this job to start.

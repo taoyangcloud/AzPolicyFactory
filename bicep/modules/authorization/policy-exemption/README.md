@@ -1,6 +1,8 @@
 # Policy Exemptions (All scopes)
 
-This module deploys a Policy Exemption at a Management Group, Subscription or Resource Group scope.
+Deploy Policy Exemptions at a Management Group, Subscription or Resource Group scope.
+
+Policy Exemption module. Originally forked from the CARML project with modifications.
 
 ## Parameters
 

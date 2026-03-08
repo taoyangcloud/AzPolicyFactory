@@ -1,8 +1,8 @@
-# Azure Policy Factory — Frequently Asked Questions (FAQ)
+# AzPolicyFactory — Frequently Asked Questions (FAQ)
 
 ## Table of Contents
 
-- [Azure Policy Factory — Frequently Asked Questions (FAQ)](#azure-policy-factory--frequently-asked-questions-faq)
+- [AzPolicyFactory — Frequently Asked Questions (FAQ)](#azpolicyfactory--frequently-asked-questions-faq)
   - [Table of Contents](#table-of-contents)
   - [Pipeline Configurations](#pipeline-configurations)
     - [How do I exclude certain Pester tests from being executed in the Azure DevOps pipelines or GitHub Actions?](#how-do-i-exclude-certain-pester-tests-from-being-executed-in-the-azure-devops-pipelines-or-github-actions)

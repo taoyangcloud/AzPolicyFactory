@@ -1,6 +1,8 @@
 # Policy Assignments (All scopes)
 
-This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope.
+Deploy Policy Assignments at a Management Group, Subscription or Resource Group scope.
+
+Policy Assignment module. Originally forked from the CARML project with modifications.
 
 ## Parameters
 

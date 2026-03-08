@@ -1,6 +1,6 @@
 metadata name = 'Policy Assignments (Resource Group scope)'
 metadata description = 'This module deploys a Policy Assignment at a Resource Group scope.'
-metadata owner = 'Tao Yang'
+metadata summary = 'Deploy Policy Assignments at a Resource Group scope.'
 
 targetScope = 'resourceGroup'
 

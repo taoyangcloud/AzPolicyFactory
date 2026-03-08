@@ -1,5 +1,7 @@
 # Policy Exemptions (Management Group scope)
 
+Deploy Policy Exemptions at a Management Group scope.
+
 This module deploys a Policy Exemption at a Management Group scope.
 
 ## Parameters

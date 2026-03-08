@@ -1,5 +1,7 @@
 # Policy Definitions (Subscription scope)
 
+Deploy Policy Definitions at a Subscription scope.
+
 This module deploys Policy Definitions at a Subscription scope.
 
 ## Parameters

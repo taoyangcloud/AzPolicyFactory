@@ -1,5 +1,7 @@
 # Policy Set Definitions (Initiatives) (Management Group scope)
 
+Deploy Policy Set Definitions (Initiatives) at a Management Group scope.
+
 This module deploys Policy Set Definitions (Initiatives) at a Management Group scope.
 
 ## Parameters

@@ -1,6 +1,8 @@
 # Policy Set Definitions (Initiatives) (All scopes)
 
-This module deploys Policy Set Definitions (Initiatives) at a Management Group or Subscription scope.
+Deploy Policy Set Definitions (Initiatives) at a Management Group or Subscription scope.
+
+Policy Set Definitions (Initiatives) module. Originally forked from the CARML project with modifications.
 
 ## Parameters
 

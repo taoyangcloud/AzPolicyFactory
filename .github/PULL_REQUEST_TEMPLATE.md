@@ -36,9 +36,12 @@ Example:
 
 <!-- please create and attach the status badge or URL of your successful run. -->
 
-| Pipeline |
-| -------- |
-|          |
+| Pipeline | Status |
+| :------- | :----: |
+| Policy Definitions | |
+| Policy Initiatives | |
+| Policy Assignments | |
+| Policy Exemptions | |
 
 ## Checklist
 

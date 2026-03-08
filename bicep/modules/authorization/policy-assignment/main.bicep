@@ -1,7 +1,6 @@
 metadata name = 'Policy Assignments (All scopes)'
-metadata description = 'This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope.'
-metadata owner = 'Tao Yang'
-
+metadata description = 'Policy Assignment module. Originally forked from the CARML project with modifications.'
+metadata summary = 'Deploy Policy Assignments at a Management Group, Subscription or Resource Group scope.'
 targetScope = 'managementGroup'
 
 import {
