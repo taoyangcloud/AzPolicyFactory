@@ -15,6 +15,7 @@
     - [How do I configure the GitHub Actions workflows to use self-hosted runners instead of GitHub-hosted runners?](#how-do-i-configure-the-github-actions-workflows-to-use-self-hosted-runners-instead-of-github-hosted-runners)
   - [Policy Resources](#policy-resources)
     - [How does the Policy Assignments pipeline / workflow populate the non-compliance messages for each policy assignment?](#how-does-the-policy-assignments-pipeline--workflow-populate-the-non-compliance-messages-for-each-policy-assignment)
+    - [Do I need to update the Bicep templates when I add new policy resources to the repository?](#do-i-need-to-update-the-bicep-templates-when-i-add-new-policy-resources-to-the-repository)
 
 ## Pipeline Configurations
 
@@ -42,7 +43,7 @@ $results = Test-AzPolicyDefinition -Path <path_to_policy_definitions_folder>
 $results = Test-AzPolicyInitiative -Path <path_to_policy_initiatives_folder>
 
 #List the test names and tags
-$result.tests | format-table Name, Tag -AutoSize
+$results.tests | format-table Name, Tag -AutoSize
 ```
 
 For other Pester tests that are included in the repository, you can check the test files to identify the tags associated with each test.
@@ -98,7 +99,7 @@ To overcome these challenges, we have designed the policy assignment and exempti
 
 By using this approach, we can deploy all policy assignments and exemptions in a single job (single Bicep deployment) while still maintaining the self-contained design for each policy resource.
 
-The Bicep templates are designed to create the policy assignments and exemptions concurrently (with up to 15 concurrent resource deployment defined in Bicep), which can significantly reduce the deployment time without the need to increase the concurrent job limit in Azure DevOps.
+The Bicep templates are designed to create the policy assignments and exemptions concurrently (with up to 15 concurrent resource deployments defined in Bicep), which can significantly reduce the deployment time without the need to increase the concurrent job limit in Azure DevOps.
 
 In summary, using custom definition files for each policy assignment and exemption allows us to achieve faster deployment times and reduce the cost of running the pipelines while still maintaining a clean and organized structure for our policy resources.
 
@@ -160,4 +161,16 @@ The script does the following:
 
 1. Sets the default message to `You have not met all standards set by '<name of assigned policy or initiative>'. Refer to the policy for requirements.`
 2. If a policy initiative is assigned, the script will iterate through all the policies included in the initiative and add a non-compliance message for each policy in the initiative with the format `PolicyID: <policy reference id> Violation in <policy initiative name> Initiative - '<member policy display name>'`
+</details>
+
+### Do I need to update the Bicep templates when I add new policy resources to the repository?
+
+<details>
+<summary>Click to expand</summary>
+No, you do not need to update the Bicep templates when you add new policy resources to the repository, as long as you follow the existing structure and format for the policy definition, initiative, assignment, and exemption files.
+
+The ADO pipelines and GitHub Actions workflows are designed to automatically pick up all the files from the designated folders for policy definitions, initiatives, assignments, and exemptions. As long as you add new policy resources following the existing structure and format, the pipelines and workflows will be able to deploy them without any modifications to the Bicep templates.
+
+This approach greatly simplifies the process and Bicep skills required for the Azure Policy administrators. The Bicep templates are essentially hidden from the policy administrators.
+
 </details>

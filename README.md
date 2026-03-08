@@ -3,6 +3,8 @@
 
 **AzPolicyFactory** — Infrastructure as Code (IaC) solutions for Azure Policy resources.
 
+![AzPolicyFactory](./docs/images/azpolicyfactory-banner.png)
+
 ## Introduction
 
 It can be challenging to manage Azure Policy resources at scale, especially in large organizations with complex governance requirements.
