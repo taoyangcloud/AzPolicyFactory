@@ -64,19 +64,28 @@ runs:
     - name: Build Bicep Template
       id: buildBicep
       shell: pwsh
+      env:
+        INPUT_RESOURCE_TYPE: ${{ inputs.resource-type }}
+        INPUT_BICEP_FILE_PATH: ${{ inputs.bicep-file-path }}
+        INPUT_BICEP_VARIABLE_NAME: ${{ inputs.bicep-variable-name }}
+        INPUT_CONFIG_FILES_PATH: ${{ inputs.config-files-path }}
+        INPUT_CONFIG_FILE_EXCLUDE_PATH: ${{ inputs.config-file-exclude-path }}
+        INPUT_TEMPLATE_FILE_DIRECTORY: ${{ inputs.template-file-directory }}
+        INPUT_BICEP_TEMPLATE_BUILD_ARTIFACT_NAME: ${{ inputs.bicep-template-build-artifact-name }}
+        INPUT_WORKSPACE_DIRECTORY: ${{ github.workspace }}
       run: |
         #Build Bicep Template
         Write-Output '::group::Build Bicep Template'
-        $isPolicyExemption = ('${{ inputs.resource-type }}' -eq 'exemption')
-        $scriptPath = "${{ github.workspace }}/scripts/pipelines/pipeline-set-policy-resource-bicep-template-file.ps1"
+        $isPolicyExemption = ($env:INPUT_RESOURCE_TYPE -eq 'exemption')
+        $scriptPath = "$env:INPUT_WORKSPACE_DIRECTORY/scripts/pipelines/pipeline-set-policy-resource-bicep-template-file.ps1"
         & $scriptPath `
-          -bicepFilePath '${{ inputs.bicep-file-path }}' `
-          -bicepVariableName '${{ inputs.bicep-variable-name }}' `
-          -resourceFileFolder '${{ inputs.config-files-path }}' `
+          -bicepFilePath $env:INPUT_BICEP_FILE_PATH `
+          -bicepVariableName $env:INPUT_BICEP_VARIABLE_NAME `
+          -resourceFileFolder $env:INPUT_CONFIG_FILES_PATH `
           -isPolicyExemption $isPolicyExemption `
-          -excludePath '${{ inputs.config-file-exclude-path }}' `
-          -outputDir '${{ inputs.template-file-directory }}' `
-          -artifactName '${{ inputs.bicep-template-build-artifact-name }}' `
+          -excludePath $env:INPUT_CONFIG_FILE_EXCLUDE_PATH `
+          -outputDir $env:INPUT_TEMPLATE_FILE_DIRECTORY `
+          -artifactName $env:INPUT_BICEP_TEMPLATE_BUILD_ARTIFACT_NAME `
           -updateBicepFileName 'main.bicep'
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         Write-Output '::endgroup::'
@@ -91,15 +100,21 @@ runs:
     - name: Update Non-Compliance Messages
       if: inputs.resource-type == 'assignment'
       shell: pwsh
+      env:
+        INPUT_CONFIG_FILES_PATH: ${{ inputs.config-files-path }}
+        INPUT_OUTPUT_DIR: ${{ inputs.output-dir }}
+        INPUT_POLICY_LOCATION_RESOURCE_ID: ${{ inputs.policy-location-resource-id }}
+        INPUT_CONFIG_BUILD_ARTIFACT_NAME: ${{ inputs.config-build-artifact-name }}
+        INPUT_WORKSPACE_DIRECTORY: ${{ github.workspace }}
       run: |
         #Update Non-Compliance Messages
         Write-Output '::group::Update Non-Compliance Messages'
-        $scriptPath = "${{ github.workspace }}/scripts/pipelines/pipeline-set-policy-non-compliance-messages.ps1"
+        $scriptPath = "$env:INPUT_WORKSPACE_DIRECTORY/scripts/pipelines/pipeline-set-policy-non-compliance-messages.ps1"
         & $scriptPath `
-          -configFilePath '${{ inputs.config-files-path }}' `
-          -outputDir '${{ inputs.output-dir }}' `
-          -policyLocationResourceId '${{ inputs.policy-location-resource-id }}' `
-          -updatedConfigurationFileArtifactName '${{ inputs.config-build-artifact-name }}'
+          -configFilePath $env:INPUT_CONFIG_FILES_PATH `
+          -outputDir $env:INPUT_OUTPUT_DIR `
+          -policyLocationResourceId $env:INPUT_POLICY_LOCATION_RESOURCE_ID `
+          -updatedConfigurationFileArtifactName $env:INPUT_CONFIG_BUILD_ARTIFACT_NAME
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         Write-Output '::endgroup::'
 

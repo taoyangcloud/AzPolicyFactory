@@ -22,7 +22,7 @@ Policy Definition Source Management Group ID
 
 Name | Type | Description
 ---- | ---- | -----------
-policySetDefinitions | array |
+policySetDefinitions | array | The list of policy initiatives deployed by this template.
 
 ## Snippets
 

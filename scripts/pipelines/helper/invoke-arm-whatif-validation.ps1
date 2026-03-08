@@ -43,7 +43,7 @@ function getArmDeploymentWhatIfResult {
     set-AzContext -subscriptionId $bicepModuleSubscriptionId | Out-Null
   }
   #Process template file
-  Write-Verbose "[$(getCurrentUTCString)]: Process tempalte file '$templateFilePath'" -Verbose
+  Write-Verbose "[$(getCurrentUTCString)]: Process template file '$templateFilePath'" -Verbose
   $templateFileItem = Get-Item $templateFilePath
   Write-Verbose "[$(getCurrentUTCString)]: TemplateFilePath: '$($templateFileItem.FullName)'" -Verbose
   if ($templateFileItem.Extension -ieq '.bicep') {

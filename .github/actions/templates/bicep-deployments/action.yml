@@ -152,35 +152,55 @@ runs:
     - name: Deploy Bicep Template - ${{ inputs.template-name }}
       id: deploy
       shell: pwsh
+      env:
+        INPUT_TEMPLATE_NAME: ${{ inputs.template-name }}
+        INPUT_TEMPLATE_FILE_DIRECTORY: ${{ inputs.template-file-directory }}
+        INPUT_TEMPLATE_FILE_NAME: ${{ inputs.template-file-name }}
+        INPUT_PARAMETER_FILE_NAME: ${{ inputs.parameter-file-name }}
+        INPUT_PARAMETER_FILE_DIRECTORY: ${{ inputs.parameter-file-directory }}
+        INPUT_TEMPLATE_SCOPE: ${{ inputs.template-scope }}
+        INPUT_AZURE_LOCATION: ${{ inputs.azure-location }}
+        INPUT_TARGET_NAME: ${{ inputs.target-name }}
+        INPUT_SUBSCRIPTION_NAME: ${{ inputs.subscription-name }}
+        INPUT_UNIQUE_BUILD_ID_PREFIX: ${{ inputs.unique-build-id-prefix }}
+        INPUT_BICEP_MODULE_SUBSCRIPTION_ID: ${{ inputs.bicep-module-subscription-id }}
+        INPUT_PUBLISH_DEPLOYMENT_OUTPUTS: ${{ inputs.publish-deployment-outputs }}
+        INPUT_DEPLOYMENT_OUTPUT_VARIABLE_PREFIX: ${{ inputs.deployment-output-variable-prefix }}
+        INPUT_RETRY_FAILED_DEPLOYMENT: ${{ inputs.retry-failed-deployment }}
+        INPUT_MAX_WAIT_MINUTES: ${{ inputs.max-wait-minutes }}
+        INPUT_HTTP_TIMEOUT_SECONDS: ${{ inputs.http-timeout-seconds }}
+        INPUT_RETRY_DELAY_IN_SECONDS: ${{ inputs.retry-delay-in-seconds }}
+        INPUT_ACTION_PATH: ${{ github.action_path }}
+        INPUT_WORKSPACE_DIRECTORY: ${{ github.workspace }}
       run: |
-        Write-Output "'::group::Bicep Deployment - ${{ inputs.template-name }}'"
-        $scriptPath = "${{ github.action_path }}/scripts/Invoke-BicepDeployment-Rest.ps1"
+        Write-Output "::group::Bicep Deployment - $env:INPUT_TEMPLATE_NAME"
+        $scriptPath = "$env:INPUT_ACTION_PATH/scripts/Invoke-BicepDeployment-Rest.ps1"
 
-        $parameterFileDir = '${{ inputs.parameter-file-directory }}'
+        $parameterFileDir = $env:INPUT_PARAMETER_FILE_DIRECTORY
         if ($parameterFileDir -eq '') {
-          $parameterFileDir = '${{ inputs.template-file-directory }}'
+          $parameterFileDir = $env:INPUT_TEMPLATE_FILE_DIRECTORY
         }
 
         & $scriptPath `
-          -templateFileDirectory '${{ inputs.template-file-directory }}' `
-          -templateFileName '${{ inputs.template-file-name }}' `
-          -parameterFileName '${{ inputs.parameter-file-name }}' `
+          -templateFileDirectory $env:INPUT_TEMPLATE_FILE_DIRECTORY `
+          -templateFileName $env:INPUT_TEMPLATE_FILE_NAME `
+          -parameterFileName $env:INPUT_PARAMETER_FILE_NAME `
           -parameterFileDirectory $parameterFileDir `
-          -templateName '${{ inputs.template-name }}' `
-          -templateScope '${{ inputs.template-scope }}' `
-          -azureLocation '${{ inputs.azure-location }}' `
-          -targetName '${{ inputs.target-name }}' `
-          -subscriptionName '${{ inputs.subscription-name }}' `
-          -uniqueBuildIdPrefix '${{ inputs.unique-build-id-prefix }}' `
-          -bicepModuleSubscriptionId '${{ inputs.bicep-module-subscription-id }}' `
-          -publishDeploymentOutputs '${{ inputs.publish-deployment-outputs }}' `
-          -deploymentOutputVariablePrefix '${{ inputs.deployment-output-variable-prefix }}' `
-          -retryFailedDeployment '${{ inputs.retry-failed-deployment }}' `
-          -maxWaitMinutes ${{ inputs.max-wait-minutes }} `
-          -httpTimeoutSeconds ${{ inputs.http-timeout-seconds }} `
-          -retryDelayInSeconds ${{ inputs.retry-delay-in-seconds }} `
-          -workspaceDirectory '${{ github.workspace }}'
-        Write-Output "'::endgroup::'"
+          -templateName $env:INPUT_TEMPLATE_NAME `
+          -templateScope $env:INPUT_TEMPLATE_SCOPE `
+          -azureLocation $env:INPUT_AZURE_LOCATION `
+          -targetName $env:INPUT_TARGET_NAME `
+          -subscriptionName $env:INPUT_SUBSCRIPTION_NAME `
+          -uniqueBuildIdPrefix $env:INPUT_UNIQUE_BUILD_ID_PREFIX `
+          -bicepModuleSubscriptionId $env:INPUT_BICEP_MODULE_SUBSCRIPTION_ID `
+          -publishDeploymentOutputs $env:INPUT_PUBLISH_DEPLOYMENT_OUTPUTS `
+          -deploymentOutputVariablePrefix $env:INPUT_DEPLOYMENT_OUTPUT_VARIABLE_PREFIX `
+          -retryFailedDeployment $env:INPUT_RETRY_FAILED_DEPLOYMENT `
+          -maxWaitMinutes $env:INPUT_MAX_WAIT_MINUTES `
+          -httpTimeoutSeconds $env:INPUT_HTTP_TIMEOUT_SECONDS `
+          -retryDelayInSeconds $env:INPUT_RETRY_DELAY_IN_SECONDS `
+          -workspaceDirectory $env:INPUT_WORKSPACE_DIRECTORY
+        Write-Output "::endgroup::"
 
     # Upload Deployment Outputs Artifact
     - name: Upload Deployment Outputs Artifact

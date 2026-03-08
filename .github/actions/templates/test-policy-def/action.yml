@@ -43,10 +43,12 @@ runs:
     - name: Install AzPolicyTest Module
       if: inputs.run-policy-json-pester-tests == 'true' || inputs.run-policy-initiative-pester-tests == 'true' || inputs.run-policy-definition-pester-tests == 'true'
       shell: pwsh
+      env:
+        INPUT_WORKSPACE_DIRECTORY: ${{ github.workspace }}
       run: |
         #Install AzPolicyTest Module
         Write-Output '::group::Install AzPolicyTest Module'
-        $scriptPath = "${{ github.workspace }}/scripts/pipelines/pipeline-install-moduleFromRepo.ps1"
+        $scriptPath = "$env:INPUT_WORKSPACE_DIRECTORY/scripts/pipelines/pipeline-install-moduleFromRepo.ps1"
         & $scriptPath `
           -modules 'AzPolicyTest@2.8.2' `
           -repoName 'PSGallery' `
@@ -58,21 +60,25 @@ runs:
     - name: Policy Definition Pester Tests
       if: inputs.run-policy-definition-pester-tests == 'true'
       shell: pwsh
+      env:
+        INPUT_POLICY_FILES_DIRECTORY: ${{ inputs.policy-files-directory }}
+        INPUT_WORKSPACE_DIRECTORY: ${{ github.workspace }}
+        INPUT_DEFINITION_TEST_EXCLUDE_TAGS: ${{ inputs.definition-test-exclude-tags }}
       run: |
         #Policy Definition Pester Tests
         Write-Output '::group::Policy Definition Pester Tests'
         $WarningPreference = 'SilentlyContinue'
-        $inputPath = "${{ inputs.policy-files-directory }}"
+        $inputPath = $env:INPUT_POLICY_FILES_DIRECTORY
         Write-Verbose "Policy Definition Pester Tests Input Path: $inputPath" -Verbose
         Write-Verbose "$(dir $inputPath)" -Verbose
         $testParams = @{
           Path         = $inputPath
-          OutputFile   = "${{ github.workspace }}/TEST-POLICY-DEF.XML"
+          OutputFile   = "$env:INPUT_WORKSPACE_DIRECTORY/TEST-POLICY-DEF.XML"
           OutputFormat  = 'NUnitXml'
           excludePath  = 'psrule-test'
         }
-        if ('${{ inputs.definition-test-exclude-tags }}'.length -gt 0) {
-          $testParams.Add('ExcludeTags', '${{ inputs.definition-test-exclude-tags }}')
+        if ($env:INPUT_DEFINITION_TEST_EXCLUDE_TAGS.length -gt 0) {
+          $testParams.Add('ExcludeTags', $env:INPUT_DEFINITION_TEST_EXCLUDE_TAGS)
         }
         Test-AzPolicyDefinition @testParams
         Write-Output '::endgroup::'
@@ -81,20 +87,24 @@ runs:
     - name: Policy Initiative Pester Tests
       if: inputs.run-policy-initiative-pester-tests == 'true'
       shell: pwsh
+      env:
+        INPUT_POLICY_FILES_DIRECTORY: ${{ inputs.policy-files-directory }}
+        INPUT_WORKSPACE_DIRECTORY: ${{ github.workspace }}
+        INPUT_DEFINITION_TEST_EXCLUDE_TAGS: ${{ inputs.definition-test-exclude-tags }}
       run: |
         Write-Output '::group::Policy Initiative Pester Tests'
         $WarningPreference = 'SilentlyContinue'
-        $inputPath = "${{ inputs.policy-files-directory }}"
+        $inputPath = $env:INPUT_POLICY_FILES_DIRECTORY
         Write-Verbose "Policy Initiative Pester Tests Input Path: $inputPath" -Verbose
         Write-Verbose "$(dir $inputPath)" -Verbose
         $testParams = @{
           Path         = $inputPath
-          OutputFile   = "${{ github.workspace }}/TEST-POLICY-INITIATIVE.XML"
+          OutputFile   = "$env:INPUT_WORKSPACE_DIRECTORY/TEST-POLICY-INITIATIVE.XML"
           OutputFormat  = 'NUnitXml'
           excludePath  = 'psrule-test'
         }
-        if ('${{ inputs.definition-test-exclude-tags }}'.length -gt 0) {
-          $testParams.Add('ExcludeTags', '${{ inputs.definition-test-exclude-tags }}')
+        if ($env:INPUT_DEFINITION_TEST_EXCLUDE_TAGS.length -gt 0) {
+          $testParams.Add('ExcludeTags', $env:INPUT_DEFINITION_TEST_EXCLUDE_TAGS)
         }
         Test-AzPolicySetDefinition @testParams
         Write-Output '::endgroup::'
@@ -103,13 +113,16 @@ runs:
     - name: Policy JSON Pester Tests
       if: inputs.run-policy-json-pester-tests == 'true'
       shell: pwsh
+      env:
+        INPUT_POLICY_FILES_DIRECTORY: ${{ inputs.policy-files-directory }}
+        INPUT_WORKSPACE_DIRECTORY: ${{ github.workspace }}
       run: |
         Write-Output '::group::Policy JSON Pester Tests'
         $WarningPreference = 'SilentlyContinue'
-        $inputPath = "${{ inputs.policy-files-directory }}"
+        $inputPath = $env:INPUT_POLICY_FILES_DIRECTORY
         Write-Verbose "Policy JSON Pester Tests Input Path: $inputPath" -Verbose
         Write-Verbose "$(dir $inputPath)" -Verbose
-        Test-JSONContent -Path $inputPath -OutputFile "${{ github.workspace }}/TEST-POLICY-JSON.XML" -OutputFormat 'NUnitXml' -excludePath 'psrule-test'
+        Test-JSONContent -Path $inputPath -OutputFile "$env:INPUT_WORKSPACE_DIRECTORY/TEST-POLICY-JSON.XML" -OutputFormat 'NUnitXml' -excludePath 'psrule-test'
         Write-Output '::endgroup::'
       continue-on-error: true
 

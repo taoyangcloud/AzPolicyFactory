@@ -141,14 +141,18 @@ runs:
     - name: Copy Parameter Files For PSRule Tests
       if: inputs.parameter-file-artifact-name == '' && inputs.parameter-file-name != ''
       shell: pwsh
+      env:
+        INPUT_TEMPLATE_FILE_DIRECTORY: ${{ inputs.template-file-directory }}
+        INPUT_PARAMETER_FILE_DIRECTORY: ${{ inputs.parameter-file-directory }}
+        INPUT_PARAMETER_FILE_NAME: ${{ inputs.parameter-file-name }}
       run: |
         #Copy Parameter Files to PSRule Tests
         echo '::group::Copy Parameter Files to PSRule Tests'
-        $psruleTestDir = "${{ inputs.template-file-directory }}/psrule-test"
+        $psruleTestDir = "$env:INPUT_TEMPLATE_FILE_DIRECTORY/psrule-test"
         if (!(Test-Path $psruleTestDir)) {
           New-Item -Path $psruleTestDir -ItemType 'Directory' -Force
         }
-        $parameterFiles = Get-ChildItem -Path ${{ inputs.parameter-file-directory }} -Filter ${{ inputs.parameter-file-name }}
+        $parameterFiles = Get-ChildItem -Path $env:INPUT_PARAMETER_FILE_DIRECTORY -Filter $env:INPUT_PARAMETER_FILE_NAME
         foreach ($file in $parameterFiles) {
           Write-Output "Copying parameter file $($file.FullName) to '$psruleTestDir'"
           Copy-Item -Path $file.FullName -Destination "$psruleTestDir" -Force
@@ -174,10 +178,13 @@ runs:
     - name: Run Bicep Support Files Tests
       if: inputs.run-bicep-support-files-tests == 'true'
       shell: pwsh
+      env:
+        INPUT_WORKSPACE_DIRECTORY: ${{ github.workspace }}
+        INPUT_TEMPLATE_FILE_DIRECTORY: ${{ inputs.template-file-directory }}
       run: |
         echo '::group::Run Bicep Support Files Tests'
-        $scriptPath = "${{ github.workspace }}/tests/bicep/BicepRequiredSupportFilesTests.ps1"
-        & $scriptPath -bicepDir '${{ inputs.template-file-directory }}' -OutputFileDir '${{ github.workspace }}'
+        $scriptPath = "$env:INPUT_WORKSPACE_DIRECTORY/tests/bicep/BicepRequiredSupportFilesTests.ps1"
+        & $scriptPath -bicepDir $env:INPUT_TEMPLATE_FILE_DIRECTORY -OutputFileDir $env:INPUT_WORKSPACE_DIRECTORY
         echo '::endgroup::'
 
     - name: "Parse and Publish Bicep Support File Test Results"
@@ -201,12 +208,16 @@ runs:
       shell: pwsh
       env:
         BICEP_MODULE_SUBSCRIPTION_ID: ${{ inputs.bicep-module-subscription-id }}
+        INPUT_TEMPLATE_NAME: ${{ inputs.template-name }}
+        INPUT_ACTION_PATH: ${{ github.action_path }}
+        INPUT_TEMPLATE_FILE_DIRECTORY: ${{ inputs.template-file-directory }}
+        INPUT_TEMPLATE_FILE_NAME: ${{ inputs.template-file-name }}
       run: |
-        Write-Output "::group::Run Bicep Linter - ${{ inputs.template-name }}"
-        $scriptPath = "${{ github.action_path }}/scripts/run-bicep-linter.ps1"
+        Write-Output "::group::Run Bicep Linter - $env:INPUT_TEMPLATE_NAME"
+        $scriptPath = "$env:INPUT_ACTION_PATH/scripts/run-bicep-linter.ps1"
         & $scriptPath `
-          -TemplateFileDirectory '${{ inputs.template-file-directory }}' `
-          -TemplateFileName '${{ inputs.template-file-name }}'
+          -TemplateFileDirectory $env:INPUT_TEMPLATE_FILE_DIRECTORY `
+          -TemplateFileName $env:INPUT_TEMPLATE_FILE_NAME
         Write-Output '::endgroup::'
     # Run PSRule Validation
     - name: Run PSRule Validation - ${{ inputs.template-name }}
@@ -241,23 +252,37 @@ runs:
       if: inputs.run-template-validation == 'true'
       id: template-validation
       shell: pwsh
+      env:
+        INPUT_ACTION_PATH: ${{ github.action_path }}
+        INPUT_TEMPLATE_FILE_DIRECTORY: ${{ inputs.template-file-directory }}
+        INPUT_TEMPLATE_FILE_NAME: ${{ inputs.template-file-name }}
+        INPUT_PARAMETER_FILE_DIRECTORY: ${{ inputs.parameter-file-directory }}
+        INPUT_PARAMETER_FILE_NAME: ${{ inputs.parameter-file-name }}
+        INPUT_TEMPLATE_SCOPE: ${{ inputs.template-scope }}
+        INPUT_AZURE_LOCATION: ${{ inputs.azure-location }}
+        INPUT_TARGET_NAME: ${{ inputs.target-name }}
+        INPUT_SUBSCRIPTION_NAME: ${{ inputs.subscription-name }}
+        INPUT_RUN_WHATIF: ${{ inputs.run-whatif-in-template-validation }}
+        INPUT_WHATIF_MAX_RETRY: ${{ inputs.whatif-max-retry }}
+        INPUT_WHATIF_RESULT_ARTIFACT_NAME: ${{ inputs.whatif-result-artifact-name }}
+        INPUT_BICEP_MODULE_SUBSCRIPTION_ID: ${{ inputs.bicep-module-subscription-id }}
       run: |
         Write-Output '::group::Run Template Validation'
-        $scriptPath = "${{ github.action_path }}/scripts/Invoke-AllTemplateValidations.ps1"
+        $scriptPath = "$env:INPUT_ACTION_PATH/scripts/Invoke-AllTemplateValidations.ps1"
         & $scriptPath `
-          -templateFileDirectory '${{ inputs.template-file-directory }}' `
-          -templateFileName '${{ inputs.template-file-name }}' `
-          -parameterFileDirectory '${{ inputs.parameter-file-directory }}' `
-          -parameterFileNamePattern '${{ inputs.parameter-file-name }}' `
-          -templateScope '${{ inputs.template-scope }}' `
-          -azureLocation '${{ inputs.azure-location }}' `
-          -targetName '${{ inputs.target-name }}' `
-          -subscriptionName '${{ inputs.subscription-name }}' `
-          -runWhatIfValidation '${{ inputs.run-whatif-in-template-validation }}' `
-          -whatIfMaxRetry ${{ inputs.whatif-max-retry }} `
-          -whatIfResultArtifactName '${{ inputs.whatif-result-artifact-name }}' `
-          -bicepModuleSubscriptionId '${{ inputs.bicep-module-subscription-id }}' `
-          -scriptsDirectory '${{ github.action_path }}/scripts'
+          -templateFileDirectory $env:INPUT_TEMPLATE_FILE_DIRECTORY `
+          -templateFileName $env:INPUT_TEMPLATE_FILE_NAME `
+          -parameterFileDirectory $env:INPUT_PARAMETER_FILE_DIRECTORY `
+          -parameterFileNamePattern $env:INPUT_PARAMETER_FILE_NAME `
+          -templateScope $env:INPUT_TEMPLATE_SCOPE `
+          -azureLocation $env:INPUT_AZURE_LOCATION `
+          -targetName $env:INPUT_TARGET_NAME `
+          -subscriptionName $env:INPUT_SUBSCRIPTION_NAME `
+          -runWhatIfValidation $env:INPUT_RUN_WHATIF `
+          -whatIfMaxRetry $env:INPUT_WHATIF_MAX_RETRY `
+          -whatIfResultArtifactName $env:INPUT_WHATIF_RESULT_ARTIFACT_NAME `
+          -bicepModuleSubscriptionId $env:INPUT_BICEP_MODULE_SUBSCRIPTION_ID `
+          -scriptsDirectory "$env:INPUT_ACTION_PATH/scripts"
         Write-Output '::endgroup::'
 
     # Upload What-If Results Artifact
@@ -273,6 +298,8 @@ runs:
     - name: Validation Summary
       id: validation-summary
       shell: pwsh
+      env:
+        INPUT_TEMPLATE_NAME: ${{ inputs.template-name }}
       run: |
-        Write-Output "Validation completed for template: ${{ inputs.template-name }}"
+        Write-Output "Validation completed for template: $env:INPUT_TEMPLATE_NAME"
         echo "result=success" >> $env:GITHUB_OUTPUT

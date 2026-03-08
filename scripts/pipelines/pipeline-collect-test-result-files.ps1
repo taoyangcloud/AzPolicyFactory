@@ -28,7 +28,7 @@ If (Test-Path $outputDir) {
   Write-Output "Output directory '$outputDir' does nto exists. try to create it now."
   $newDir = New-Item -Path $outputDir -Force -Type Directory
   if (!$newDir) {
-    Thow "Unable to create output directory '$outputDir'."
+    Throw "Unable to create output directory '$outputDir'."
     Exit 1
   }
 }

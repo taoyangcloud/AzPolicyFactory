@@ -52,11 +52,15 @@ runs:
     - name: Copy Config Files to Repo
       if: inputs.config-artifact-name != ''
       shell: pwsh
+      env:
+        INPUT_WORKSPACE_DIRECTORY: ${{ github.workspace }}
+        INPUT_CONFIG_ARTIFACT_NAME: ${{ inputs.config-artifact-name }}
+        INPUT_CONFIG_FILE_DIRECTORY: ${{ inputs.config-file-directory }}
       run: |
         #Copy Config Files to Repo
         Write-Output '::group::Copy Config Files to Repo'
-        $source = "${{ github.workspace }}/_artifacts/${{ inputs.config-artifact-name }}"
-        $target = "${{ github.workspace }}/${{ inputs.config-file-directory }}"
+        $source = "$env:INPUT_WORKSPACE_DIRECTORY/_artifacts/$env:INPUT_CONFIG_ARTIFACT_NAME"
+        $target = "$env:INPUT_WORKSPACE_DIRECTORY/$env:INPUT_CONFIG_FILE_DIRECTORY"
         Write-Output "Copying files from '$source' to '$target'"
         Copy-Item -Path "$source/*" -Destination $target -Recurse -Force
         Write-Output '::endgroup::'
@@ -65,16 +69,23 @@ runs:
       id: testConfigurations
       shell: pwsh
       continue-on-error: true
+      env:
+        INPUT_WORKSPACE_DIRECTORY: ${{ github.workspace }}
+        INPUT_TEST_SCRIPT_PATH: ${{ inputs.test-script-path }}
+        INPUT_CONFIG_FILE_DIRECTORY: ${{ inputs.config-file-directory }}
+        INPUT_CONFIG_SCHEMA_FILE_PATH: ${{ inputs.config-schema-file-path }}
+        INPUT_EXCLUDE_TAGS: ${{ inputs.exclude-tags }}
+        INPUT_OUTPUT_FILE_PREFIX: ${{ inputs.output-file-prefix }}
       run: |
         #Test Configurations Syntax
         Write-Output '::group::Test Configurations Syntax'
-        $scriptPath = "${{ github.workspace }}/${{ inputs.test-script-path }}"
+        $scriptPath = "$env:INPUT_WORKSPACE_DIRECTORY/$env:INPUT_TEST_SCRIPT_PATH"
         & $scriptPath `
-          -configurationFilesPath "${{ github.workspace }}/${{ inputs.config-file-directory }}" `
-          -configurationSchemaFilePath "${{ github.workspace }}/${{ inputs.config-schema-file-path }}" `
-          -ExcludeTags "${{ inputs.exclude-tags }}" `
-          -OutputFileDir "${{ github.workspace }}" `
-          -OutputFilePrefix '${{ inputs.output-file-prefix }}' `
+          -configurationFilesPath "$env:INPUT_WORKSPACE_DIRECTORY/$env:INPUT_CONFIG_FILE_DIRECTORY" `
+          -configurationSchemaFilePath "$env:INPUT_WORKSPACE_DIRECTORY/$env:INPUT_CONFIG_SCHEMA_FILE_PATH" `
+          -ExcludeTags $env:INPUT_EXCLUDE_TAGS `
+          -OutputFileDir $env:INPUT_WORKSPACE_DIRECTORY `
+          -OutputFilePrefix $env:INPUT_OUTPUT_FILE_PREFIX `
           -OutputFormat 'NUnitXml'
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         Write-Output '::endgroup::'

@@ -6,6 +6,10 @@ on:
     workflows: ["policy-definitions"] # name of the triggering workflow
     types: [completed]
     branches: [main]
+
+permissions:
+  contents: read
+
 env:
   variablesPath: "settings.yml"
   templateName: "PolicySet"
@@ -24,6 +28,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Initiation"
         uses: ./.github/actions/templates/initiation
         with:
@@ -38,6 +43,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Policy Definition Tests"
         uses: ./.github/actions/templates/test-policy-def
         with:
@@ -60,6 +66,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Build Bicep Template"
         uses: ./.github/actions/templates/build-policy-def
         with:
@@ -80,6 +87,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Build Bicep Template"
         uses: ./.github/actions/templates/build-policy-def
         with:
@@ -100,6 +108,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Install PowerShell-Yaml Module"
         shell: pwsh
         run: |
@@ -148,6 +157,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Install PowerShell-Yaml Module"
         shell: pwsh
         run: |
@@ -197,6 +207,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Install PowerShell-Yaml Module"
         shell: pwsh
         run: |
@@ -243,6 +254,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Install PowerShell-Yaml Module"
         shell: pwsh
         run: |

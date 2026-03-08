@@ -71,7 +71,7 @@ The repository is organized into the following folders:
 | &nbsp;&nbsp;&nbsp;&nbsp;[`linters/`](.github/linters/) | Linter configuration files used by GitHub Super-Linter (e.g., codespell, textlint, PSScriptAnalyzer) |
 | &nbsp;&nbsp;&nbsp;&nbsp;[`workflows/`](.github/workflows/) | GitHub Actions workflow definitions for policy deployments, PR code scans, and environment consistency checks |
 | [`.ps-rule/`](.ps-rule/) | PSRule configuration and rule suppression files |
-| [`.vscode/`](.vscode/) | VS Code workspace settings, recommended extensions, and script analyzer configuration |
+| [`.vscode/`](.vscode/) | Visual Studio Code workspace settings, recommended extensions, and script analyzer configuration |
 | [`bicep/`](bicep/) | Bicep modules and deployment templates for Azure Policy resources |
 | &nbsp;&nbsp;&nbsp;&nbsp;[`modules/`](bicep/modules/) | Reusable Bicep modules including authorization role assignments and user-defined types |
 | &nbsp;&nbsp;&nbsp;&nbsp;[`templates/`](bicep/templates/) | Bicep deployment templates for policy definitions, initiatives, assignments, and exemptions |
@@ -117,7 +117,7 @@ The repository includes the following configuration files:
 | [markdownlint.json](./.github/linters/markdownlint.json) | Markdownlint configuration file |
 | [.gitignore](./.gitignore) | Git ignore file specifying untracked files and folders |
 | [.ps-rule/](./.ps-rule/) | PSRule rule suppression files |
-| [.vscode/](./.vscode/) | VS Code workspace settings, recommended extensions, and script analyzer configuration |
+| [.vscode/](./.vscode/) | Visual Studio Code workspace settings, recommended extensions, and script analyzer configuration |
 | [.github/linters/](./.github/linters/) | Linter configuration files used by GitHub Super-Linter (e.g., codespell, textlint, PSScriptAnalyzer) |
 
 ## Policy Resources

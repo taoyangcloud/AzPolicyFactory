@@ -66,5 +66,7 @@
   },
   "no-alt-text": true,
   "code-block-style": false,
-  "table-pipe-style": false
+  "table-pipe-style": false,
+  "table-column-style": false,
+  "descriptive-link-text": false
 }

@@ -1,2 +1,3 @@
 # Introduction
-The templates folder contains the pipeline templates that will be re-used for repeatable patterns.
+
+The templates folder contains the pipeline templates that will be reused for repeatable patterns.

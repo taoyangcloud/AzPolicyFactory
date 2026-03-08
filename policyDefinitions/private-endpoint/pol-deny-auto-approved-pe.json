@@ -21,7 +21,7 @@
       "resourceType": {
         "type": "String",
         "metadata": {
-          "displayName": "Resoruce Type",
+          "displayName": "Resource Type",
           "description": "Target resource type for the private endpoint."
         }
       },

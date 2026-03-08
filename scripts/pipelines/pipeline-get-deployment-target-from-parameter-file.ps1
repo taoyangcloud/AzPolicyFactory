@@ -4,7 +4,7 @@ AUTHOR: Tao Yang
 DATE: 05/06/2024
 NAME: pipeline-get-deployment-target-from-parameter-file.ps1
 VERSION: 1.0.0
-COMMENT: determine deployment taget by parcing metadata in a Bicep parameter file
+COMMENT: determine deployment target by parsing metadata in a Bicep parameter file
 ==================================================================================
 #>
 

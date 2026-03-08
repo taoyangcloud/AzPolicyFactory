@@ -1,0 +1,14 @@
+**/policyDefinitions/
+**/policyInitiatives/
+**/policyAssignments/
+**/policyExemptions/
+**/.azuredevops/templates/
+**/.azuredevops/pipelines/
+**/tests/
+**/ps-rule.yaml
+**/bicep/
+**/bicepconfig.json
+**/.markdownlint.json
+**/.git
+**/.github/copilot-instructions.md
+**/*.md

@@ -13,7 +13,6 @@ stages:
             docker run --rm --pull=missing \
               -w /tmp/lint \
               -e RUN_LOCAL=true \
-              -e DEFAULT_BRANCH=main \
               -e VALIDATE_ALL_CODEBASE=true \
               -e FILTER_REGEX_EXCLUDE='(bin/|obj/|\.vs/|node_modules/|\.vscode/)' \
               -e LOG_LEVEL=ERROR \
@@ -24,7 +23,8 @@ stages:
               -e VALIDATE_BIOME_LINT=false \
               -e VALIDATE_BIOME_FORMAT=false \
               -e IGNORE_GITIGNORED_FILES=true \
+              -e GITHUB_ACTIONS_ZIZMOR_CONFIG_FILE=.zizmor.yml \
               -v $(System.DefaultWorkingDirectory):/tmp/lint \
-              github/super-linter
+              ghcr.io/super-linter/super-linter:v8.5.0
           displayName: 'GitHub Super-Linter Code Scan'
 

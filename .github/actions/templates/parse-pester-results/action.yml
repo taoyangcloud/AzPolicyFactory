@@ -32,12 +32,17 @@ runs:
   steps:
     - name: "Output NUnit Results to Job Summary - ${{ inputs.test-title }}"
       shell: pwsh
+      env:
+        INPUT_ACTION_PATH: ${{ github.action_path }}
+        INPUT_TEST_RESULT_FILES: ${{ inputs.test-result-files }}
+        INPUT_TEST_TITLE: ${{ inputs.test-title }}
+        INPUT_SKIP_PASSED_TESTS_REPORT: ${{ inputs.skip-passed-tests-report }}
       run: |
         Write-Output '::group::Output NUnit Results to Job Summary'
-        $scriptPath = '${{ github.action_path }}/scripts/parse-pester-results.ps1'
+        $scriptPath = "$env:INPUT_ACTION_PATH/scripts/parse-pester-results.ps1"
         & $scriptPath `
-          -InputFilePattern '${{ inputs.test-result-files }}' `
-          -TestTitle '${{ inputs.test-title }}' `
-          -SkipPassedTestsReport:('${{ inputs.skip-passed-tests-report }}' -match '^(true|\$true|1)$')
+          -InputFilePattern $env:INPUT_TEST_RESULT_FILES `
+          -TestTitle $env:INPUT_TEST_TITLE `
+          -SkipPassedTestsReport:($env:INPUT_SKIP_PASSED_TESTS_REPORT -match '^(true|\$true|1)$')
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         Write-Output '::endgroup::'

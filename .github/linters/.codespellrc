@@ -1,4 +1,4 @@
 [codespell]
-ignore-words-list = re-use,AKS
-skip = *.gitignore,./.git
+ignore-words-list = re-use,re-used,AKS,aks,notIn,notin,cant
+skip = *.gitignore,.git,policyDefinitions,policyInitiatives,policyAssignments,policyExemptions
 quiet-level = 3

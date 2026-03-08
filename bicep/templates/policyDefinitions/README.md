@@ -8,7 +8,7 @@ This template deploys the policy definitions in Contoso.
 
 Name | Type | Description
 ---- | ---- | -----------
-policyDefinitions | array |
+policyDefinitions | array | The list of policy definitions deployed by this template.
 
 ## Snippets
 

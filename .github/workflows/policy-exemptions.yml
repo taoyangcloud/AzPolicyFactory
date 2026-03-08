@@ -6,6 +6,9 @@ on:
     workflows: ["policy-assignments"] # name of the triggering workflow
     types: [completed]
     branches: [main]
+
+permissions:
+  contents: read
 env:
   variablesPath: "settings.yml"
   templateName: "PolicyExemption"
@@ -28,6 +31,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Initiation"
         uses: ./.github/actions/templates/initiation
         with:
@@ -44,6 +48,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Import Variables
         shell: pwsh # PowerShell Core
         env:
@@ -75,6 +80,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Import Variables
         shell: pwsh # PowerShell Core
         env:
@@ -106,6 +112,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Install PowerShell-Yaml Module"
         shell: pwsh
         run: |
@@ -163,6 +170,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Install PowerShell-Yaml Module"
         shell: pwsh
         run: |
@@ -221,6 +229,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Install PowerShell-Yaml Module"
         shell: pwsh
         run: |
@@ -268,6 +277,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: "Install PowerShell-Yaml Module"
         shell: pwsh
         run: |

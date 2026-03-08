@@ -17,4 +17,5 @@ module policyDefs '../../modules/authorization/policy-definition/main.bicep' = {
   }
 }
 
+@description('The list of policy definitions deployed by this template.')
 output policyDefinitions array = policyDefs.outputs.policyDefinitions

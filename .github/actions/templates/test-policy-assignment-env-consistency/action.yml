@@ -26,14 +26,18 @@ runs:
   steps:
     - name: Test Assignment Configurations
       shell: pwsh
+      env:
+        INPUT_PROD_CONFIG_PATH: ${{ inputs.prod-configuration-files-directory }}
+        INPUT_DEV_CONFIG_PATH: ${{ inputs.dev-configuration-files-directory }}
+        INPUT_WORKSPACE_DIRECTORY: ${{ github.workspace }}
       run: |
         #Test Assignment Configurations
         Write-Output '::group::Test Assignment Configurations'
-        $testScriptPath = "${{ github.workspace }}/tests/policyAssignment/environment-consistency/prdAssignmentConfigurationsTest.ps1"
+        $testScriptPath = "$env:INPUT_WORKSPACE_DIRECTORY/tests/policyAssignment/environment-consistency/prdAssignmentConfigurationsTest.ps1"
         & $testScriptPath `
-          -prodConfigurationFilesPath "${{ inputs.prod-configuration-files-directory }}" `
-          -devConfigurationFilesPath "${{ inputs.dev-configuration-files-directory }}" `
-          -OutputFileDir "${{ github.workspace }}" `
+          -prodConfigurationFilesPath $env:INPUT_PROD_CONFIG_PATH `
+          -devConfigurationFilesPath $env:INPUT_DEV_CONFIG_PATH `
+          -OutputFileDir $env:INPUT_WORKSPACE_DIRECTORY `
           -OutputFilePrefix 'TEST-ProdAssignmentConfigurations' `
           -OutputFormat 'NUnitXml'
         Write-Output '::endgroup::'

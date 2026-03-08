@@ -40,17 +40,25 @@ runs:
     - name: Build Bicep Template
       id: buildBicep
       shell: pwsh
+      env:
+        INPUT_WORKSPACE_DIRECTORY: ${{ github.workspace }}
+        INPUT_BICEP_FILE_PATH: ${{ inputs.bicep-file-path }}
+        INPUT_BICEP_VARIABLE_NAME: ${{ inputs.bicep-variable-name }}
+        INPUT_DEFINITION_FILE_PATH: ${{ inputs.definition-file-path }}
+        INPUT_DEFINITION_FILE_EXCLUDE_PATH: ${{ inputs.definition-file-exclude-path }}
+        INPUT_TEMPLATE_FILE_DIRECTORY: ${{ inputs.template-file-directory }}
+        INPUT_BUILD_ARTIFACT_NAME: ${{ inputs.build-artifact-name }}
       run: |
         #Build Bicep Template
         Write-Output '::group::Build Bicep Template'
-        $scriptPath = "${{ github.workspace }}/scripts/pipelines/pipeline-set-policy-resource-bicep-template-file.ps1"
+        $scriptPath = "$env:INPUT_WORKSPACE_DIRECTORY/scripts/pipelines/pipeline-set-policy-resource-bicep-template-file.ps1"
         & $scriptPath `
-          -bicepFilePath '${{ inputs.bicep-file-path }}' `
-          -bicepVariableName '${{ inputs.bicep-variable-name }}' `
-          -resourceFileFolder '${{ inputs.definition-file-path }}' `
-          -excludePath '${{ inputs.definition-file-exclude-path }}' `
-          -outputDir '${{ inputs.template-file-directory }}' `
-          -artifactName '${{ inputs.build-artifact-name }}' `
+          -bicepFilePath $env:INPUT_BICEP_FILE_PATH `
+          -bicepVariableName $env:INPUT_BICEP_VARIABLE_NAME `
+          -resourceFileFolder $env:INPUT_DEFINITION_FILE_PATH `
+          -excludePath $env:INPUT_DEFINITION_FILE_EXCLUDE_PATH `
+          -outputDir $env:INPUT_TEMPLATE_FILE_DIRECTORY `
+          -artifactName $env:INPUT_BUILD_ARTIFACT_NAME `
           -updateBicepFileName 'main.bicep'
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         Write-Output '::endgroup::'

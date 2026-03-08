@@ -42,4 +42,5 @@ module policyInitiatives '../../modules/authorization/policy-set-definition/main
 }
 
 //------ Outputs ------
+@description('The list of policy initiatives deployed by this template.')
 output policySetDefinitions array = policyInitiatives.outputs.policySetDefinitions
