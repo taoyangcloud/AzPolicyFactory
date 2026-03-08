@@ -42,6 +42,5 @@ jobs:
           VALIDATE_JSCPD: false
           FILTER_REGEX_EXCLUDE: '(bin/|obj/|\.vs/|node_modules/|\.vscode/)'
           LOG_LEVEL: ERROR
-          USE_FIND_ALGORITHM: true
           VALIDATE_ARM: false
           IGNORE_GITIGNORED_FILES: true
