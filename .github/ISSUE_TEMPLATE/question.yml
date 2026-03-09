@@ -1,0 +1,45 @@
+name: Question
+description: Ask a question about using AzPolicyFactory
+title: "[Question]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before asking a question, please check the [documentation](../docs/README.md) and [FAQ](../docs/FAQ.md) to see if your question has already been answered.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Topic Area
+      description: What area does your question relate to?
+      options:
+        - Setup / Getting Started
+        - Bicep Templates / Modules
+        - Policy Definitions
+        - Policy Initiatives
+        - Policy Assignments
+        - Policy Exemptions
+        - Azure DevOps Pipelines
+        - GitHub Actions Workflows
+        - Tests / Validation
+        - Architecture / Best Practices
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Describe your question in detail.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide any relevant context, such as your environment setup, what you've already tried, or error messages encountered.
+    validations:
+      required: false

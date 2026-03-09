@@ -1,0 +1,69 @@
+name: Sample Policy Resource Request
+description: Request a new sample policy resource (best-effort basis only)
+title: "[Policy Resource]: "
+labels: ["policy-resource", "best-effort"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > **Please note:** The primary purpose of AzPolicyFactory is to provide reusable **IaC templates, Bicep modules, CI/CD pipelines, and testing frameworks** for deploying and managing Azure Policy resources — not to serve as a comprehensive library of policy definitions.
+        >
+        > The sample policy resources included in this repository are provided as **references and starting points**. You are encouraged to author your own policy resources following the patterns demonstrated in the repository.
+        >
+        > Requests for new sample policy resources are handled on a **best-effort basis** and may not be prioritized.
+
+  - type: dropdown
+    id: resource-type
+    attributes:
+      label: Policy Resource Type
+      description: What type of sample policy resource are you requesting?
+      options:
+        - Policy Definition
+        - Policy Initiative (Policy Set)
+        - Policy Assignment
+        - Policy Exemption
+    validations:
+      required: true
+
+  - type: input
+    id: azure-service
+    attributes:
+      label: Target Azure Service / Resource Type
+      description: Which Azure service or resource type does this policy target?
+      placeholder: "e.g., Azure Storage Account, Azure Key Vault, Azure SQL Database"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe the policy resource and the governance or compliance requirement it addresses.
+    validations:
+      required: true
+
+  - type: textarea
+    id: justification
+    attributes:
+      label: Why should this be included as a sample?
+      description: Explain why this policy resource would be a valuable addition to the repository as a sample or reference for other users.
+      placeholder: "e.g., This is a common governance pattern that many organizations need but there is no existing sample covering this scenario."
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Willingness to Contribute
+      description: Would you be willing to submit a pull request with this policy resource?
+      options:
+        - label: I am willing to submit a PR for this policy resource
+          required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Links to Azure documentation, existing built-in policies to reference, sample policy rule JSON, or any other relevant context.
+    validations:
+      required: false
