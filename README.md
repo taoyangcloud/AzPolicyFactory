@@ -60,6 +60,8 @@ Some organizations have multiple Microsoft Entra ID tenants for different enviro
 ![Recommended Architectural Approach for Azure Policy IaC - Multiple Tenants](./docs/images/multi-tenants.png)
 
 
+>:exclamation: **Important Note**: The design decision for dedicated **POLICY** development management group hierarchy is explained in the FAQ [What is the purpose of dedicated development management group hierarchy in the recommended architecture for Azure Policy IaC implementation?](./docs/FAQ.md#what-is-the-purpose-of-dedicated-development-management-group-hierarchy-in-the-recommended-architecture-for-azure-policy-iac-implementation)
+
 ## Get Started
 
 Refer to the [**Documentation**](docs/README.md) for setup guides and detailed information on the repository structure, CI/CD pipelines, configurations, and included Azure Policy resources.

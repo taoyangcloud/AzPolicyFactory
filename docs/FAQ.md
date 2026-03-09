@@ -20,6 +20,8 @@
     - [How does the Policy Assignments pipeline / workflow populate the non-compliance messages for each policy assignment?](#how-does-the-policy-assignments-pipeline--workflow-populate-the-non-compliance-messages-for-each-policy-assignment)
     - [Why do we have non-compliance messages defined for each policy assignment? Can't we just use the default message for all policy assignments?](#why-do-we-have-non-compliance-messages-defined-for-each-policy-assignment-cant-we-just-use-the-default-message-for-all-policy-assignments)
     - [Do I need to update the Bicep templates when I add new policy resources to the repository?](#do-i-need-to-update-the-bicep-templates-when-i-add-new-policy-resources-to-the-repository)
+  - [Azure Configurations](#azure-configurations)
+    - [What is the purpose of dedicated development management group hierarchy in the recommended architecture for Azure Policy IaC implementation?](#what-is-the-purpose-of-dedicated-development-management-group-hierarchy-in-the-recommended-architecture-for-azure-policy-iac-implementation)
 
 ## Pipeline Configurations
 
@@ -147,7 +149,7 @@ We moved away from using the built-in Azure DevOps task for ARM / Bicep template
 
 We have experienced some random transient failures in the Bicep deployments in our pipelines in customer environments which had nothing to do with the Bicep templates or the Azure resources being deployed. These transient failures can be caused by various factors such as temporary network issues, service availability, or throttling by Azure.
 
-To overcome the challenge and prevent these transient issues from causing pipeline failures, we implemented a custom Bicep deployment script that includes a retry mechanism with exponential backoff. This allows the deployment to automatically retry in case of transient failures, which can significantly improve the reliability of the deployments in the pipelines.
+To overcome these challenges and prevent transient issues from causing pipeline failures, we implemented a custom Bicep deployment script that includes a retry mechanism with exponential backoff. This allows the deployment to automatically retry in case of transient failures, which can significantly improve the reliability of the deployments in the pipelines.
 
 By default, the HTTP timeout value is set to 100 seconds in the Az PowerShell module and it is not configurable. This has also caused issues in the past. We then moved away from using the Az PowerShell module for Bicep deployments and developed the custom Bicep deployment script using the ARM REST API directly, which allows us to parameterize a longer timeout value for the deployment operations.
 
@@ -169,7 +171,7 @@ The Bicep / ARM templates have the following size limits:
 
 Although we have never encountered these limits in customer environments when deploying policy resources using the pipelines and workflows in this repository, it is still possible to hit these limits if you have a large number of policy resources to deploy.
 
-If you have encountered these limits, you can consider the following approaches to work around the limits:
+If you have encountered these limits, you can consider the following approaches:
 
 - Split policy resources into batches.
 - Duplicate the test and deployment stages / jobs in the pipelines / workflows to deploy each batch separately.
@@ -251,6 +253,27 @@ No, you do not need to update the Bicep templates when you add new policy resour
 
 The ADO pipelines and GitHub Actions workflows are designed to automatically pick up all the files from the designated folders for policy definitions, initiatives, assignments, and exemptions. As long as you add new policy resources following the existing structure and format, the pipelines and workflows will be able to deploy them without any modifications to the Bicep templates.
 
-This approach greatly simplifies the process and Bicep skills required for the Azure Policy administrators. The Bicep templates are essentially hidden from the policy administrators.
+This approach greatly simplifies the process and reduces the Bicep skills required for Azure Policy administrators. The Bicep templates are essentially hidden from the policy administrators.
+
+</details>
+
+## Azure Configurations
+
+### What is the purpose of dedicated development management group hierarchy in the recommended architecture for Azure Policy IaC implementation?
+
+<details>
+<summary>Click to expand</summary>
+
+We recommend having a dedicated development management group hierarchy for the Azure Policy IaC implementation. This is required so policy resources do not impact existing resources before release to production.
+
+Microsoft's documentation [Manage application development environments in Azure landing zones](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/design-area/management-application-environments) recommends having production and non-production subscriptions in the same management group hierarchy. Do not confuse this with the recommendation for Azure Policy IaC implementation.
+
+From Policy management perspective, the development management group hierarchy is dedicated for policy development and testing. Only the policy administrators and developers should have access to this management group hierarchy.
+
+We treat the management group hierarchy that contains production and non-production workload and platform subscriptions as the production management group hierarchy.
+
+The policy development management group hierarchy should mirror the production management group hierarchy in terms of structure and scope of policy assignments. This allows us to test the policy changes in an environment that closely resembles production before deploying the changes to production.
+
+However, we do not need to recreate all the production subscriptions in the policy development management group hierarchy. This will be explained in detail in the Policy Integration Test documentation which is coming soon.
 
 </details>
