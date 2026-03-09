@@ -27,6 +27,7 @@
 
 <details>
 <summary>Click to expand</summary>
+
 You can exclude specific Pester tests by excluding the test tags associated with those tests in the pipeline YAML files.
 
 For the 3 sets of tests included from the `AzPolicyTest` module, use the following commands to get the list of available tags for each test:
@@ -80,7 +81,7 @@ The pipeline / workflow parameters for excluded tags for each test type are as f
 At the moment, the following Pester tests used in this project do not support excluding tags:
 
 - Bicep Support File tests
-- PSRule tests
+- PSRule tests (configured using the PSRule configuration file [ps-rule.yaml](../ps-rule.yaml))
 - Policy Assignment Environment Consistency tests
 
 </details>
@@ -89,6 +90,7 @@ At the moment, the following Pester tests used in this project do not support ex
 
 <details>
 <summary>Click to expand</summary>
+
 A fundamental design decision we have made is that each policy resource should be self-contained in separate files.
 
 Initially, we implemented the policy assignment and exemption Bicep templates using parameter files for each policy assignment and exemption. To increase deployment velocity, we had to leverage matrix jobs in the pipelines / workflows to deploy each assignment and exemption in parallel.
@@ -131,13 +133,16 @@ The following software and tools need to be installed on the self-hosted runners
 
 <details>
 <summary>Click to expand</summary>
+
 Yes. All the ADO templates and GitHub custom actions defined in this repository are designed to be reusable for other Azure IaC implementations. You can easily modify the existing pipeline templates and custom actions to fit the specific requirements of your Azure IaC implementation.
+
 </details>
 
 ### Why do the pipelines / workflows use a custom Bicep deployment script instead of the built-in Azure DevOps and GitHub Actions tasks for Bicep deployment?
 
 <details>
 <summary>Click to expand</summary>
+
 We moved away from using the built-in Azure DevOps task for ARM / Bicep template deployment because it does not support retrying failed deployments.
 
 We have experienced some random transient failures in the Bicep deployments in our pipelines in customer environments which had nothing to do with the Bicep templates or the Azure resources being deployed. These transient failures can be caused by various factors such as temporary network issues, service availability, or throttling by Azure.
@@ -152,6 +157,7 @@ By default, the HTTP timeout value is set to 100 seconds in the Az PowerShell mo
 
 <details>
 <summary>Click to expand</summary>
+
 The Bicep / ARM templates have the following size limits:
 
 - The compressed template size itself can’t exceed 4 MB, and each individual resource definition can’t exceed 1 MB after compression.
@@ -169,6 +175,7 @@ If you have encountered these limits, you can consider the following approaches 
 - Duplicate the test and deployment stages / jobs in the pipelines / workflows to deploy each batch separately.
 
 >:memo: The details of the Bicep / ARM template limits can be found in the official Microsoft documentation: [Resolve errors for job size exceeded](https://learn.microsoft.com/azure/azure-resource-manager/troubleshooting/error-job-size-exceeded?tabs=bicep).
+
 </details>
 
 ## Azure DevOps Pipelines
@@ -177,16 +184,20 @@ If you have encountered these limits, you can consider the following approaches 
 
 <details>
 <summary>Click to expand</summary>
+
 All the ADO pipeline templates are designed to work with both Microsoft-hosted agents and self-hosted agents. If you want to use self-hosted agents, you will need to search for the `vmImage` parameters in each pipeline YAML file and replace them with `poolName`, and make sure the value for the `poolName` parameter matches the name of your self-hosted agent pool.
+
 </details>
 
 ### Do these pipelines support Azure DevOps servers?
 
 <details>
 <summary>Click to expand</summary>
+
 Short answer: Yes. You can run all the ADO pipelines in Azure DevOps Server (on-premises) environment.
 
 However, you will need to make some adjustments to the pipeline YAML files to use self-hosted agents instead.
+
 </details>
 
 ## GitHub Actions
@@ -195,7 +206,9 @@ However, you will need to make some adjustments to the pipeline YAML files to us
 
 <details>
 <summary>Click to expand</summary>
+
 In each workflow YAML file, you will need to update the `runs-on` property to specify the name of your self-hosted runner. Details of this configuration can be found in the [GitHub documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idruns-on).
+
 </details>
 
 ## Policy Resources
@@ -204,18 +217,21 @@ In each workflow YAML file, you will need to update the `runs-on` property to sp
 
 <details>
 <summary>Click to expand</summary>
+
 The non-compliance messages for each policy assignment are defined in the `nonComplianceMessages` property in the policy assignment configuration files. The Policy Assignments pipeline / workflow uses a [PowerShell script](../scripts/pipelines/pipeline-set-policy-non-compliance-messages.ps1) to populate the non-compliance messages for each policy assignment during the build stage / job.
 
 The script does the following:
 
 1. Sets the default message to `You have not met all standards set by '<name of assigned policy or initiative>'. Refer to the policy for requirements.`
 2. If a policy initiative is assigned, the script will iterate through all the policies included in the initiative and add a non-compliance message for each policy in the initiative with the format `PolicyID: <policy reference id> Violation in <policy initiative name> Initiative - '<member policy display name>'`
+
 </details>
 
 ### Why do we have non-compliance messages defined for each policy assignment? Can't we just use the default message for all policy assignments?
 
 <details>
 <summary>Click to expand</summary>
+
 A negative feedback we often receive from end users is that the default non-compliance message for Azure Policy is too generic and does not provide enough information for them to understand why they are non-compliant and what they need to do to become compliant.
 
 To address this issue using the native capability, we can define custom non-compliance message for each member policy for the assigned policy initiatives, and a default message for the policy assignment.
@@ -223,15 +239,18 @@ To address this issue using the native capability, we can define custom non-comp
 However, this approach is very tedious and error-prone to do manually, especially when there are a large number of policy assignments and initiatives with multiple member policies included in the initiatives.
 
 Therefore we have automated the process of populating the non-compliance messages for each policy assignment in the pipeline / workflow. The messages for the individual member policy definitions in the initiatives include the display name of the member policy. They should provide more clarity to the end users on why they are non-compliant and what they need to do to become compliant.
+
 </details>
 
 ### Do I need to update the Bicep templates when I add new policy resources to the repository?
 
 <details>
 <summary>Click to expand</summary>
+
 No, you do not need to update the Bicep templates when you add new policy resources to the repository, as long as you follow the existing structure and format for the policy definition, initiative, assignment, and exemption files.
 
 The ADO pipelines and GitHub Actions workflows are designed to automatically pick up all the files from the designated folders for policy definitions, initiatives, assignments, and exemptions. As long as you add new policy resources following the existing structure and format, the pipelines and workflows will be able to deploy them without any modifications to the Bicep templates.
 
 This approach greatly simplifies the process and Bicep skills required for the Azure Policy administrators. The Bicep templates are essentially hidden from the policy administrators.
+
 </details>
